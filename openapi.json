@@ -1,0 +1,111 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "tunas-spec",
+    "description": "Tunas REST api",
+    "version": "v0.0.1"
+  },
+  "servers": [{
+    "url": "{environment}.localhost:8080",
+    "description": "local dev",
+    "variables": {
+      "environment": {
+        "default": "dev",
+        "description": "Server environment",
+        "enum": [
+          "dev",
+          "prod",
+          "qa"
+        ]
+      }
+    }
+  }],
+  "paths": {
+    "/category": {
+      "summary": "All about categories",
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Get categories success response",
+            "content": {
+              "application/json" : {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response" : {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "category": {
+                            "type": "string"
+                          },
+                          "imageUrl": {
+                            "type": "string"
+                          },
+                          "deleted": {
+                            "type": "boolean"
+                          }
+                        }
+                      }
+                    },
+                    "metaData": {
+                      "$ref": "#/components/schemas/metaData"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "store new category",
+        "responses": {
+          "200": {
+            "description": "category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "type": "string"
+                    },
+                    "metaData": {
+                      "$ref": "#/components/schemas/metaData"
+                    }
+                  }
+                },
+                "examples": {
+
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "metaData" : {
+        "type": "object",
+        "properties": {
+          "type": "object",
+          "properties": {
+            "code" : {
+              "type": "number"
+            },
+            "message": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
