@@ -1,0 +1,87 @@
+###
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{
+  "username" : "admins",
+  "password" : "password"
+}
+
+###
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "username" : "admins",
+  "password" : "password"
+}
+
+###
+GET http://localhost:8080/category
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoidXNlciJ9.bOrqGMj_T8_uiDSyMhRfl9WiXcAQfupT81J8sslC8gY
+
+
+<> 2022-03-10T173341.200.json
+<> 2022-03-09T163033.200.txt
+<> 2022-03-09T163001.200.txt
+<> 2022-03-09T162811.200.txt
+<> 2022-03-09T162751.200.txt
+
+###
+POST http://localhost:8080/category
+Content-Type: application/json
+
+{
+  "category": "",
+  "imageUrl": ""
+}
+
+<> 2022-03-10T183324.200.json
+<> 2022-03-10T182139.200.json
+<> 2022-03-10T181754.200.json
+<> 2022-03-10T181643.200.json
+<> 2022-03-10T181556.200.json
+<> 2022-03-10T181113.200.json
+<> 2022-03-10T181012.200.json
+<> 2022-03-10T180713.200.json
+<> 2022-03-10T175823.200.json
+<> 2022-03-10T174318.200.json
+<> 2022-03-10T174311.200.json
+<> 2022-03-10T173527.200.json
+<> 2022-03-10T002708.200.txt
+<> 2022-03-10T001719.200.txt
+<> 2022-03-09T175648.200.txt
+<> 2022-03-09T175516.200.txt
+<> 2022-03-09T175427.200.txt
+<> 2022-03-09T175337.200.txt
+<> 2022-03-09T173715.200.txt
+<> 2022-03-09T173630.200.txt
+<> 2022-03-09T173334.200.txt
+<> 2022-03-09T163808.200.txt
+<> 2022-03-09T163129.200.txt
+<> 2022-03-09T163038.200.txt
+<> 2022-03-09T162610.200.txt
+
+###
+PUT http://localhost:8080/category/c39f15c5-9fc5-11ec-afb5-9840bb0dae2f
+Content-Type: application/json
+
+{
+  "category": "Candy",
+  "imageUrl": "google.photos"
+}
+
+<> 2022-03-10T123412.200.json
+
+###
+DELETE http://localhost:8080/category/9f3f3d09-a058-11ec-933e-9840bb0dae2f
+Content-Type: application/json
+
+<> 2022-03-10T183502.200.json
+<> 2022-03-10T183441.200.json
+<> 2022-03-10T183425.200.json
+<> 2022-03-10T124217.200.json
+<> 2022-03-10T124125.200.json
+<> 2022-03-10T124054.405.txt
+

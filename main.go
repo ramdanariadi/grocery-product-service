@@ -2,36 +2,41 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
+	"github.com/julienschmidt/httprouter"
 	_ "github.com/lib/pq"
+	"go-tunas/ErrorHandlers"
 	"go-tunas/controllers/category"
+	"go-tunas/helpers"
+	"go-tunas/security"
 	"net/http"
 )
-
-func HF(writer http.ResponseWriter, request *http.Request) {
-	fmt.Fprintf(writer, "tes")
-}
 
 func main() {
 	connStr := "postgres://postgres:secret@localhost/DBTunasGrocery?sslmode=disable"
 	db, err := sql.Open("postgres", connStr)
-	if err != nil {
-		fmt.Println(err)
-	}
+	helpers.PanicIfError(err)
 
-	impl := category.NewCategoryController(db)
+	categoryHandler := category.NewCategoryController(db)
+	securityHandler := security.NewSecurityController(db)
 
-	mux := http.NewServeMux()
+	router := httprouter.New()
 
-	mux.HandleFunc("/category", impl.FindAll)
+	router.POST("/login", securityHandler.Login)
+	router.POST("/register", securityHandler.SignUp)
+
+	router.GET("/category", security.SecureHandler(categoryHandler.FindAll))
+	router.GET("/category/:id", security.SecureHandler(categoryHandler.FindById))
+	router.POST("/category", security.SecureHandler(categoryHandler.Save))
+	router.PUT("/category/:id", security.SecureHandler(categoryHandler.Update))
+	router.DELETE("/category/:id", security.SecureHandler(categoryHandler.Delete))
+
+	router.PanicHandler = ErrorHandlers.ErrorHandler
 
 	server := http.Server{
 		Addr:    "localhost:8080",
-		Handler: mux,
+		Handler: router,
 	}
 
 	errlisten := server.ListenAndServe()
-	if errlisten != nil {
-		panic("err listen")
-	}
+	helpers.PanicIfError(errlisten)
 }

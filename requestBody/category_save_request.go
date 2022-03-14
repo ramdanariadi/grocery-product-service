@@ -1,6 +1,6 @@
 package requestBody
 
 type CategorySaveRequest struct {
-	Category string
+	Category string `validate:"required"`
 	ImageUrl string
 }
