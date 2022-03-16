@@ -1,59 +1,189 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "tunas-spec",
-    "description": "Tunas REST api",
+    "title": "Tunas-spec",
+    "description": "Tunas REST API",
     "version": "v0.0.1"
   },
-  "servers": [{
-    "url": "{environment}.localhost:8080",
-    "description": "local dev",
-    "variables": {
-      "environment": {
-        "default": "dev",
-        "description": "Server environment",
-        "enum": [
-          "dev",
-          "prod",
-          "qa"
-        ]
+  "servers": [
+    {
+      "url": "{environment}.localhost:8080",
+      "description": "local dev",
+      "variables": {
+        "environment": {
+          "default": "dev",
+          "description": "Server environment",
+          "enum": [
+            "dev",
+            "prod",
+            "qa"
+          ]
+        }
       }
     }
-  }],
+  ],
+  "tags": [
+    {
+      "name": "User",
+      "description": "All about user and credential"
+    },
+    {
+      "name": "Category",
+      "description": "All about Category Product"
+    },
+    {
+      "name": "Product",
+      "description": "All about product"
+    },
+    {
+      "name": "Wishlist",
+      "description": "All about users wishlist"
+    },
+    {
+      "name": "Cart",
+      "description": "All about users cart"
+    },
+    {
+      "name": "Transaction",
+      "description": "All about users transaction"
+    }
+  ],
   "paths": {
+    "/user/register": {
+      "post" : {
+        "tags": ["User"],
+        "description": "register new user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/user"
+              },
+              "examples": {
+                "admin" : {
+                  "value": {
+                    "username" : "admin",
+                    "password" : "admin"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "new user registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/schema200"
+                },
+                "examples": {
+                  "created": {
+                    "value": {
+                      "response" : "",
+                      "metaData" : {
+                        "code" : 201,
+                        "message" : "Created"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": ["User"],
+        "description": "get token",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/user"
+              },
+              "examples": {
+                "admin" : {
+                  "value": {
+                    "username" : "admin",
+                    "password" : "admin"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "login successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "access_token" : {
+                      "type": "string"
+                    },
+                    "refresh_token": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "success" : {
+                    "value": {
+                      "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY0NjA0NzE0NX0.Md2wABaaM5cTW6NARULujXKQu9LW6ixUsaE36FRAIkE",
+                      "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODA4MC9hcGkvdjEvbG9naW4iLCJleHAiOjE2NDY1NjU1NDV9.WUqOJm7YFmvxuaxdTIqXTNPYIAiZJQdEa35tP2p6shE"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/category": {
       "summary": "All about categories",
       "get": {
+        "tags": ["Category"],
         "responses": {
           "200": {
             "description": "Get categories success response",
             "content": {
-              "application/json" : {
+              "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "response" : {
+                    "response": {
                       "type": "array",
                       "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "category": {
-                            "type": "string"
-                          },
-                          "imageUrl": {
-                            "type": "string"
-                          },
-                          "deleted": {
-                            "type": "boolean"
-                          }
-                        }
+                        "$ref": "#/components/schemas/categorySchema"
                       }
                     },
                     "metaData": {
                       "$ref": "#/components/schemas/metaData"
+                    }
+                  }
+                },
+                "examples": {
+                  "success": {
+                    "value": {
+                      "response": [
+                        {
+                          "id": "8c2c184e-11d2-11ec-82a8-0242ac130003",
+                          "category": "Seafood",
+                          "imageUrl": "",
+                          "deleted": false
+                        }
+                      ],
+                      "metaData": {
+                        "code": 200,
+                        "message": "OK"
+                      }
                     }
                   }
                 }
@@ -63,7 +193,33 @@
         }
       },
       "post": {
+        "tags": ["Category"],
         "description": "store new category",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "type": "string"
+                  },
+                  "imageUrl": {
+                    "type": "string"
+                  }
+                }
+              },
+              "examples": {
+                "Seafood": {
+                  "value": {
+                    "category": "Seafood",
+                    "imageUrl": ""
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "category",
@@ -81,7 +237,1471 @@
                   }
                 },
                 "examples": {
+                  "success": {
+                    "value": {
+                      "response": "",
+                      "metaData": {
+                        "message": "Created",
+                        "code": 200
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Category"],
+        "description": "update category",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "category": {
+                    "type": "string"
+                  },
+                  "imageUrl": {
+                    "type": "string"
+                  }
+                }
+              },
+              "examples": {
+                "fastfood": {
+                  "value": {
+                    "id": "1e0a0e91-95fe-11ec-9185-8deab4502942",
+                    "category": "Fast food",
+                    "imageUrl": null
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success update category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "type": "string"
+                    },
+                    "metaData": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string"
+                        },
+                        "code": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "category": {
+                    "value": {
+                      "response": "",
+                      "metaData": {
+                        "code": 200,
+                        "message": "OK"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/category/{categoryId}": {
+      "get": {
+        "tags": ["Category"],
+        "parameters": [
+          {
+            "required": true,
+            "in": "path",
+            "name": "categoryId",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success getting category by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response" : {
+                      "$ref": "#/components/schemas/categorySchema"
+                    },
+                    "metaData" : {
+                      "$ref": "#/components/schemas/metaData"
+                    }
+                  }
+                },
+                "examples": {
+                  "fastfood": {
+                    "value": {
+                      "response": {
+                        "id": "1e0a0e91-95fe-11ec-9185-8deab4502942",
+                        "category": "Fast food",
+                        "imageUrl": null,
+                        "deleted": false
+                      },
+                      "metaData": {
+                        "code": 200,
+                        "message": "OK"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Category"],
+        "description": "delete category",
+        "parameters": [
+          {
+            "in": "path",
+            "required": true,
+            "name": "categoryId",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "categoryId": {
+                "value": {
+                  "id": "1e0a0e91-95fe-11ec-9185-8deab4502942"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success destroying category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/schema200"
+                },
+                "examples": {
+                  "success": {
+                    "value": {
+                      "response" : "",
+                      "metaData" : {
+                        "code" : 200,
+                        "message": "OK"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product": {
+      "summary": "All about product",
+      "get": {
+        "security": [
+          {
+            "tunasAuth" : []
+          }
+        ],
+        "tags": ["Product"],
+        "description": "get all product",
+        "responses": {
+          "200": {
+            "description": "successfully getting product",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/schema200Products"
+                },
+                "examples": {
+                  "success" : {
+                    "value": {
+                      "response": [
+                        {
+                          "name": "Broccoli",
+                          "id": "a3c02e8c-11d2-11ec-82a8-0242ac130003",
+                          "category": "Vegetables",
+                          "imageUrl": null,
+                          "price": 1100,
+                          "weight": 1500,
+                          "categoryId": "8c2c184e-11d2-11ec-82a8-0242ac130003"
+                        },
+                        {
+                          "name": "Carrot",
+                          "id": "9313f2b4-962f-11ec-9185-bfd12b400332",
+                          "category": "Vegetables",
+                          "imageUrl": null,
+                          "price": 10,
+                          "weight": 1000,
+                          "categoryId": "87999023-962f-11ec-9185-7315e008192c"
+                        }
+                      ],
+                      "metaData": {
+                        "code": 200,
+                        "message": "OK"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "tunasAuth" : []
+          }
+        ],
+        "tags": ["Product"],
+        "description": "store product",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/productSchema"
+              },
+              "examples": {
+                "carrot": {
+                  "value": {
+                    "name": "Carrot",
+                    "price": 10,
+                    "weight": 1000,
+                    "perUnit": 100,
+                    "description": "Good for health",
+                    "imageUrl" : null,
+                    "category": "8c2c184e-11d2-11ec-82a8-0242ac130003"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successfully store product",
+            "content": {
+              "application/json" : {
+                "schema": {
+                  "$ref": "#/components/schemas/schema200"
+                },
+                "examples": {
+                  "created": {
+                    "value": {
+                      "response": "",
+                      "metaData": {
+                        "code": 201,
+                        "message": "Created"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "security": [
+          {
+            "tunasAuth" : []
+          }
+        ],
+        "tags": ["Product"],
+        "description": "store product",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/putProductSchema"
+              },
+              "examples": {
+                "carrot": {
+                  "value": {
+                    "name": "BLACK",
+                    "id": "a3c02e8c-11d2-11ec-82a8-0242ac130003",
+                    "imageUrl": null,
+                    "price": 18500,
+                    "categoryId": "8c2c184e-11d2-11ec-82a8-0242ac130003"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successfully update product",
+            "content": {
+              "application/json" : {
+                "schema": {
+                  "$ref": "#/components/schemas/schema200"
+                },
+                "examples": {
+                  "created": {
+                    "value": {
+                      "response": "",
+                      "metaData": {
+                        "code": 201,
+                        "message": "Created"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product/{productId}": {
+      "get": {
+        "security": [
+          {
+            "tunasAuth" : []
+          }
+        ],
+        "tags": ["Product"],
+        "description": "get product by id",
+        "parameters": [{
+          "in": "path",
+          "name": "productId",
+          "schema": {
+            "type": "string"
+          },
+          "required": true
+        }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json"  : {
+                "schema": {
+                  "$ref": "#/components/schemas/schema200"
+                },
+                "examples": {
+                  "success": {
+                    "value": {
+                      "response" : "",
+                      "metaData" : {
+                        "code" : 200,
+                        "message": "OK"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "tunasAuth" : []
+          }
+        ],
+        "tags": ["Product"],
+        "description": "delete product",
+        "parameters": [
+          {
+            "in": "path",
+            "required": true,
+            "name": "productId",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success destroying category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/schema200"
+                },
+                "examples": {
+                  "success": {
+                    "value": {
+                      "response" : "",
+                      "metaData" : {
+                        "code" : 200,
+                        "message": "OK"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product/{categoryId}": {
+      "get": {
+        "security": [
+          {
+            "tunasAuth" : []
+          }
+        ],
+        "tags": ["Product"],
+        "description": "getting product by category id",
+        "parameters": [{
+          "in": "path",
+          "name": "categoryId",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "success getting product by category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/schema200Products"
+                },
+                "examples": {
+                  "success" : {
+                    "value": {
+                      "response": [
+                        {
+                          "name": "Broccoli",
+                          "id": "a3c02e8c-11d2-11ec-82a8-0242ac130003",
+                          "category": "Vegetables",
+                          "imageUrl": null,
+                          "price": 1100,
+                          "weight": 1500,
+                          "categoryId": "8c2c184e-11d2-11ec-82a8-0242ac130003"
+                        }
+                      ],
+                      "metaData": {
+                        "code": 200,
+                        "message": "OK"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product/top": {
+      "get" : {
+        "tags": ["Product"],
+        "responses": {
+          "200": {
+            "description": "success getting top products",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/topProduct"
+                },
+                "examples": {
+                  "broccoli": {
+                    "value": {
+                      "response": [
+                        {
+                          "name": "Broccoli",
+                          "id": "a3c02e8c-11d2-11ec-82a8-0242ac130003",
+                          "category": "Vegetables",
+                          "imageUrl": null,
+                          "price": 1100,
+                          "weight": 1500,
+                          "perUnit": 100,
+                          "description": "Green vegetable, good for eyes"
+                        }
+                      ],
+                      "metaData": {
+                        "code": 200,
+                        "message": "OK"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product/top/{productId}": {
+      "post": {
+        "tags": ["Product"],
+        "description": "store top product",
+        "parameters": [{
+          "in": "path",
+          "name": "productId",
+          "required": true,
+          "description": "productId",
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "store new top product",
+            "content": {
+              "application/json" : {
+                "schema": {
+                  "$ref": "#/components/schemas/schema200"
+                },
+                "examples": {
+                  "success" : {
+                    "value": {
+                      "response": "",
+                      "metaData": {
+                        "code": 201,
+                        "message": "Created"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Product"],
+        "parameters": [{
+          "in": "path",
+          "name": "productId",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+        ],
+        "responses": {
+          "200": {
+            "description": "success get product by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/detailTopProduct"
+                },
+                "examples": {
+                  "broccoli" : {
+                    "value": {
+                      "response": {
+                        "id": "a3c02e8c-11d2-11ec-82a8-0242ac130003",
+                        "price": 1100,
+                        "name": "Broccoli",
+                        "category": "Vegetables",
+                        "perUnit": 100,
+                        "description": "Green vegetable, good for eyes",
+                        "weight": 1500,
+                        "imageUrl": null,
+                        "deleted": false,
+                        "product": {
+                          "id": "a3c02e8c-11d2-11ec-82a8-0242ac130003",
+                          "name": "Broccoli",
+                          "price": 1100,
+                          "perUnit": 100,
+                          "description": "Green vegetable, good for eyes",
+                          "weight": 1500,
+                          "imageUrl": null,
+                          "deleted": false,
+                          "photos": [],
+                          "category": {
+                            "id": "8c2c184e-11d2-11ec-82a8-0242ac130003",
+                            "category": "Vegetables",
+                            "imageUrl": null,
+                            "deleted": false
+                          }
+                        }
+                      },
+                      "metaData": {
+                        "code": 200,
+                        "message": "OK"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Product"],
+        "parameters": [{
+          "in": "path",
+          "name": "productId",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+        ],
+        "responses": {
+          "200": {
+            "description": "successfully deleting top product",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/schema200"
+                },
+                "examples": {
+                  "success" : {
+                    "value": {
+                      "response" : "",
+                      "metaData" : {
+                        "code" : 200,
+                        "message" : "OK"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product/recommendation": {
+      "get" : {
+        "tags": ["Product"],
+        "responses": {
+          "200": {
+            "description": "success getting top products",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/topProduct"
+                },
+                "examples": {
+                  "broccoli": {
+                    "value": {
+                      "response": [
+                        {
+                          "name": "Broccoli",
+                          "id": "a3c02e8c-11d2-11ec-82a8-0242ac130003",
+                          "category": "Vegetables",
+                          "imageUrl": null,
+                          "price": 1100,
+                          "weight": 1500,
+                          "perUnit": 100,
+                          "description": "Green vegetable, good for eyes"
+                        }
+                      ],
+                      "metaData": {
+                        "code": 200,
+                        "message": "OK"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product/recommendation/{productId}": {
+      "post": {
+        "tags": ["Product"],
+        "description": "store top product",
+        "parameters": [{
+          "in": "path",
+          "name": "productId",
+          "description": "productId",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "store new top product",
+            "content": {
+              "application/json" : {
+                "schema": {
+                  "$ref": "#/components/schemas/schema200"
+                },
+                "examples": {
+                  "success" : {
+                    "value": {
+                      "response": "",
+                      "metaData": {
+                        "code": 201,
+                        "message": "Created"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Product"],
+        "parameters": [{
+          "in": "path",
+          "name": "productId",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+        ],
+        "responses": {
+          "200": {
+            "description": "success get product by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/detailTopProduct"
+                },
+                "examples": {
+                  "broccoli" : {
+                    "value": {
+                      "response": {
+                        "id": "a3c02e8c-11d2-11ec-82a8-0242ac130003",
+                        "price": 1100,
+                        "name": "Broccoli",
+                        "category": "Vegetables",
+                        "perUnit": 100,
+                        "description": "Green vegetable, good for eyes",
+                        "weight": 1500,
+                        "imageUrl": null,
+                        "deleted": false,
+                        "product": {
+                          "id": "a3c02e8c-11d2-11ec-82a8-0242ac130003",
+                          "name": "Broccoli",
+                          "price": 1100,
+                          "perUnit": 100,
+                          "description": "Green vegetable, good for eyes",
+                          "weight": 1500,
+                          "imageUrl": null,
+                          "deleted": false,
+                          "photos": [],
+                          "category": {
+                            "id": "8c2c184e-11d2-11ec-82a8-0242ac130003",
+                            "category": "Vegetables",
+                            "imageUrl": null,
+                            "deleted": false
+                          }
+                        }
+                      },
+                      "metaData": {
+                        "code": 200,
+                        "message": "OK"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Product"],
+        "parameters": [{
+          "in": "path",
+          "name": "productId",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+        ],
+        "responses": {
+          "200": {
+            "description": "successfully deleting top product",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/schema200"
+                },
+                "examples": {
+                  "success" : {
+                    "value": {
+                      "response" : "",
+                      "metaData" : {
+                        "code" : 200,
+                        "message" : "OK"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/wishlist/{userId}/": {
+      "get" : {
+        "security": [
+          {
+            "tunasAuth" : []
+          }
+        ],
+        "tags": ["Wishlist"],
+        "parameters": [{
+          "in": "path",
+          "name": "userId",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+        ],
+        "responses": {
+          "200": {
+            "description": "successfully get user wishlists",
+            "content": {
+              "application/json" : {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id" : {
+                        "type": "string"
+                      },
+                      "name" : {
+                        "type": "string"
+                      },
+                      "price" : {
+                        "type": "number"
+                      },
+                      "weight" : {
+                        "type": "number"
+                      },
+                      "category" : {
+                        "type": "string"
+                      },
+                      "perUnit" : {
+                        "type": "number"
+                      },
+                      "imageUrl" : {
+                        "type": "string"
+                      },
+                      "product" : {
+                        "type": "object",
+                        "properties": {
 
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/wishlist/{userId}/{productId}": {
+      "post" : {
+        "security": [
+          {
+            "tunasAuth" : []
+          }
+        ],
+        "tags": ["Wishlist"],
+        "parameters": [{
+          "in": "path",
+          "name": "userId",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+          {
+            "in": "path",
+            "name": "productId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success move to wishlist",
+            "content": {
+              "application/json" : {
+                "schema": {
+                  "$ref": "#/components/schemas/schema200"
+                },
+                "examples": {
+                  "success" : {
+                    "value": {
+                      "response" : "",
+                      "metaData" : {
+                        "code" : 201,
+                        "message" : "Created"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get" : {
+        "security": [
+          {
+            "tunasAuth" : []
+          }
+        ],
+        "tags": ["Wishlist"],
+        "parameters": [{
+          "in": "path",
+          "name": "userId",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+          {
+            "in": "path",
+            "name": "productId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successfully get liked product",
+            "content": {
+              "application/json" : {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id" : {
+                      "type": "string"
+                    },
+                    "name" : {
+                      "type": "string"
+                    },
+                    "price" : {
+                      "type": "number"
+                    },
+                    "weight" : {
+                      "type": "number"
+                    },
+                    "category" : {
+                      "type": "string"
+                    },
+                    "perUnit" : {
+                      "type": "number"
+                    },
+                    "imageUrl" : {
+                      "type": "string"
+                    },
+                    "productId" : {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "tunasAuth" : []
+          }
+        ],
+        "tags": ["Wishlist"],
+        "parameters": [{
+          "in": "path",
+          "name": "userId",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+          {
+            "in": "path",
+            "name": "productId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successfully remove wishlist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/schema200"
+                },
+                "examples": {
+                  "success" : {
+                    "value": {
+                      "response" : "",
+                      "metaData" : {
+                        "code" : 200,
+                        "message" : "OK"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cart/{userId}/": {
+      "get" : {
+        "security": [
+          {
+            "tunasAuth" : []
+          }
+        ],
+        "tags": ["Cart"],
+        "parameters": [{
+          "in": "path",
+          "name": "userId",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+        ],
+        "responses": {
+          "200": {
+            "description": "successfully get user wishlists",
+            "content": {
+              "application/json" : {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id" : {
+                        "type": "string"
+                      },
+                      "name" : {
+                        "type": "string"
+                      },
+                      "price" : {
+                        "type": "number"
+                      },
+                      "weight" : {
+                        "type": "number"
+                      },
+                      "category" : {
+                        "type": "string"
+                      },
+                      "perUnit" : {
+                        "type": "number"
+                      },
+                      "imageUrl" : {
+                        "type": "string"
+                      },
+                      "total" : {
+                        "type": "number"
+                      },
+                      "product" : {
+                        "type": "object",
+                        "properties": {
+
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cart/{userId}/{productId}": {
+      "post" : {
+        "security": [
+          {
+            "tunasAuth" : []
+          }
+        ],
+        "tags": ["Cart"],
+        "parameters": [{
+          "in": "path",
+          "name": "userId",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+          {
+            "in": "path",
+            "name": "productId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success move to wishlist",
+            "content": {
+              "application/json" : {
+                "schema": {
+                  "$ref": "#/components/schemas/schema200"
+                },
+                "examples": {
+                  "success" : {
+                    "value": {
+                      "response" : "",
+                      "metaData" : {
+                        "code" : 201,
+                        "message" : "Created"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "tunasAuth" : []
+          }
+        ],
+        "tags": ["Cart"],
+        "parameters": [{
+          "in": "path",
+          "name": "userId",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+          {
+            "in": "path",
+            "name": "productId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successfully remove wishlist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/schema200"
+                },
+                "examples": {
+                  "success" : {
+                    "value": {
+                      "response" : "",
+                      "metaData" : {
+                        "code" : 200,
+                        "message" : "OK"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transaction": {
+      "post" : {
+        "security": [
+          {
+            "tunasAuth" : []
+          }
+        ],
+        "tags": ["Transaction"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId" : {
+                    "type": "string"
+                  },
+                  "products": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id" : {
+                          "type": "string"
+                        },
+                        "weight" : {
+                          "type": "number"
+                        },
+                        "total" : {
+                          "type": "number"
+                        },
+                        "perUnit" : {
+                          "type": "number"
+                        },
+                        "price" : {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "examples": {
+                "transaction" : {
+                  "value": {
+                    "userId": "ac723ce6-11d2-11ec-82a8-0242ac130003",
+                    "products": [
+                      {
+                        "id": "a3c02e8c-11d2-11ec-82a8-0242ac130003",
+                        "wight": "10",
+                        "price": 18500,
+                        "perUnit" : 1200,
+                        "total": 1
+                      }
+                    ]
+                  }
+
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "order product success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/schema200"
+                },
+                "examples": {
+                  "success" : {
+                    "value": {
+                      "response": "",
+                      "metaData": {
+                        "code": 200,
+                        "message": "OK"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transaction/{transactionId}": {
+      "get" : {
+        "security": [
+          {
+            "tunasAuth" : []
+          }
+        ],
+        "tags": ["Transaction"],
+        "parameters": [{
+          "in": "path",
+          "name": "transactionId",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+        ],
+        "responses": {
+          "200": {
+            "description": "successfully make get transaction by id",
+            "content": {
+              "application/json" : {
+                "schema": {
+                  "$ref": "#/components/schemas/transaction"
+                },
+                "examples": {
+                  "success" : {
+                    "value": {
+                      "response": {
+                        "transaction": {
+                          "id": "f438b52e-996b-11ec-a3ab-173cd0023be6",
+                          "totalPrice": 3300,
+                          "transactionDate": "2022-03-01T14:29:07.956+00:00",
+                          "userName": "admin",
+                          "userMobile": null,
+                          "userEmail": null
+                        },
+                        "detailTransaction": [
+                          {
+                            "name": "Broccoli",
+                            "id": "f442c74f-996b-11ec-a3ab-97dafbd1b08d",
+                            "imageUrl": null,
+                            "product": "a3c02e8c-11d2-11ec-82a8-0242ac130003",
+                            "price": 1100,
+                            "weight": 1500,
+                            "perUnit": 100,
+                            "total": 2,
+                            "transactionId": "f438b52e-996b-11ec-a3ab-173cd0023be6"
+                          }
+                        ]
+                      },
+                      "metaData": {
+                        "code": 200,
+                        "message": "OK"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "tunasAuth" : []
+          }
+        ],
+        "tags": ["Transaction"],
+        "parameters": [{
+          "in": "path",
+          "name": "transactionId",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+        ],
+        "responses": {
+          "200": {
+            "description": "successfully deleting transaction",
+            "content": {
+              "application/json" : {
+                "schema": {
+                  "$ref": "#/components/schemas/schema200"
+                },
+                "examples": {
+                  "success" : {
+                    "value": {
+                      "response": "",
+                      "metaData": {
+                        "code": 200,
+                        "message": "OK"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transaction/user/{userId}" : {
+      "get" : {
+        "security": [
+          {
+            "tunasAuth" : []
+          }
+        ],
+        "tags": ["Transaction"],
+        "parameters": [{
+          "in": "path",
+          "name": "userId",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+        ],
+        "responses": {
+          "200": {
+            "description": "admin transaction",
+            "content": {
+              "application/json" : {
+                "schema": {
+                  "$ref": "#/components/schemas/transaction"
+                },
+                "examples": {
+                  "admin" : {
+                    "value": {
+                      "response": [
+                        {
+                          "transaction": {
+                            "id": "f438b52e-996b-11ec-a3ab-173cd0023be6",
+                            "totalPrice": 3300,
+                            "transactionDate": "2022-03-01T14:29:07.956+00:00",
+                            "userName": "admin",
+                            "userMobile": null,
+                            "userEmail": null
+                          },
+                          "detailTransaction": [
+                            {
+                              "name": "Broccoli",
+                              "id": "f442c74f-996b-11ec-a3ab-97dafbd1b08d",
+                              "imageUrl": null,
+                              "product": "a3c02e8c-11d2-11ec-82a8-0242ac130003",
+                              "price": 1100,
+                              "weight": 1500,
+                              "perUnit": 100,
+                              "total": 2,
+                              "transactionId": "f438b52e-996b-11ec-a3ab-173cd0023be6"
+                            }
+                          ]
+                        }
+                      ],
+                      "metaData": {
+                        "code": 200,
+                        "message": "OK"
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -92,19 +1712,335 @@
   },
   "components": {
     "schemas": {
-      "metaData" : {
+      "transaction": {
         "type": "object",
         "properties": {
-          "type": "object",
-          "properties": {
-            "code" : {
-              "type": "number"
-            },
-            "message": {
-              "type": "string"
+          "transaction" : {
+            "type": "object",
+            "properties": {
+              "id" : {
+                "type": "string"
+              },
+              "totalPrice" : {
+                "type": "number"
+              },
+              "transactionDate" : {
+                "type": "string"
+              },
+              "userName" : {
+                "type": "string"
+              },
+              "userMobile" : {
+                "type": "string"
+              },
+              "userEmail" : {
+                "type": "string"
+              }
+            }
+          },
+          "detailTransaction" : {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name" : {
+                  "type": "string"
+                },
+                "id" : {
+                  "type": "string"
+                },
+                "imageUrl" : {
+                  "type": "string"
+                },
+                "product" : {
+                  "type": "string"
+                },
+                "price" : {
+                  "type": "number"
+                },
+                "weight" : {
+                  "type": "number"
+                },
+                "perUnit" : {
+                  "type": "number"
+                },
+                "total" : {
+                  "type": "number"
+                },
+                "transactionId" : {
+                  "type": "string"
+                }
+              }
             }
           }
         }
+      },
+      "user": {
+        "type": "object",
+        "properties": {
+          "username" : {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "categorySchema": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": "string"
+          },
+          "deleted": {
+            "type": "boolean"
+          }
+        }
+      },
+      "productSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "weight": {
+            "type": "number"
+          },
+          "perUnit": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "imageUrl" : {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          }
+        }
+      },
+      "putProductSchema" : {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "categoryId": {
+            "type": "string"
+          }
+        }
+      },
+      "topProduct": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name" : {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "category" : {
+                  "type": "string"
+                },
+                "imageUrl" : {
+                  "type": "string"
+                },
+                "price": {
+                  "type": "number"
+                },
+                "weight": {
+                  "type": "number"
+                },
+                "perUnit": {
+                  "type": "number"
+                },
+                "description": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "metaData": {
+            "$ref": "#/components/schemas/metaData"
+          }
+        }},
+      "detailTopProduct": {
+        "type": "object",
+        "properties": {
+          "response" : {
+            "type": "object",
+            "properties": {
+              "id" : {
+                "type": "string"
+              },
+              "price" : {
+                "type": "number"
+              },
+              "name" : {
+                "type": "string"
+              },
+              "category" : {
+                "type": "string"
+              },
+              "perUnit" : {
+                "type": "number"
+              },
+              "description" : {
+                "type": "string"
+              },
+              "weight" : {
+                "type": "number"
+              },
+              "imageUrl": {
+                "type": "string"
+              },
+              "deleted" : {
+                "type": "boolean"
+              },
+              "product" : {
+                "type": "object",
+                "properties": {
+                  "id" : {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "price" : {
+                    "type": "number"
+                  },
+                  "perUnit" : {
+                    "type": "number"
+                  },
+                  "description" : {
+                    "type": "string"
+                  },
+                  "weight" : {
+                    "type": "number"
+                  },
+                  "imageUrl" : {
+                    "type": "string"
+                  },
+                  "deleted" : {
+                    "type": "boolean"
+                  },
+                  "photos" : {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id" : {
+                          "type": "string"
+                        },
+                        "url" : {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "category" : {
+                    "type": "object",
+                    "properties": {
+                      "id" : {
+                        "type": "string"
+                      },
+                      "category" : {
+                        "type": "string"
+                      },
+                      "imageUrl" : {
+                        "type": "string"
+                      },
+                      "deleted" : {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "metaData": {
+            "$ref": "#/components/schemas/metaData"
+          }
+        }},
+      "metaData": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "code": {
+            "type": "number"
+          }
+        }
+      },
+      "schema200": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "metaData": {
+            "$ref": "#/components/schemas/metaData"
+          }
+        }
+      },
+      "schema200Product": {
+        "type": "object",
+        "properties": {
+          "response" : {
+            "$ref": "#/components/schemas/productSchema"
+          },
+          "metaData": {
+            "$ref": "#/components/schemas/metaData"
+          }
+        }
+      },
+      "schema200Products": {
+        "type": "object",
+        "properties": {
+          "response" : {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/productSchema"
+            }
+          },
+          "metaData": {
+            "$ref": "#/components/schemas/metaData"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "tunasAuth" : {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "scheme": "http",
+        "bearerFormat": "Bearer"
       }
     }
   }
