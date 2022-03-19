@@ -609,15 +609,15 @@
                   "success" : {
                     "value": {
                       "response":
-                        {
-                          "name": "Broccoli",
-                          "id": "a3c02e8c-11d2-11ec-82a8-0242ac130003",
-                          "category": "Vegetables",
-                          "imageUrl": null,
-                          "price": 1100,
-                          "weight": 1500,
-                          "categoryId": "8c2c184e-11d2-11ec-82a8-0242ac130003"
-                        },
+                      {
+                        "name": "Broccoli",
+                        "id": "a3c02e8c-11d2-11ec-82a8-0242ac130003",
+                        "category": "Vegetables",
+                        "imageUrl": null,
+                        "price": 1100,
+                        "weight": 1500,
+                        "categoryId": "8c2c184e-11d2-11ec-82a8-0242ac130003"
+                      },
                       "metaData": {
                         "code": 200,
                         "message": "OK"
