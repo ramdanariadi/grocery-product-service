@@ -7,7 +7,6 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"go-tunas/customresponses"
 	categoryCustomResponse "go-tunas/customresponses/category"
-	"go-tunas/exception"
 	"go-tunas/helpers"
 	categoryRepository "go-tunas/repositories/category"
 	"go-tunas/requestBody"
@@ -62,7 +61,6 @@ func (controller CategoryControllerImpl) FindAll(w http.ResponseWriter, r *http.
 }
 
 func (controller CategoryControllerImpl) Save(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
-	panic(exception.NewNotFoundError("tes"))
 	body := r.Body
 	byte, err := io.ReadAll(body)
 	helpers.PanicIfError(err)

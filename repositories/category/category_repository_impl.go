@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"go-tunas/helpers"
-	"go-tunas/models/category"
+	"go-tunas/models"
 	"go-tunas/requestBody"
 )
 
@@ -14,11 +14,11 @@ type CategoryRepositoryImpl struct {
 	DB *sql.DB
 }
 
-func (repository CategoryRepositoryImpl) FindById(context context.Context, tx *sql.Tx, id string) category.CategoryModel {
+func (repository CategoryRepositoryImpl) FindById(context context.Context, tx *sql.Tx, id string) models.CategoryModel {
 	query := "select id, category, image_url " +
 		"from category where deleted is false and id = $1"
 	row := tx.QueryRowContext(context, query, id)
-	cm := category.CategoryModel{}
+	cm := models.CategoryModel{}
 
 	err := row.Scan(&cm.Id, &cm.Category, &cm.ImageUrl)
 	if err != nil {
@@ -29,15 +29,15 @@ func (repository CategoryRepositoryImpl) FindById(context context.Context, tx *s
 	return cm
 }
 
-func (repository CategoryRepositoryImpl) FindAll(context context.Context, tx *sql.Tx) []category.CategoryModel {
+func (repository CategoryRepositoryImpl) FindAll(context context.Context, tx *sql.Tx) []models.CategoryModel {
 	query := "select id, category, image_url from category where deleted is false"
 	result, err := tx.QueryContext(context, query)
 	if err != nil {
 		panic("query error")
 	}
-	var categoriesModel []category.CategoryModel
+	var categoriesModel []models.CategoryModel
 	for result.Next() {
-		cm := category.CategoryModel{}
+		cm := models.CategoryModel{}
 
 		err := result.Scan(&cm.Id, &cm.Category, &cm.ImageUrl)
 		if err != nil {

@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"database/sql"
+	"reflect"
 )
 
 func CommitOrRollback(tx *sql.Tx) {
@@ -14,7 +15,7 @@ func CommitOrRollback(tx *sql.Tx) {
 	}
 
 	if err, ok := err.(error); ok {
-		panic(err)
+		panic(reflect.TypeOf(err))
 	}
 
 }

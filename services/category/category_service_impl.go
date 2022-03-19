@@ -3,7 +3,7 @@ package category
 import (
 	"context"
 	"go-tunas/helpers"
-	categoryModel "go-tunas/models/category"
+	categoryModel "go-tunas/models"
 	"go-tunas/repositories/category"
 	"go-tunas/requestBody"
 )

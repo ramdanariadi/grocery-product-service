@@ -1,4 +1,4 @@
-package main
+package tests
 
 import (
 	"database/sql"
@@ -102,11 +102,4 @@ func Test_db(t *testing.T) {
 
 		fmt.Println(image_url)
 	}
-}
-
-//go:embed security/JWTSECRET
-var jwtSecret []byte
-
-func Test_remember_jwt(t *testing.T) {
-	fmt.Println(string(jwtSecret))
 }

@@ -1,4 +1,4 @@
-package category
+package models
 
 type CategoryModel struct {
 	Id       string

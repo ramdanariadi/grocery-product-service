@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<button id="send-message">Send</button>
+</body>
+<script>
+
+    window.onload = function (){
+        let socket = new WebSocket("ws://localhost:8080/ws");
+        console.log("Attempting Connection...");
+
+        socket.onopen = () => {
+            console.log("Successfully Connected");
+            socket.send("Hi From the Client!")
+        };
+
+        const sendButton = document.querySelector("#send-message")
+        sendButton.addEventListener("click", function (){
+            socket.send("Broadcast to all")
+        })
+
+        socket.onmessage = event => {
+            console.log(event.data)
+        }
+
+        socket.onclose = event => {
+            console.log("Socket Closed Connection: ", event);
+            socket.send("Client Closed!")
+        };
+
+        socket.onerror = error => {
+            console.log("Socket Error: ", error);
+        };
+    }
+</script>
+</html>
