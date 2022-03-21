@@ -673,7 +673,7 @@
         }
       }
     },
-    "/product/{categoryId}": {
+    "/product/category/{categoryId}": {
       "get": {
         "security": [
           {
@@ -1096,37 +1096,39 @@
             "content": {
               "application/json" : {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id" : {
-                        "type": "string"
-                      },
-                      "name" : {
-                        "type": "string"
-                      },
-                      "price" : {
-                        "type": "number"
-                      },
-                      "weight" : {
-                        "type": "number"
-                      },
-                      "category" : {
-                        "type": "string"
-                      },
-                      "perUnit" : {
-                        "type": "number"
-                      },
-                      "imageUrl" : {
-                        "type": "string"
-                      },
-                      "product" : {
+                  "type": "object",
+                  "properties": {
+                    "response" : {
+                      "type": "array",
+                      "items": {
                         "type": "object",
                         "properties": {
-
+                          "id" : {
+                            "type": "string"
+                          },
+                          "name" : {
+                            "type": "string"
+                          },
+                          "price" : {
+                            "type": "number"
+                          },
+                          "weight" : {
+                            "type": "number"
+                          },
+                          "category" : {
+                            "type": "string"
+                          },
+                          "perUnit" : {
+                            "type": "number"
+                          },
+                          "imageUrl" : {
+                            "type": "string"
+                          }
                         }
                       }
+                    },
+                    "metaData" : {
+                      "$ref": "#/components/schemas/metaData"
                     }
                   }
                 }
@@ -1217,29 +1219,37 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id" : {
-                      "type": "string"
+                    "response" : {
+                      "type": "object",
+                      "properties": {
+                        "id" : {
+                          "type": "string"
+                        },
+                        "name" : {
+                          "type": "string"
+                        },
+                        "price" : {
+                          "type": "number"
+                        },
+                        "weight" : {
+                          "type": "number"
+                        },
+                        "category" : {
+                          "type": "string"
+                        },
+                        "perUnit" : {
+                          "type": "number"
+                        },
+                        "imageUrl" : {
+                          "type": "string"
+                        },
+                        "productId" : {
+                          "type": "string"
+                        }
+                      }
                     },
-                    "name" : {
-                      "type": "string"
-                    },
-                    "price" : {
-                      "type": "number"
-                    },
-                    "weight" : {
-                      "type": "number"
-                    },
-                    "category" : {
-                      "type": "string"
-                    },
-                    "perUnit" : {
-                      "type": "number"
-                    },
-                    "imageUrl" : {
-                      "type": "string"
-                    },
-                    "productId" : {
-                      "type": "string"
+                    "metaData" : {
+                      "$ref": "#/components/schemas/metaData"
                     }
                   }
                 }
@@ -1320,40 +1330,42 @@
             "content": {
               "application/json" : {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id" : {
-                        "type": "string"
-                      },
-                      "name" : {
-                        "type": "string"
-                      },
-                      "price" : {
-                        "type": "number"
-                      },
-                      "weight" : {
-                        "type": "number"
-                      },
-                      "category" : {
-                        "type": "string"
-                      },
-                      "perUnit" : {
-                        "type": "number"
-                      },
-                      "imageUrl" : {
-                        "type": "string"
-                      },
-                      "total" : {
-                        "type": "number"
-                      },
-                      "product" : {
+                  "type": "object",
+                  "properties": {
+                    "response" : {
+                      "type": "array",
+                      "items": {
                         "type": "object",
                         "properties": {
-
+                          "id" : {
+                            "type": "string"
+                          },
+                          "name" : {
+                            "type": "string"
+                          },
+                          "price" : {
+                            "type": "number"
+                          },
+                          "weight" : {
+                            "type": "number"
+                          },
+                          "category" : {
+                            "type": "string"
+                          },
+                          "perUnit" : {
+                            "type": "number"
+                          },
+                          "imageUrl" : {
+                            "type": "string"
+                          },
+                          "total" : {
+                            "type": "number"
+                          }
                         }
                       }
+                    },
+                    "metaData" : {
+                      "$ref": "#/components/schemas/metaData"
                     }
                   }
                 }
@@ -1363,7 +1375,7 @@
         }
       }
     },
-    "/cart/{userId}/{productId}": {
+    "/cart/{userId}/{productId}/{total}": {
       "post" : {
         "security": [
           {
@@ -1382,6 +1394,14 @@
           {
             "in": "path",
             "name": "productId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "total",
             "required": true,
             "schema": {
               "type": "string"
@@ -1411,7 +1431,9 @@
             }
           }
         }
-      },
+      }
+    },
+    "/cart/{userId}/{productId}": {
       "delete": {
         "security": [
           {
@@ -1486,6 +1508,9 @@
                         "id" : {
                           "type": "string"
                         },
+                        "name" : {
+                          "type": "string"
+                        },
                         "weight" : {
                           "type": "number"
                         },
@@ -1510,6 +1535,7 @@
                     "products": [
                       {
                         "id": "a3c02e8c-11d2-11ec-82a8-0242ac130003",
+                        "name": "Broccoli",
                         "wight": "10",
                         "price": 18500,
                         "perUnit" : 1200,

@@ -13,36 +13,36 @@ import (
 	"net/http"
 )
 
-type ProductControllerImpl struct {
-	Service product.ProductService
+type TopProductControllerImpl struct {
+	Service product.TopProductService
 }
 
-func NewProductControllerImpl(db *sql.DB) *ProductControllerImpl {
-	return &ProductControllerImpl{
-		Service: product.ProductServiceImpl{
-			Repository: productrepositories.ProductRepositoryImpl{
+func NewTopProductControllerImpl(db *sql.DB) *TopProductControllerImpl {
+	return &TopProductControllerImpl{
+		Service: product.TopProductServiceImpl{
+			Repository: productrepositories.TopProductRepositoryImpl{
 				DB: db},
 		},
 	}
 }
 
-func (controller ProductControllerImpl) FindById(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+func (controller TopProductControllerImpl) FindById(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	id := param.ByName("id")
 	productModel := controller.Service.FindById(id)
 	customresponses.SendResponse(w, productModel, http.StatusOK)
 }
 
-func (controller ProductControllerImpl) FindAll(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+func (controller TopProductControllerImpl) FindAll(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	productModels := controller.Service.FindAll()
 	customresponses.SendResponse(w, productModels, http.StatusOK)
 }
 
-func (controller ProductControllerImpl) Save(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+func (controller TopProductControllerImpl) Save(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	body := r.Body
 	bytes, err := io.ReadAll(body)
 	helpers.PanicIfError(err)
 
-	productSaveRequest := requestBody.ProductSaveRequest{}
+	productSaveRequest := requestBody.TopProductSaveRequest{}
 	err = json.Unmarshal(bytes, &productSaveRequest)
 	helpers.PanicIfError(err)
 
@@ -53,12 +53,12 @@ func (controller ProductControllerImpl) Save(w http.ResponseWriter, r *http.Requ
 	customresponses.SendResponse(w, "", code)
 }
 
-func (controller ProductControllerImpl) Update(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+func (controller TopProductControllerImpl) Update(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	body := r.Body
 	bytes, err := io.ReadAll(body)
 	helpers.PanicIfError(err)
 
-	productSaveRequest := requestBody.ProductSaveRequest{}
+	productSaveRequest := requestBody.TopProductSaveRequest{}
 	err = json.Unmarshal(bytes, &productSaveRequest)
 	helpers.PanicIfError(err)
 
@@ -71,7 +71,7 @@ func (controller ProductControllerImpl) Update(w http.ResponseWriter, r *http.Re
 	customresponses.SendResponse(w, "", code)
 }
 
-func (controller ProductControllerImpl) Delete(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+func (controller TopProductControllerImpl) Delete(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	id := param.ByName("id")
 
 	code := http.StatusInternalServerError

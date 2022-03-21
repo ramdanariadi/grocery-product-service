@@ -6,6 +6,7 @@ import (
 	_ "github.com/lib/pq"
 	"go-tunas/ErrorHandlers"
 	"go-tunas/controllers/category"
+	"go-tunas/controllers/product"
 	"go-tunas/customresponses"
 	"go-tunas/helpers"
 	"go-tunas/security"
@@ -19,6 +20,9 @@ func main() {
 	helpers.PanicIfError(err)
 
 	categoryHandler := category.NewCategoryController(db)
+	productHandler := product.NewProductControllerImpl(db)
+	topProductHandler := product.NewTopProductControllerImpl(db)
+	recommendationProductHandler := product.NewRcmdProductControllerImpl(db)
 	securityHandler := security.NewSecurityController(db)
 
 	router := httprouter.New()
@@ -40,6 +44,25 @@ func main() {
 	router.POST("/category", security.SecureHandler(categoryHandler.Save))
 	router.PUT("/category/:id", security.SecureHandler(categoryHandler.Update))
 	router.DELETE("/category/:id", security.SecureHandler(categoryHandler.Delete))
+
+	router.GET("/product", security.SecureHandler(productHandler.FindAll))
+	router.GET("/product/:id", security.SecureHandler(productHandler.FindById))
+	router.GET("/product/category/:id", security.SecureHandler(productHandler.FindById))
+	router.POST("/product", security.SecureHandler(productHandler.Save))
+	router.PUT("/product/:id", security.SecureHandler(productHandler.Update))
+	router.DELETE("/product/:id", security.SecureHandler(productHandler.Delete))
+
+	router.GET("/product/top", topProductHandler.FindAll)
+	router.GET("/product/top/:id", topProductHandler.FindById)
+	router.POST("/product/top", topProductHandler.Save)
+	router.PUT("/product/top/:id", topProductHandler.Update)
+	router.DELETE("/product/top/:id", topProductHandler.Delete)
+
+	router.GET("/product/recommendation", recommendationProductHandler.FindAll)
+	router.GET("/product/recommendation/:id", recommendationProductHandler.FindById)
+	router.POST("/product/recommendation", recommendationProductHandler.Save)
+	router.PUT("/product/recommendation/:id", recommendationProductHandler.Update)
+	router.DELETE("/product/recommendation/:id", recommendationProductHandler.Delete)
 
 	router.PanicHandler = ErrorHandlers.ErrorHandler
 

@@ -19,11 +19,11 @@ func ReadCsv(filePath string) [][]string {
 	return allcsv
 }
 
-func ProductsFromCSV(filePath string) []models.ProductModel {
+func ProductsFromCSV(filePath string) []models.ProductModelCSV {
 	csvString := ReadCsv(filePath)
-	var products []models.ProductModel
+	var products []models.ProductModelCSV
 	for _, line := range csvString {
-		productTmp := models.ProductModel{}
+		productTmp := models.ProductModelCSV{}
 		for index, field := range line {
 			switch index {
 			case 0:
@@ -53,10 +53,10 @@ func ProductsFromCSV(filePath string) []models.ProductModel {
 	return products
 }
 
-func ProductsFromCSVWithChannel(filePath string, channel chan models.ProductModel) {
+func ProductsFromCSVWithChannel(filePath string, channel chan models.ProductModelCSV) {
 	csvString := ReadCsv(filePath)
 	for _, line := range csvString {
-		productTmp := models.ProductModel{}
+		productTmp := models.ProductModelCSV{}
 		for index, field := range line {
 			switch index {
 			case 0:
