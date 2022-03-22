@@ -1616,7 +1616,7 @@
                             "name": "Broccoli",
                             "id": "f442c74f-996b-11ec-a3ab-97dafbd1b08d",
                             "imageUrl": null,
-                            "product": "a3c02e8c-11d2-11ec-82a8-0242ac130003",
+                            "productId": "a3c02e8c-11d2-11ec-82a8-0242ac130003",
                             "price": 1100,
                             "weight": 1500,
                             "perUnit": 100,
