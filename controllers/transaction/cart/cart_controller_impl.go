@@ -2,7 +2,7 @@ package cart
 
 import (
 	"database/sql"
-	"github.com/julienschmidt/httprouter"
+	"github.com/gorilla/mux"
 	"go-tunas/customresponses"
 	"go-tunas/repositories/product"
 	"go-tunas/repositories/transactions"
@@ -27,15 +27,17 @@ func NewCartController(db *sql.DB) *CartControllerImpl {
 	}
 }
 
-func (controller CartControllerImpl) FindById(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
-	id := param.ByName("userId")
+func (controller CartControllerImpl) FindById(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["userId"]
 	carts := controller.Service.FindById(id)
 	customresponses.SendResponse(w, carts, http.StatusOK)
 }
 
-func (controller CartControllerImpl) Save(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
-	userId := param.ByName("userId")
-	productId := param.ByName("productId")
+func (controller CartControllerImpl) Save(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	userId := vars["userId"]
+	productId := vars["productId"]
 	code := http.StatusInternalServerError
 	if controller.Service.Save(userId, productId) {
 		code = http.StatusCreated
@@ -43,9 +45,10 @@ func (controller CartControllerImpl) Save(w http.ResponseWriter, r *http.Request
 	customresponses.SendResponse(w, "", code)
 }
 
-func (controller CartControllerImpl) Delete(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
-	userId := param.ByName("userId")
-	productId := param.ByName("productId")
+func (controller CartControllerImpl) Delete(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	userId := vars["userId"]
+	productId := vars["productId"]
 	code := http.StatusNotModified
 	if controller.Service.Delete(userId, productId) {
 		code = http.StatusOK

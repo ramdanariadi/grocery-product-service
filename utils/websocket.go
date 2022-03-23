@@ -3,7 +3,6 @@ package utils
 import (
 	"fmt"
 	"github.com/gorilla/websocket"
-	"github.com/julienschmidt/httprouter"
 	"net/http"
 	"time"
 )
@@ -20,7 +19,7 @@ type CustomWSResponse struct {
 
 var connection []*websocket.Conn
 
-func WS(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+func WS(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	connection = append(connection, conn)
 	fmt.Println("new connection on 8080")

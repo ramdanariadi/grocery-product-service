@@ -2,9 +2,8 @@ package main
 
 import (
 	"database/sql"
-	"github.com/julienschmidt/httprouter"
+	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
-	"go-tunas/ErrorHandlers"
 	"go-tunas/controllers/category"
 	"go-tunas/controllers/product"
 	"go-tunas/customresponses"
@@ -25,46 +24,47 @@ func main() {
 	recommendationProductHandler := product.NewRcmdProductControllerImpl(db)
 	securityHandler := security.NewSecurityController(db)
 
-	router := httprouter.New()
+	router := mux.NewRouter()
 
-	router.POST("/login", securityHandler.Login)
-	router.POST("/register", securityHandler.SignUp)
+	router.HandleFunc("/login", securityHandler.Login).Methods("POST")
+	router.HandleFunc("/register", securityHandler.SignUp).Methods("POST")
 
-	router.GET("/readcsv/:filename", func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
-		filename := params.ByName("filename")
+	router.HandleFunc("/readcsv/:filename", func(writer http.ResponseWriter, request *http.Request) {
+		vars := mux.Vars(request)
+		filename := vars["filename"]
 		customresponses.SendResponse(writer, utils.ProductsFromCSV("others/"+filename), 200)
-	})
+	}).Methods("GET")
 
-	router.GET("/ws", utils.WS)
+	router.HandleFunc("/ws", utils.WS).Methods("GET")
 
-	router.ServeFiles("/static/*filepath", http.Dir("static"))
+	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
-	router.GET("/category", security.SecureHandler(categoryHandler.FindAll))
-	router.GET("/category/:id", security.SecureHandler(categoryHandler.FindById))
-	router.POST("/category", security.SecureHandler(categoryHandler.Save))
-	router.PUT("/category/:id", security.SecureHandler(categoryHandler.Update))
-	router.DELETE("/category/:id", security.SecureHandler(categoryHandler.Delete))
+	router.HandleFunc("/category", security.SecureHandler(categoryHandler.FindAll)).Methods("GET")
+	router.HandleFunc("/category/:id", security.SecureHandler(categoryHandler.FindById)).Methods("GET")
+	router.HandleFunc("/category", security.SecureHandler(categoryHandler.Save)).Methods("POST")
+	router.HandleFunc("/category/:id", security.SecureHandler(categoryHandler.Update)).Methods("PUT")
+	router.HandleFunc("/category/:id", security.SecureHandler(categoryHandler.Delete)).Methods("DELETE")
 
-	router.GET("/product", security.SecureHandler(productHandler.FindAll))
-	router.GET("/product/:id", security.SecureHandler(productHandler.FindById))
-	router.GET("/product/category/:id", security.SecureHandler(productHandler.FindById))
-	router.POST("/product", security.SecureHandler(productHandler.Save))
-	router.PUT("/product/:id", security.SecureHandler(productHandler.Update))
-	router.DELETE("/product/:id", security.SecureHandler(productHandler.Delete))
+	router.HandleFunc("/product", security.SecureHandler(productHandler.FindAll)).Methods("GET")
+	router.HandleFunc("/product/category/:id", security.SecureHandler(productHandler.FindById)).Methods("GET")
+	router.HandleFunc("/product/:id", security.SecureHandler(productHandler.FindById)).Methods("GET")
+	router.HandleFunc("/product", security.SecureHandler(productHandler.Save)).Methods("POST")
+	router.HandleFunc("/product/:id", security.SecureHandler(productHandler.Update)).Methods("PUT")
+	router.HandleFunc("/product/:id", security.SecureHandler(productHandler.Delete)).Methods("DELETE")
 
-	router.GET("/product/top", topProductHandler.FindAll)
-	router.GET("/product/top/:id", topProductHandler.FindById)
-	router.POST("/product/top", topProductHandler.Save)
-	router.PUT("/product/top/:id", topProductHandler.Update)
-	router.DELETE("/product/top/:id", topProductHandler.Delete)
+	router.HandleFunc("/product/top", topProductHandler.FindAll).Methods("GET")
+	router.HandleFunc("/product/top/:id", topProductHandler.FindById).Methods("GET")
+	router.HandleFunc("/product/top", topProductHandler.Save).Methods("POST")
+	router.HandleFunc("/product/top/:id", topProductHandler.Update).Methods("PUT")
+	router.HandleFunc("/product/top/:id", topProductHandler.Delete).Methods("DELETE")
 
-	router.GET("/product/recommendation", recommendationProductHandler.FindAll)
-	router.GET("/product/recommendation/:id", recommendationProductHandler.FindById)
-	router.POST("/product/recommendation", recommendationProductHandler.Save)
-	router.PUT("/product/recommendation/:id", recommendationProductHandler.Update)
-	router.DELETE("/product/recommendation/:id", recommendationProductHandler.Delete)
+	router.HandleFunc("/product/recommendation", recommendationProductHandler.FindAll).Methods("GET")
+	router.HandleFunc("/product/recommendation/:id", recommendationProductHandler.FindById).Methods("GET")
+	router.HandleFunc("/product/recommendation", recommendationProductHandler.Save).Methods("POST")
+	router.HandleFunc("/product/recommendation/:id", recommendationProductHandler.Update).Methods("PUT")
+	router.HandleFunc("/product/recommendation/:id", recommendationProductHandler.Delete).Methods("DELETE")
 
-	router.PanicHandler = ErrorHandlers.ErrorHandler
+	//router.PanicHandler = ErrorHandlers.ErrorHandler
 
 	server := http.Server{
 		Addr:    "localhost:8080",

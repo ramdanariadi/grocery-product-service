@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"github.com/go-playground/validator/v10"
-	"github.com/julienschmidt/httprouter"
+	"github.com/gorilla/mux"
 	"go-tunas/customresponses"
 	categoryCustomResponse "go-tunas/customresponses/category"
 	"go-tunas/helpers"
@@ -31,9 +31,9 @@ func NewCategoryController(db *sql.DB) CategoryController {
 	}
 }
 
-func (controller CategoryControllerImpl) FindById(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
-
-	category := controller.Service.FindById(param.ByName("id"))
+func (controller CategoryControllerImpl) FindById(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	category := controller.Service.FindById(vars["id"])
 
 	cresponseTmp := categoryCustomResponse.CategoryResponse{
 		Id:       category.Id,
@@ -44,7 +44,7 @@ func (controller CategoryControllerImpl) FindById(w http.ResponseWriter, r *http
 	customresponses.SendResponse(w, cresponseTmp, http.StatusOK)
 }
 
-func (controller CategoryControllerImpl) FindAll(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+func (controller CategoryControllerImpl) FindAll(w http.ResponseWriter, r *http.Request) {
 
 	categories := controller.Service.FindAll()
 
@@ -60,7 +60,7 @@ func (controller CategoryControllerImpl) FindAll(w http.ResponseWriter, r *http.
 	customresponses.SendResponse(w, categoryResponse, http.StatusOK)
 }
 
-func (controller CategoryControllerImpl) Save(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+func (controller CategoryControllerImpl) Save(w http.ResponseWriter, r *http.Request) {
 	body := r.Body
 	byte, err := io.ReadAll(body)
 	helpers.PanicIfError(err)
@@ -80,9 +80,9 @@ func (controller CategoryControllerImpl) Save(w http.ResponseWriter, r *http.Req
 	customresponses.SendResponse(w, nil, code)
 }
 
-func (controller CategoryControllerImpl) Update(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
-
-	id := param.ByName("id")
+func (controller CategoryControllerImpl) Update(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
 
 	body := r.Body
 	byte, err := io.ReadAll(body)
@@ -99,9 +99,9 @@ func (controller CategoryControllerImpl) Update(w http.ResponseWriter, r *http.R
 	customresponses.SendResponse(w, nil, code)
 }
 
-func (controller CategoryControllerImpl) Delete(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
-
-	id := param.ByName("id")
+func (controller CategoryControllerImpl) Delete(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
 
 	code := http.StatusNotModified
 

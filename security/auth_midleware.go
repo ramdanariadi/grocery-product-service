@@ -4,7 +4,6 @@ import (
 	_ "embed"
 	"fmt"
 	"github.com/golang-jwt/jwt"
-	"github.com/julienschmidt/httprouter"
 	"go-tunas/customresponses"
 	"go-tunas/helpers"
 	"net/http"
@@ -53,8 +52,8 @@ func (middleware AuthMiddleware) ServeHTTP(writer http.ResponseWriter, request *
 
 }
 
-func SecureHandler(handle httprouter.Handle) httprouter.Handle {
-	return func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
+func SecureHandler(handle http.HandlerFunc) http.HandlerFunc {
+	return func(writer http.ResponseWriter, request *http.Request) {
 		apiKey := request.Header.Get("Authorization")
 
 		if strings.HasPrefix(apiKey, "Bearer ") {
@@ -70,7 +69,7 @@ func SecureHandler(handle httprouter.Handle) httprouter.Handle {
 
 				if len(claims) > 0 {
 					if claims["role"] == "user" {
-						handle(writer, request, params)
+						handle(writer, request)
 						return
 					}
 				}

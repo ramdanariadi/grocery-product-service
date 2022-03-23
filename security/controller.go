@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt"
-	"github.com/julienschmidt/httprouter"
 	"go-tunas/customresponses"
 	"go-tunas/helpers"
 	"golang.org/x/crypto/bcrypt"
@@ -32,7 +31,7 @@ func NewSecurityController(db *sql.DB) *SecurityController {
 //go:embed JWTSECRET
 var jwtSecret []byte
 
-func (controller SecurityController) Login(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+func (controller SecurityController) Login(w http.ResponseWriter, r *http.Request) {
 	user := UserModel{}
 	userByte, err := io.ReadAll(r.Body)
 	helpers.PanicIfError(err)
@@ -66,7 +65,7 @@ func (controller SecurityController) Login(w http.ResponseWriter, r *http.Reques
 	customresponses.SendResponse(w, tokens, http.StatusOK)
 }
 
-func (controller SecurityController) SignUp(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+func (controller SecurityController) SignUp(w http.ResponseWriter, r *http.Request) {
 	user := UserModel{}
 	userByte, err := io.ReadAll(r.Body)
 	helpers.PanicIfError(err)

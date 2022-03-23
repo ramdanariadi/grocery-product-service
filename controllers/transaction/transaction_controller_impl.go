@@ -3,7 +3,7 @@ package transaction
 import (
 	"database/sql"
 	"encoding/json"
-	"github.com/julienschmidt/httprouter"
+	"github.com/gorilla/mux"
 	"go-tunas/customresponses"
 	"go-tunas/helpers"
 	"go-tunas/models"
@@ -27,19 +27,21 @@ func NewTransactinController(db *sql.DB) *TransactionControllerImpl {
 	}
 }
 
-func (controller TransactionControllerImpl) FindByUserId(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
-	id := param.ByName("id")
+func (controller TransactionControllerImpl) FindByUserId(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
 	responses := controller.Service.FindByUserId(id)
 	customresponses.SendResponse(w, responses, http.StatusOK)
 }
 
-func (controller TransactionControllerImpl) FindById(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
-	id := param.ByName("id")
+func (controller TransactionControllerImpl) FindById(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
 	responses := controller.Service.FindByTransactionId(id)
 	customresponses.SendResponse(w, responses, http.StatusOK)
 }
 
-func (controller TransactionControllerImpl) Save(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+func (controller TransactionControllerImpl) Save(w http.ResponseWriter, r *http.Request) {
 	reader := r.Body
 	bytes, err := io.ReadAll(reader)
 	helpers.PanicIfError(err)
@@ -54,8 +56,9 @@ func (controller TransactionControllerImpl) Save(w http.ResponseWriter, r *http.
 	customresponses.SendResponse(w, "", code)
 }
 
-func (controller TransactionControllerImpl) Delete(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
-	id := param.ByName("id")
+func (controller TransactionControllerImpl) Delete(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
 	code := http.StatusNotModified
 	if controller.Service.Delete(id) {
 		code = http.StatusOK

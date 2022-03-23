@@ -2,7 +2,7 @@ package wishlist
 
 import (
 	"database/sql"
-	"github.com/julienschmidt/httprouter"
+	"github.com/gorilla/mux"
 	"go-tunas/customresponses"
 	"go-tunas/repositories/product"
 	"go-tunas/repositories/transactions"
@@ -23,22 +23,25 @@ func NewWishlistController(db *sql.DB) *WishlistControllerImpl {
 	}
 }
 
-func (controller WishlistControllerImpl) FindByUserId(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
-	id := param.ByName("userId")
+func (controller WishlistControllerImpl) FindByUserId(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
 	carts := controller.Service.FindByUserId(id)
 	customresponses.SendResponse(w, carts, http.StatusOK)
 }
 
-func (controller WishlistControllerImpl) FindByUserAndProductId(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
-	userId := param.ByName("userId")
-	productId := param.ByName("productId")
+func (controller WishlistControllerImpl) FindByUserAndProductId(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	userId := vars["userId"]
+	productId := vars["productId"]
 	carts := controller.Service.FindByUserAndProductId(userId, productId)
 	customresponses.SendResponse(w, carts, http.StatusOK)
 }
 
-func (controller WishlistControllerImpl) Save(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
-	userId := param.ByName("userId")
-	productId := param.ByName("productId")
+func (controller WishlistControllerImpl) Save(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	userId := vars["userId"]
+	productId := vars["productId"]
 	code := http.StatusInternalServerError
 	if controller.Service.Save(userId, productId) {
 		code = http.StatusCreated
@@ -46,9 +49,10 @@ func (controller WishlistControllerImpl) Save(w http.ResponseWriter, r *http.Req
 	customresponses.SendResponse(w, "", code)
 }
 
-func (controller WishlistControllerImpl) Delete(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
-	userId := param.ByName("userId")
-	productId := param.ByName("productId")
+func (controller WishlistControllerImpl) Delete(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	userId := vars["userId"]
+	productId := vars["productId"]
 	code := http.StatusNotModified
 	if controller.Service.Delete(userId, productId) {
 		code = http.StatusOK

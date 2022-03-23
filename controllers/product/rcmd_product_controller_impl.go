@@ -3,7 +3,7 @@ package product
 import (
 	"database/sql"
 	"encoding/json"
-	"github.com/julienschmidt/httprouter"
+	"github.com/gorilla/mux"
 	"go-tunas/customresponses"
 	"go-tunas/helpers"
 	productrepositories "go-tunas/repositories/product"
@@ -26,18 +26,19 @@ func NewRcmdProductControllerImpl(db *sql.DB) *RcmdProductControllerImpl {
 	}
 }
 
-func (controller RcmdProductControllerImpl) FindById(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
-	id := param.ByName("id")
+func (controller RcmdProductControllerImpl) FindById(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
 	productModel := controller.Service.FindById(id)
 	customresponses.SendResponse(w, productModel, http.StatusOK)
 }
 
-func (controller RcmdProductControllerImpl) FindAll(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+func (controller RcmdProductControllerImpl) FindAll(w http.ResponseWriter, r *http.Request) {
 	productModels := controller.Service.FindAll()
 	customresponses.SendResponse(w, productModels, http.StatusOK)
 }
 
-func (controller RcmdProductControllerImpl) Save(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+func (controller RcmdProductControllerImpl) Save(w http.ResponseWriter, r *http.Request) {
 	body := r.Body
 	bytes, err := io.ReadAll(body)
 	helpers.PanicIfError(err)
@@ -53,7 +54,7 @@ func (controller RcmdProductControllerImpl) Save(w http.ResponseWriter, r *http.
 	customresponses.SendResponse(w, "", code)
 }
 
-func (controller RcmdProductControllerImpl) Update(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+func (controller RcmdProductControllerImpl) Update(w http.ResponseWriter, r *http.Request) {
 	body := r.Body
 	bytes, err := io.ReadAll(body)
 	helpers.PanicIfError(err)
@@ -62,7 +63,8 @@ func (controller RcmdProductControllerImpl) Update(w http.ResponseWriter, r *htt
 	err = json.Unmarshal(bytes, &productSaveRequest)
 	helpers.PanicIfError(err)
 
-	id := param.ByName("id")
+	vars := mux.Vars(r)
+	id := vars["id"]
 
 	code := http.StatusNotModified
 	if controller.Service.Update(productSaveRequest, id) {
@@ -71,8 +73,9 @@ func (controller RcmdProductControllerImpl) Update(w http.ResponseWriter, r *htt
 	customresponses.SendResponse(w, "", code)
 }
 
-func (controller RcmdProductControllerImpl) Delete(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
-	id := param.ByName("id")
+func (controller RcmdProductControllerImpl) Delete(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
 
 	code := http.StatusInternalServerError
 	if controller.Service.Delete(id) {
