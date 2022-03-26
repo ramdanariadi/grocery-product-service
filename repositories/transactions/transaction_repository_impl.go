@@ -3,10 +3,14 @@ package transactions
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"github.com/google/uuid"
 	"go-tunas/customresponses/transaction"
 	"go-tunas/helpers"
 	"go-tunas/models"
+	"log"
+	"strings"
+	"time"
 )
 
 type TransactionRepositoryImpl struct {
@@ -16,18 +20,19 @@ type TransactionRepositoryImpl struct {
 func (repository TransactionRepositoryImpl) FindByTransactionId(context context.Context, tx *sql.Tx, id string) transaction.TransactionCustomResponse {
 	queryTransaction := "SELECT id, total_price, transaction_date, user_name, user_mobile " +
 		"user_email " +
-		"FROM transactions " +
+		"FROM transaction " +
 		"WHERE id = $1"
 	transact := transaction.TransactionCustomResponse{}
-	rows, err := tx.QueryContext(context, queryTransaction, id)
-	helpers.PanicIfError(err)
+	rows := tx.QueryRowContext(context, queryTransaction, id)
 
-	err = rows.Scan(&transact.Id, &transact.TotalPrice, &transact.TransactionDate, &transact.UserName, &transact.UserMobile, &transact.UserEmail)
-	helpers.PanicIfError(err)
+	err := rows.Scan(&transact.Id, &transact.TotalPrice, &transact.TransactionDate, &transact.UserName, &transact.UserMobile, &transact.UserEmail)
+	if err != nil {
+		return transact
+	}
 
 	queryDetailTransaction := "SELECT name, id, image_url, product_id, price, weight, per_unit," +
 		"total, transaction_id " +
-		"FROM detail_transaction" +
+		"FROM detail_transaction " +
 		"WHERE transaction_id = $1"
 	dtRows, err := tx.QueryContext(context, queryDetailTransaction, id)
 	helpers.PanicIfError(err)
@@ -42,26 +47,27 @@ func (repository TransactionRepositoryImpl) FindByTransactionId(context context.
 }
 
 func (repository TransactionRepositoryImpl) FindByUserId(context context.Context, tx *sql.Tx, userId string) []transaction.TransactionCustomResponse {
-	sqlTransaction := "SELECT id, total_price, transaction_date, user_name, user_mobile, user_email, detail_transaction " +
+	sqlTransaction := "SELECT id, total_price, transaction_date, user_name, user_mobile, user_email " +
 		"FROM transaction WHERE user_id = $1"
 	rows, err := tx.QueryContext(context, sqlTransaction, userId)
-	helpers.PanicIfError(err)
-
-	sqlDetailTransaction := "SELECT user_name, id, image_url, product_id, price, weight, per_unit, total, transaction_id " +
-		"FROM detail_transaction dt " +
-		"JOIN transaction ON t t.id = dt.transaction_id " +
-		"WHERE t.user_id = $1"
-	rowDetailTransaction, err := tx.QueryContext(context, sqlDetailTransaction, userId)
 	helpers.PanicIfError(err)
 
 	var customTransaction []transaction.TransactionCustomResponse
 	for rows.Next() {
 		transactionTmp := transaction.TransactionCustomResponse{}
 		err := rows.Scan(&transactionTmp.Id, &transactionTmp.TotalPrice, &transactionTmp.TransactionDate, &transactionTmp.UserName,
-			&transactionTmp.UserMobile, &transactionTmp.UserEmail, &transactionTmp.DetailTransaction)
+			&transactionTmp.UserMobile, &transactionTmp.UserEmail)
 		helpers.PanicIfError(err)
 		customTransaction = append(customTransaction, transactionTmp)
 	}
+	rows.Close()
+
+	sqlDetailTransaction := "SELECT name, dt.id, image_url, product_id, price, weight, per_unit, total, transaction_id " +
+		"FROM detail_transaction dt " +
+		"JOIN transaction t ON t.id = dt.transaction_id " +
+		"WHERE t.user_id = $1"
+	rowDetailTransaction, err := tx.QueryContext(context, sqlDetailTransaction, userId)
+	helpers.PanicIfError(err)
 
 	for rowDetailTransaction.Next() {
 		detailProduct := transaction.ProductTransaction{}
@@ -75,33 +81,60 @@ func (repository TransactionRepositoryImpl) FindByUserId(context context.Context
 			}
 		}
 	}
+	rowDetailTransaction.Close()
 
 	return customTransaction
 }
 
 func (repository TransactionRepositoryImpl) Save(context context.Context, tx *sql.Tx, model models.TransactionModel) bool {
-	sqlTransaction := "INSERT INTO transaction(total_price,transaction_date,user_id,id,user_email,user_mobile,user_name) " +
+	sqlTransaction := "INSERT INTO transaction(total_price, transaction_date, user_id, id, user_email, user_mobile, user_name) " +
 		"VALUES($1,$2,$3,$4,$5,$6,$7)"
-	sqlDetailTransaction := "INSERT INTO detail_transaction(transaction_id,product_id,id,per_unit,price,total,weight,image_url,name) " +
-		"VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)"
 
-	result, err := tx.ExecContext(context, sqlTransaction, model.Total, "date", model.UserId, model.Id)
+	today := time.Now()
+	idTransaction, _ := uuid.NewUUID()
+	result, err := tx.ExecContext(context, sqlTransaction, model.Total, today.Format("2006-01-02 15:04:05"), model.UserId, idTransaction, "", "", model.Name)
 	helpers.PanicIfError(err)
 
-	for _, dt := range model.DetailTransaction {
+	var statement []string
+	var values []interface{}
+	for index, dt := range model.DetailTransaction {
+		statement = append(statement, fmt.Sprintf("($%d,$%d,$%d,$%d,$%d,$%d,$%d,$%d,$%d)",
+			index*9+1,
+			index*9+2,
+			index*9+3,
+			index*9+4,
+			index*9+5,
+			index*9+6,
+			index*9+7,
+			index*9+8,
+			index*9+9))
+
 		id, err := uuid.NewUUID()
 		helpers.PanicIfError(err)
-
-		result, err := tx.ExecContext(context, sqlDetailTransaction, model.Id, "productId", id, dt.PerUnit, dt.Price, "total", dt.Weight, dt.ImageUrl, dt.Name)
-		helpers.PanicIfError(err)
-
-		affected, err := result.RowsAffected()
-		helpers.PanicIfError(err)
-
-		if affected > 0 {
-			panic("err add detail transaction")
-		}
+		values = append(values, idTransaction, dt.Id, id, dt.PerUnit, dt.Price, 1, dt.Weight, dt.ImageUrl, dt.Name)
 	}
+
+	sqlDetailTransaction := fmt.Sprintf("INSERT INTO detail_transaction(transaction_id,product_id,id,per_unit,price,total,weight,image_url,name) "+
+		"VALUES %s", strings.Join(statement, ","))
+	log.Default().Println(sqlDetailTransaction)
+
+	result, err = tx.ExecContext(context, sqlDetailTransaction, values...)
+	helpers.PanicIfError(err)
+
+	//for _, dt := range model.DetailTransaction {
+	//	id, err := uuid.NewUUID()
+	//	helpers.PanicIfError(err)
+	//
+	//	result, err := tx.ExecContext(context, sqlDetailTransaction, idTransaction, dt.Id, id, dt.PerUnit, dt.Price, 1, dt.Weight, dt.ImageUrl, dt.Name)
+	//	helpers.PanicIfError(err)
+	//
+	//	affected, err := result.RowsAffected()
+	//	helpers.PanicIfError(err)
+	//
+	//	if affected > 0 {
+	//		panic("err add detail transaction")
+	//	}
+	//}
 
 	affected, err := result.RowsAffected()
 	helpers.PanicIfError(err)

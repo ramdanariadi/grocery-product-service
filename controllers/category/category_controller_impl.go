@@ -41,6 +41,11 @@ func (controller CategoryControllerImpl) FindById(w http.ResponseWriter, r *http
 		ImageUrl: category.ImageUrl,
 	}
 
+	if cresponseTmp == (categoryCustomResponse.CategoryResponse{}) {
+		customresponses.SendResponse(w, nil, http.StatusNoContent)
+		return
+	}
+
 	customresponses.SendResponse(w, cresponseTmp, http.StatusOK)
 }
 

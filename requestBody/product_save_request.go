@@ -3,7 +3,7 @@ package requestBody
 type ProductSaveRequest struct {
 	Price       int64
 	Weight      uint
-	CategoryId  string
+	Category    string
 	PerUnit     int
 	Description string
 	ImageUrl    string
@@ -11,21 +11,23 @@ type ProductSaveRequest struct {
 }
 
 type TopProductSaveRequest struct {
+	ProductId   string
 	Price       int64
 	Weight      uint
 	Category    string
 	PerUnit     int
 	Description string
-	ImageUrl    string
+	ImageUrl    interface{}
 	Name        string
 }
 
 type RcmdProductSaveRequest struct {
+	ProductId   string
 	Price       int64
 	Weight      uint
 	Category    string
 	PerUnit     int
 	Description string
-	ImageUrl    string
+	ImageUrl    interface{}
 	Name        string
 }

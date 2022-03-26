@@ -17,20 +17,23 @@ type ProductRepositoryImpl struct {
 
 func (repository ProductRepositoryImpl) FindById(context context.Context, tx *sql.Tx, id string) models.ProductModel {
 	query := "SELECT products.id, name, price, per_unit, weight, category, description, products.image_url  " +
-		"FROM products" +
+		"FROM products " +
 		"JOIN category ON products.category_id = category.id " +
-		"WHERE products.id = ?"
-	rows, err := tx.QueryContext(context, query, id)
-	helpers.PanicIfError(err)
+		"WHERE products.id = $1"
+	row := tx.QueryRowContext(context, query, id)
 	product := models.ProductModel{}
-	err = rows.Scan(product.Id, product.Name, product.Price, product.PerUnit, product.Weight, product.Category, product.Description, product.ImageUrl)
-	helpers.PanicIfError(err)
+	err := row.Scan(&product.Id, &product.Name, &product.Price, &product.PerUnit, &product.Weight, &product.Category,
+		&product.Description, &product.ImageUrl)
+	if err != nil {
+		return models.ProductModel{}
+	}
+	//helpers.PanicIfError(err)
 	return product
 }
 
 func (repository ProductRepositoryImpl) FindAll(context context.Context, tx *sql.Tx) []models.ProductModel {
 	query := "SELECT products.id, name, price, per_unit, weight, category, description, products.image_url  " +
-		"FROM products" +
+		"FROM products " +
 		"JOIN category ON products.category_id = category.id"
 
 	rows, err := tx.QueryContext(context, query)
@@ -38,7 +41,7 @@ func (repository ProductRepositoryImpl) FindAll(context context.Context, tx *sql
 	var products []models.ProductModel
 	for rows.Next() {
 		productTmp := models.ProductModel{}
-		err = rows.Scan(productTmp.Id, productTmp.Name, productTmp.Price, productTmp.PerUnit, productTmp.Weight, productTmp.Category, productTmp.Description, productTmp.ImageUrl)
+		err = rows.Scan(&productTmp.Id, &productTmp.Name, &productTmp.Price, &productTmp.PerUnit, &productTmp.Weight, &productTmp.Category, &productTmp.Description, &productTmp.ImageUrl)
 		helpers.PanicIfError(err)
 		products = append(products, productTmp)
 	}
@@ -46,10 +49,12 @@ func (repository ProductRepositoryImpl) FindAll(context context.Context, tx *sql
 }
 
 func (repository ProductRepositoryImpl) Save(context context.Context, tx *sql.Tx, saveRequest requestBody.ProductSaveRequest) bool {
-	sql := "INSERT INTO products(id, name, weight, price, per_unit, category_id, description, image_url, deleted) " +
+	sql := "INSERT INTO products(id, name, weight, price, per_unit, category_id, description, " +
+		"image_url, deleted) " +
 		"VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)"
 	id, _ := uuid.NewUUID()
-	result, err := tx.ExecContext(context, sql, id, saveRequest.Name, saveRequest.Weight, saveRequest.Price, saveRequest.PerUnit, saveRequest.CategoryId, saveRequest.Description, saveRequest.ImageUrl, false)
+	result, err := tx.ExecContext(context, sql, id, saveRequest.Name, saveRequest.Weight, saveRequest.Price,
+		saveRequest.PerUnit, saveRequest.Category, saveRequest.Description, saveRequest.ImageUrl, false)
 	helpers.PanicIfError(err)
 	affected, err := result.RowsAffected()
 	helpers.PanicIfError(err)
@@ -64,7 +69,7 @@ func (repository ProductRepositoryImpl) SaveFromCSV(waitgroup *sync.WaitGroup, c
 	sqlInsert := "INSERT INTO " +
 		"product(id,deleted,price,weight,category_id,per_unit,description,image_url,name) " +
 		"VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)"
-	result, err := tx.ExecContext(context, sqlInsert, saveModel.Id, saveModel.Deleted, saveModel.Price, saveModel.Weight, saveModel.CategoryId, saveModel.PerUnit, saveModel.Description, saveModel.ImageUrl, saveModel.Name)
+	result, err := tx.ExecContext(context, sqlInsert, saveModel.Id, saveModel.Deleted, saveModel.Price, saveModel.Weight, saveModel.CategoryId, saveModel.PerUnit, saveModel.Description, saveModel.ImageUrl.(string), saveModel.Name)
 	if err != nil {
 		fmt.Println("err exec context")
 	}
@@ -103,7 +108,7 @@ func (repository ProductRepositoryImpl) SaveFromCSVWithChannel(waitgroup *sync.W
 				sqlInsert := "INSERT INTO " +
 					"product(id,deleted,price,weight,category_id,per_unit,description,image_url,name) " +
 					"VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)"
-				_, err := tx.ExecContext(context, sqlInsert, saveModel.Id, saveModel.Deleted, saveModel.Price, saveModel.Weight, saveModel.CategoryId, saveModel.PerUnit, saveModel.Description, saveModel.ImageUrl, saveModel.Name)
+				_, err := tx.ExecContext(context, sqlInsert, saveModel.Id, saveModel.Deleted, saveModel.Price, saveModel.Weight, saveModel.CategoryId, saveModel.PerUnit, saveModel.Description, saveModel.ImageUrl.(string), saveModel.Name)
 				if err != nil {
 					fmt.Println("err exec context : ", err)
 					//panic(err)
@@ -124,11 +129,11 @@ func (repository ProductRepositoryImpl) SaveFromCSVWithChannel(waitgroup *sync.W
 }
 
 func (repository ProductRepositoryImpl) Update(context context.Context, tx *sql.Tx, updateRequest requestBody.ProductSaveRequest, id string) bool {
-	sql := "UPDATE FROM products SET name=$1, price=$2, weight=$3, category_id=$4, per_unit=$5," +
+	sql := "UPDATE products SET name=$1, price=$2, weight=$3, category_id=$4, per_unit=$5," +
 		"description=$6, image_url=$7" +
 		"WHERE id = $8"
 	result, err := tx.ExecContext(context, sql, updateRequest.Name, updateRequest.Price, updateRequest.Weight,
-		updateRequest.CategoryId, updateRequest.PerUnit, updateRequest.Description, updateRequest.ImageUrl, id)
+		updateRequest.Category, updateRequest.PerUnit, updateRequest.Description, updateRequest.ImageUrl, id)
 	helpers.PanicIfError(err)
 	affected, err := result.RowsAffected()
 	helpers.PanicIfError(err)
@@ -137,7 +142,7 @@ func (repository ProductRepositoryImpl) Update(context context.Context, tx *sql.
 }
 
 func (repository ProductRepositoryImpl) Delete(context context.Context, tx *sql.Tx, id string) bool {
-	sql := "DELETE FROM products WHERE id = ?"
+	sql := "DELETE FROM products WHERE id = $1"
 	result, err := tx.ExecContext(context, sql, id)
 	helpers.PanicIfError(err)
 	affected, err := result.RowsAffected()

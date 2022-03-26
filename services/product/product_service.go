@@ -16,15 +16,13 @@ type ProductService interface {
 type TopProductService interface {
 	FindById(id string) models.ProductModel
 	FindAll() []models.ProductModel
-	Save(request requestBody.TopProductSaveRequest) bool
-	Update(request requestBody.TopProductSaveRequest, id string) bool
+	Save(id string) bool
 	Delete(id string) bool
 }
 
 type RcmdProductService interface {
 	FindById(id string) models.ProductModel
 	FindAll() []models.ProductModel
-	Save(request requestBody.RcmdProductSaveRequest) bool
-	Update(request requestBody.RcmdProductSaveRequest, id string) bool
+	Save(id string) bool
 	Delete(id string) bool
 }

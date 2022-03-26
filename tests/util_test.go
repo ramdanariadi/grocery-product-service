@@ -90,7 +90,7 @@ func Test_insert_product_from_csv_with_channel(t *testing.T) {
 	if err != nil {
 		fmt.Println("filepath abs error")
 	}
-	productChanel := make(chan models.ProductModel)
+	productChanel := make(chan models.ProductModelCSV)
 
 	group := sync.WaitGroup{}
 	begin, err := productRepo.DB.Begin()

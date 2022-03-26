@@ -17,7 +17,7 @@ type TransactionControllerImpl struct {
 	Service transaction.TransactionService
 }
 
-func NewTransactinController(db *sql.DB) *TransactionControllerImpl {
+func NewTransactionController(db *sql.DB) *TransactionControllerImpl {
 	return &TransactionControllerImpl{
 		Service: transaction.TransactinoServiceImpl{
 			Repository: transactions.TransactionRepositoryImpl{
@@ -38,6 +38,10 @@ func (controller TransactionControllerImpl) FindById(w http.ResponseWriter, r *h
 	vars := mux.Vars(r)
 	id := vars["id"]
 	responses := controller.Service.FindByTransactionId(id)
+	if responses.Id == "" {
+		customresponses.SendResponse(w, nil, http.StatusNoContent)
+		return
+	}
 	customresponses.SendResponse(w, responses, http.StatusOK)
 }
 

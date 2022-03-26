@@ -9,40 +9,53 @@ import (
 )
 
 type TopProductServiceImpl struct {
-	Repository product.TopProductRepositoryImpl
+	TopProductRepository product.TopProductRepositoryImpl
+	ProductRepository    product.ProductRepositoryImpl
 }
 
 func (service TopProductServiceImpl) FindById(id string) models.ProductModel {
-	tx, err := service.Repository.DB.Begin()
+	tx, err := service.TopProductRepository.DB.Begin()
 	defer helpers.CommitOrRollback(tx)
 	helpers.PanicIfError(err)
-	return service.Repository.FindById(context.Background(), tx, id)
+	return service.TopProductRepository.FindById(context.Background(), tx, id)
 }
 
 func (service TopProductServiceImpl) FindAll() []models.ProductModel {
-	tx, err := service.Repository.DB.Begin()
+	tx, err := service.TopProductRepository.DB.Begin()
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
-	return service.Repository.FindAll(context.Background(), tx)
+	return service.TopProductRepository.FindAll(context.Background(), tx)
 }
 
-func (service TopProductServiceImpl) Save(request requestBody.TopProductSaveRequest) bool {
-	tx, err := service.Repository.DB.Begin()
+func (service TopProductServiceImpl) Save(id string) bool {
+	tx, err := service.TopProductRepository.DB.Begin()
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
-	return service.Repository.Save(context.Background(), tx, request)
-}
 
-func (service TopProductServiceImpl) Update(request requestBody.TopProductSaveRequest, id string) bool {
-	tx, err := service.Repository.DB.Begin()
-	helpers.PanicIfError(err)
-	defer helpers.CommitOrRollback(tx)
-	return service.Repository.Update(context.Background(), tx, request, id)
+	bgContext := context.Background()
+	productModel := service.ProductRepository.FindById(bgContext, tx, id)
+
+	if productModel == (models.ProductModel{}) {
+		return false
+	}
+
+	topProduct := requestBody.TopProductSaveRequest{
+		ProductId:   productModel.Id,
+		Name:        productModel.Name,
+		Weight:      productModel.Weight,
+		Price:       productModel.Price,
+		PerUnit:     productModel.PerUnit,
+		Category:    productModel.Category,
+		ImageUrl:    productModel.ImageUrl,
+		Description: productModel.Description,
+	}
+
+	return service.TopProductRepository.Save(context.Background(), tx, topProduct)
 }
 
 func (service TopProductServiceImpl) Delete(id string) bool {
-	tx, err := service.Repository.DB.Begin()
+	tx, err := service.TopProductRepository.DB.Begin()
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
-	return service.Repository.Delete(context.Background(), tx, id)
+	return service.TopProductRepository.Delete(context.Background(), tx, id)
 }

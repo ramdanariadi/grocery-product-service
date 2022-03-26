@@ -9,40 +9,49 @@ import (
 )
 
 type RcmdProductServiceImpl struct {
-	Repository product.RcmdProductRepositoryImpl
+	RcmdRepository    product.RcmdProductRepositoryImpl
+	ProductRepository product.ProductRepositoryImpl
 }
 
 func (service RcmdProductServiceImpl) FindById(id string) models.ProductModel {
-	tx, err := service.Repository.DB.Begin()
+	tx, err := service.RcmdRepository.DB.Begin()
 	defer helpers.CommitOrRollback(tx)
 	helpers.PanicIfError(err)
-	return service.Repository.FindById(context.Background(), tx, id)
+	return service.RcmdRepository.FindById(context.Background(), tx, id)
 }
 
 func (service RcmdProductServiceImpl) FindAll() []models.ProductModel {
-	tx, err := service.Repository.DB.Begin()
+	tx, err := service.RcmdRepository.DB.Begin()
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
-	return service.Repository.FindAll(context.Background(), tx)
+	return service.RcmdRepository.FindAll(context.Background(), tx)
 }
 
-func (service RcmdProductServiceImpl) Save(request requestBody.RcmdProductSaveRequest) bool {
-	tx, err := service.Repository.DB.Begin()
+func (service RcmdProductServiceImpl) Save(id string) bool {
+	tx, err := service.RcmdRepository.DB.Begin()
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
-	return service.Repository.Save(context.Background(), tx, request)
-}
 
-func (service RcmdProductServiceImpl) Update(request requestBody.RcmdProductSaveRequest, id string) bool {
-	tx, err := service.Repository.DB.Begin()
-	helpers.PanicIfError(err)
-	defer helpers.CommitOrRollback(tx)
-	return service.Repository.Update(context.Background(), tx, request, id)
+	bgContext := context.Background()
+
+	product := service.ProductRepository.FindById(bgContext, tx, id)
+	productSaveRequest := requestBody.RcmdProductSaveRequest{
+		ProductId:   product.Id,
+		Price:       product.Price,
+		Description: product.Description,
+		ImageUrl:    product.ImageUrl,
+		Category:    product.Category,
+		PerUnit:     product.PerUnit,
+		Weight:      product.Weight,
+		Name:        product.Name,
+	}
+
+	return service.RcmdRepository.Save(context.Background(), tx, productSaveRequest)
 }
 
 func (service RcmdProductServiceImpl) Delete(id string) bool {
-	tx, err := service.Repository.DB.Begin()
+	tx, err := service.RcmdRepository.DB.Begin()
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
-	return service.Repository.Delete(context.Background(), tx, id)
+	return service.RcmdRepository.Delete(context.Background(), tx, id)
 }

@@ -7,7 +7,7 @@ type WishlistModel struct {
 	Weight    uint
 	Category  string
 	PerUnit   int
-	ImageUrl  string
+	ImageUrl  interface{}
 	ProductId string
 	UserId    string
 }

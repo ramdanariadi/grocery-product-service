@@ -18,7 +18,7 @@ type CartServiceImpl struct {
 func (service CartServiceImpl) FindById(id string) []product.CartResponse {
 	tx, err := service.CartRepository.DB.Begin()
 	helpers.PanicIfError(err)
-	helpers.CommitOrRollback(tx)
+	defer helpers.CommitOrRollback(tx)
 	carts := service.CartRepository.FindByUserId(context.Background(), tx, id)
 	var cartsResponse []product.CartResponse
 	for _, cart := range carts {
@@ -30,13 +30,14 @@ func (service CartServiceImpl) FindById(id string) []product.CartResponse {
 			PerUnit:  cart.PerUnit,
 			Category: cart.Category,
 			ImageUrl: cart.ImageUrl,
+			Total:    cart.Total,
 		}
 		cartsResponse = append(cartsResponse, product)
 	}
 	return cartsResponse
 }
 
-func (service CartServiceImpl) Save(userId string, productId string) bool {
+func (service CartServiceImpl) Save(userId string, productId string, total int) bool {
 	tx, err := service.CartRepository.DB.Begin()
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
@@ -54,6 +55,7 @@ func (service CartServiceImpl) Save(userId string, productId string) bool {
 		ImageUrl:  product.ImageUrl,
 		UserId:    userId,
 		ProductId: product.Id,
+		Total:     total,
 	}
 	return service.CartRepository.Save(ctx, tx, cartModel)
 }

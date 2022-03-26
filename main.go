@@ -4,12 +4,17 @@ import (
 	"database/sql"
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
+	"go-tunas/ErrorHandlers"
 	"go-tunas/controllers/category"
 	"go-tunas/controllers/product"
+	"go-tunas/controllers/product/wishlist"
+	"go-tunas/controllers/transaction"
+	"go-tunas/controllers/transaction/cart"
 	"go-tunas/customresponses"
 	"go-tunas/helpers"
 	"go-tunas/security"
 	"go-tunas/utils"
+	"log"
 	"net/http"
 )
 
@@ -22,6 +27,9 @@ func main() {
 	productHandler := product.NewProductControllerImpl(db)
 	topProductHandler := product.NewTopProductControllerImpl(db)
 	recommendationProductHandler := product.NewRcmdProductControllerImpl(db)
+	wishlistHandler := wishlist.NewWishlistController(db)
+	cartHandler := cart.NewCartController(db)
+	transactionHandler := transaction.NewTransactionController(db)
 	securityHandler := security.NewSecurityController(db)
 
 	router := mux.NewRouter()
@@ -39,32 +47,63 @@ func main() {
 
 	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
-	router.HandleFunc("/category", security.SecureHandler(categoryHandler.FindAll)).Methods("GET")
-	router.HandleFunc("/category/:id", security.SecureHandler(categoryHandler.FindById)).Methods("GET")
-	router.HandleFunc("/category", security.SecureHandler(categoryHandler.Save)).Methods("POST")
-	router.HandleFunc("/category/:id", security.SecureHandler(categoryHandler.Update)).Methods("PUT")
-	router.HandleFunc("/category/:id", security.SecureHandler(categoryHandler.Delete)).Methods("DELETE")
+	router.Handle("/category", security.SecureHandler(categoryHandler.FindAll)).Methods("GET")
+	router.Handle("/category/{id}", security.SecureHandler(categoryHandler.FindById)).Methods("GET")
+	router.Handle("/category", security.SecureHandler(categoryHandler.Save)).Methods("POST")
+	router.Handle("/category/{id}", security.SecureHandler(categoryHandler.Update)).Methods("PUT")
+	router.Handle("/category/{id}", security.SecureHandler(categoryHandler.Delete)).Methods("DELETE")
 
-	router.HandleFunc("/product", security.SecureHandler(productHandler.FindAll)).Methods("GET")
-	router.HandleFunc("/product/category/:id", security.SecureHandler(productHandler.FindById)).Methods("GET")
-	router.HandleFunc("/product/:id", security.SecureHandler(productHandler.FindById)).Methods("GET")
-	router.HandleFunc("/product", security.SecureHandler(productHandler.Save)).Methods("POST")
-	router.HandleFunc("/product/:id", security.SecureHandler(productHandler.Update)).Methods("PUT")
-	router.HandleFunc("/product/:id", security.SecureHandler(productHandler.Delete)).Methods("DELETE")
+	subrouterProduct := router.PathPrefix("/product").MatcherFunc(func(request *http.Request, match *mux.RouteMatch) bool {
+		log.Default().Println("mather top product")
+		log.Default().Println(match.Vars["id"])
+		return true
+	}).Subrouter()
 
-	router.HandleFunc("/product/top", topProductHandler.FindAll).Methods("GET")
-	router.HandleFunc("/product/top/:id", topProductHandler.FindById).Methods("GET")
-	router.HandleFunc("/product/top", topProductHandler.Save).Methods("POST")
-	router.HandleFunc("/product/top/:id", topProductHandler.Update).Methods("PUT")
-	router.HandleFunc("/product/top/:id", topProductHandler.Delete).Methods("DELETE")
+	subrouterProduct.Handle("/", security.SecureHandler(productHandler.FindAll)).Methods("GET")
+	subrouterProduct.Handle("/category/{id}", security.SecureHandler(productHandler.FindById)).Methods("GET")
+	subrouterProduct.Handle("/{id}", security.SecureHandler(productHandler.FindById)).Methods("GET")
+	subrouterProduct.Handle("/", security.SecureHandler(productHandler.Save)).Methods("POST")
+	subrouterProduct.Handle("/{id}", security.SecureHandler(productHandler.Update)).Methods("PUT")
+	subrouterProduct.Handle("/{id}", security.SecureHandler(productHandler.Delete)).Methods("DELETE")
 
-	router.HandleFunc("/product/recommendation", recommendationProductHandler.FindAll).Methods("GET")
-	router.HandleFunc("/product/recommendation/:id", recommendationProductHandler.FindById).Methods("GET")
-	router.HandleFunc("/product/recommendation", recommendationProductHandler.Save).Methods("POST")
-	router.HandleFunc("/product/recommendation/:id", recommendationProductHandler.Update).Methods("PUT")
-	router.HandleFunc("/product/recommendation/:id", recommendationProductHandler.Delete).Methods("DELETE")
+	subrouterTopProduct := router.PathPrefix("/product/top").MatcherFunc(func(request *http.Request, match *mux.RouteMatch) bool {
+		log.Default().Println("mather top product")
+		return true
+	}).Subrouter()
 
-	//router.PanicHandler = ErrorHandlers.ErrorHandler
+	subrouterTopProduct.HandleFunc("/", topProductHandler.FindAll).Methods("GET")
+	subrouterTopProduct.HandleFunc("/{id}", topProductHandler.FindById).Methods("GET")
+	subrouterTopProduct.HandleFunc("/{id}", topProductHandler.Save).Methods("POST")
+	subrouterTopProduct.HandleFunc("/{id}", topProductHandler.Delete).Methods("DELETE")
+
+	subrouterRecommendatinProduct := router.PathPrefix("/product/recommendation").MatcherFunc(func(request *http.Request, match *mux.RouteMatch) bool {
+		log.Default().Println("mather top product")
+		return true
+	}).Subrouter()
+
+	subrouterRecommendatinProduct.HandleFunc("/", recommendationProductHandler.FindAll).Methods("GET")
+	subrouterRecommendatinProduct.HandleFunc("/{id}", recommendationProductHandler.FindById).Methods("GET")
+	subrouterRecommendatinProduct.HandleFunc("/{id}", recommendationProductHandler.Save).Methods("POST")
+	subrouterRecommendatinProduct.HandleFunc("/{id}", recommendationProductHandler.Delete).Methods("DELETE")
+
+	subrouterWishlist := router.PathPrefix("/wishlist").Subrouter()
+	subrouterWishlist.Handle("/{id}", security.SecureHandler(wishlistHandler.FindByUserId)).Methods("GET")
+	subrouterWishlist.Handle("/{userId}/{productId}", security.SecureHandler(wishlistHandler.FindByUserAndProductId)).Methods("GET")
+	subrouterWishlist.Handle("/{userId}/{productId}", security.SecureHandler(wishlistHandler.Save)).Methods("POST")
+	subrouterWishlist.Handle("/{userId}/{productId}", security.SecureHandler(wishlistHandler.Delete)).Methods("DELETE")
+
+	subrouterCart := router.PathPrefix("/cart").Subrouter()
+	subrouterCart.Handle("/{id}", security.SecureHandler(cartHandler.FindById)).Methods("GET")
+	subrouterCart.Handle("/{userId}/{productId}/{total:[0-9]+}", security.SecureHandler(cartHandler.Save)).Methods("POST")
+	subrouterCart.Handle("/{userId}/{productId}", security.SecureHandler(cartHandler.Delete)).Methods("DELETE")
+
+	subrouterTransaction := router.PathPrefix("/transaction").Subrouter()
+	subrouterTransaction.Handle("/", security.SecureHandler(transactionHandler.Save)).Methods("POST")
+	subrouterTransaction.Handle("/{id}", security.SecureHandler(transactionHandler.FindById)).Methods("GET")
+	subrouterTransaction.Handle("/{id}", security.SecureHandler(transactionHandler.Delete)).Methods("DELETE")
+	subrouterTransaction.Handle("/user/{id}", security.SecureHandler(transactionHandler.FindByUserId)).Methods("GET")
+
+	router.Use(ErrorHandlers.PanicHandler)
 
 	server := http.Server{
 		Addr:    "localhost:8080",

@@ -22,7 +22,7 @@ func (repository CategoryRepositoryImpl) FindById(context context.Context, tx *s
 
 	err := row.Scan(&cm.Id, &cm.Category, &cm.ImageUrl)
 	if err != nil {
-		panic(err.Error())
+		return models.CategoryModel{}
 	}
 	cm.Deleted = false
 

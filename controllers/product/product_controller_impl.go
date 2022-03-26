@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/mux"
 	"go-tunas/customresponses"
 	"go-tunas/helpers"
+	"go-tunas/models"
 	productrepositories "go-tunas/repositories/product"
 	"go-tunas/requestBody"
 	"go-tunas/services/product"
@@ -30,6 +31,11 @@ func (controller ProductControllerImpl) FindById(w http.ResponseWriter, r *http.
 	vars := mux.Vars(r)
 	id := vars["id"]
 	productModel := controller.Service.FindById(id)
+
+	if productModel == (models.ProductModel{}) {
+		customresponses.SendResponse(w, nil, http.StatusNoContent)
+		return
+	}
 	customresponses.SendResponse(w, productModel, http.StatusOK)
 }
 
@@ -76,7 +82,7 @@ func (controller ProductControllerImpl) Update(w http.ResponseWriter, r *http.Re
 func (controller ProductControllerImpl) Delete(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
-	code := http.StatusInternalServerError
+	code := http.StatusNotModified
 	if controller.Service.Delete(id) {
 		code = http.StatusOK
 	}

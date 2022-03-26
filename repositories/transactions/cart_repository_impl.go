@@ -12,7 +12,7 @@ type CartRepositoryImpl struct {
 }
 
 func (repository CartRepositoryImpl) FindByUserId(context context.Context, tx *sql.Tx, userId string) []models.CartModel {
-	query := "SELECT id, name, price, weight, category, total, per_unit, image_url FROM carts WHERE user_id = $1"
+	query := "SELECT id, name, price, weight, category, total, per_unit, image_url FROM cart WHERE user_id = $1"
 	rows, err := tx.QueryContext(context, query, userId)
 	helpers.PanicIfError(err)
 

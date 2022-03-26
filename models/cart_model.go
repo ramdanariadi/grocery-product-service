@@ -8,7 +8,7 @@ type CartModel struct {
 	Category  string
 	PerUnit   int
 	Total     int
-	ImageUrl  string
+	ImageUrl  interface{}
 	ProductId string
 	UserId    string
 }

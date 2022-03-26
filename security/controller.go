@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	_ "embed"
 	"encoding/json"
+	"fmt"
 	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt"
 	"go-tunas/customresponses"
@@ -66,6 +67,7 @@ func (controller SecurityController) Login(w http.ResponseWriter, r *http.Reques
 }
 
 func (controller SecurityController) SignUp(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("sign up controller")
 	user := UserModel{}
 	userByte, err := io.ReadAll(r.Body)
 	helpers.PanicIfError(err)
@@ -81,8 +83,9 @@ func (controller SecurityController) SignUp(w http.ResponseWriter, r *http.Reque
 	helpers.PanicIfError(err)
 
 	defer helpers.CommitOrRollback(tx)
-
+	code := http.StatusBadRequest
 	if controller.Repository.SignUp(user, context.Background(), tx) {
-		customresponses.SendResponse(w, "Created", http.StatusCreated)
+		code = http.StatusCreated
 	}
+	customresponses.SendResponse(w, "Created", code)
 }

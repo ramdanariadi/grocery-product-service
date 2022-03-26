@@ -22,7 +22,6 @@ type TopProductRepository interface {
 	FindById(context context.Context, tx *sql.Tx, id string) models.ProductModel
 	FindAll(context context.Context, tx *sql.Tx) []models.ProductModel
 	Save(context context.Context, tx *sql.Tx, saveRequest requestBody.TopProductSaveRequest) bool
-	Update(context context.Context, tx *sql.Tx, updateRequest requestBody.TopProductSaveRequest, id string) bool
 	Delete(context context.Context, tx *sql.Tx, id string) bool
 }
 
@@ -30,6 +29,5 @@ type RcmdProductRepository interface {
 	FindById(context context.Context, tx *sql.Tx, id string) models.ProductModel
 	FindAll(context context.Context, tx *sql.Tx) []models.ProductModel
 	Save(context context.Context, tx *sql.Tx, saveRequest requestBody.RcmdProductSaveRequest) bool
-	Update(context context.Context, tx *sql.Tx, updateRequest requestBody.RcmdProductSaveRequest, id string) bool
 	Delete(context context.Context, tx *sql.Tx, id string) bool
 }

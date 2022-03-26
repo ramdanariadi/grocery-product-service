@@ -2,14 +2,11 @@ package product
 
 import (
 	"database/sql"
-	"encoding/json"
 	"github.com/gorilla/mux"
 	"go-tunas/customresponses"
-	"go-tunas/helpers"
+	"go-tunas/models"
 	productrepositories "go-tunas/repositories/product"
-	"go-tunas/requestBody"
 	"go-tunas/services/product"
-	"io"
 	"net/http"
 )
 
@@ -20,8 +17,9 @@ type RcmdProductControllerImpl struct {
 func NewRcmdProductControllerImpl(db *sql.DB) *RcmdProductControllerImpl {
 	return &RcmdProductControllerImpl{
 		Service: product.RcmdProductServiceImpl{
-			Repository: productrepositories.RcmdProductRepositoryImpl{
+			RcmdRepository: productrepositories.RcmdProductRepositoryImpl{
 				DB: db},
+			ProductRepository: productrepositories.ProductRepositoryImpl{DB: db},
 		},
 	}
 }
@@ -30,6 +28,12 @@ func (controller RcmdProductControllerImpl) FindById(w http.ResponseWriter, r *h
 	vars := mux.Vars(r)
 	id := vars["id"]
 	productModel := controller.Service.FindById(id)
+
+	if productModel == (models.ProductModel{}) {
+		customresponses.SendResponse(w, nil, http.StatusNoContent)
+		return
+	}
+
 	customresponses.SendResponse(w, productModel, http.StatusOK)
 }
 
@@ -39,36 +43,11 @@ func (controller RcmdProductControllerImpl) FindAll(w http.ResponseWriter, r *ht
 }
 
 func (controller RcmdProductControllerImpl) Save(w http.ResponseWriter, r *http.Request) {
-	body := r.Body
-	bytes, err := io.ReadAll(body)
-	helpers.PanicIfError(err)
-
-	productSaveRequest := requestBody.RcmdProductSaveRequest{}
-	err = json.Unmarshal(bytes, &productSaveRequest)
-	helpers.PanicIfError(err)
+	vars := mux.Vars(r)
 
 	code := http.StatusInternalServerError
-	if controller.Service.Save(productSaveRequest) {
+	if controller.Service.Save(vars["id"]) {
 		code = http.StatusCreated
-	}
-	customresponses.SendResponse(w, "", code)
-}
-
-func (controller RcmdProductControllerImpl) Update(w http.ResponseWriter, r *http.Request) {
-	body := r.Body
-	bytes, err := io.ReadAll(body)
-	helpers.PanicIfError(err)
-
-	productSaveRequest := requestBody.RcmdProductSaveRequest{}
-	err = json.Unmarshal(bytes, &productSaveRequest)
-	helpers.PanicIfError(err)
-
-	vars := mux.Vars(r)
-	id := vars["id"]
-
-	code := http.StatusNotModified
-	if controller.Service.Update(productSaveRequest, id) {
-		code = http.StatusOK
 	}
 	customresponses.SendResponse(w, "", code)
 }

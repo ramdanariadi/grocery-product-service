@@ -31,11 +31,10 @@ func (w WishlistRepositoryImpl) FindByUserId(context context.Context, tx *sql.Tx
 
 func (w WishlistRepositoryImpl) FindByUserAndProductId(context context.Context, tx *sql.Tx, userId string, productId string) product.WishlistResponse {
 	query := "SELECT id, name, price, weight, category, per_unit, image_url FROM liked WHERE user_id = $1 AND product_id = $2"
-	rows, err := tx.QueryContext(context, query, userId, productId)
-	helpers.PanicIfError(err)
+	rows := tx.QueryRowContext(context, query, userId, productId)
 
 	wishlist := product.WishlistResponse{}
-	err = rows.Scan(&wishlist.Id, &wishlist.Name, &wishlist.Price, &wishlist.Weight, &wishlist.Category,
+	err := rows.Scan(&wishlist.Id, &wishlist.Name, &wishlist.Price, &wishlist.Weight, &wishlist.Category,
 		&wishlist.PerUnit, &wishlist.ImageUrl)
 	helpers.PanicIfError(err)
 	return wishlist
@@ -57,6 +56,8 @@ func (w WishlistRepositoryImpl) Delete(context context.Context, tx *sql.Tx, user
 	result, err := tx.ExecContext(context, sql, userId, productId)
 	helpers.PanicIfError(err)
 	affected, err := result.RowsAffected()
-	helpers.PanicIfError(err)
+	if err != nil {
+		return false
+	}
 	return affected > 0
 }
