@@ -16,13 +16,14 @@ type ProductRepositoryImpl struct {
 }
 
 func (repository ProductRepositoryImpl) FindById(context context.Context, tx *sql.Tx, id string) models.ProductModel {
-	query := "SELECT products.id, name, price, per_unit, weight, category, description, products.image_url  " +
+	query := "SELECT products.id, name, price, per_unit, weight, category, category_id, description, products.image_url  " +
 		"FROM products " +
 		"JOIN category ON products.category_id = category.id " +
 		"WHERE products.id = $1"
 	row := tx.QueryRowContext(context, query, id)
 	product := models.ProductModel{}
-	err := row.Scan(&product.Id, &product.Name, &product.Price, &product.PerUnit, &product.Weight, &product.Category,
+	err := row.Scan(&product.Id, &product.Name, &product.Price, &product.PerUnit, &product.Weight,
+		&product.Category, &product.CategoryId,
 		&product.Description, &product.ImageUrl)
 	if err != nil {
 		return models.ProductModel{}
@@ -32,7 +33,7 @@ func (repository ProductRepositoryImpl) FindById(context context.Context, tx *sq
 }
 
 func (repository ProductRepositoryImpl) FindAll(context context.Context, tx *sql.Tx) []models.ProductModel {
-	query := "SELECT products.id, name, price, per_unit, weight, category, description, products.image_url  " +
+	query := "SELECT products.id, name, price, per_unit, weight, category, category_id, description, products.image_url  " +
 		"FROM products " +
 		"JOIN category ON products.category_id = category.id"
 
@@ -41,7 +42,9 @@ func (repository ProductRepositoryImpl) FindAll(context context.Context, tx *sql
 	var products []models.ProductModel
 	for rows.Next() {
 		productTmp := models.ProductModel{}
-		err = rows.Scan(&productTmp.Id, &productTmp.Name, &productTmp.Price, &productTmp.PerUnit, &productTmp.Weight, &productTmp.Category, &productTmp.Description, &productTmp.ImageUrl)
+		err = rows.Scan(&productTmp.Id, &productTmp.Name, &productTmp.Price, &productTmp.PerUnit,
+			&productTmp.Weight, &productTmp.Category, &productTmp.CategoryId,
+			&productTmp.Description, &productTmp.ImageUrl)
 		helpers.PanicIfError(err)
 		products = append(products, productTmp)
 	}

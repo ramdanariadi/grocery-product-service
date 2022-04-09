@@ -1,0 +1,52 @@
+syntax="proto3";
+
+package proto;
+option go_package="/proto/model";
+
+option java_multiple_files = true;
+option java_package = "com.proto.product";
+
+message Product{
+  string name = 1;
+  string id = 2;
+  string category = 3;
+  string imageUrl = 4;
+  uint64 price = 5;
+  uint32 weight = 6;
+  string categoryId = 7;
+  uint64 perUnit = 8;
+  string description = 9;
+}
+
+message ProductId{
+  string id = 1;
+}
+
+message ProductEmpty{
+
+}
+
+message Response{
+  bool status = 1;
+  string message = 2;
+}
+
+message ResponseWithData{
+  bool status = 1;
+  string message = 2;
+  Product data = 3;
+}
+
+message MultipleDataResponse{
+  bool status = 1;
+  string message = 2;
+  repeated Product data = 3;
+}
+
+service ProductService{
+  rpc FindById(ProductId) returns(ResponseWithData);
+  rpc FindAll(ProductEmpty) returns(MultipleDataResponse);
+  rpc Save(Product) returns(Response);
+  rpc Update(Product) returns(Response);
+  rpc Delete(ProductId) returns(Response);
+}
