@@ -3,7 +3,7 @@ package transactions
 import (
 	"context"
 	"database/sql"
-	"go-tunas/models"
+	"github.com/ramdanariadi/grocery-be-golang/models"
 )
 
 type CartRepository interface {

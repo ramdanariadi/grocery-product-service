@@ -2,8 +2,8 @@ package utils
 
 import (
 	"encoding/csv"
-	"go-tunas/helpers"
-	"go-tunas/models"
+	"github.com/ramdanariadi/grocery-be-golang/helpers"
+	"github.com/ramdanariadi/grocery-be-golang/models"
 	"os"
 	"strconv"
 )

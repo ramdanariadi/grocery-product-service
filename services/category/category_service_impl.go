@@ -2,10 +2,10 @@ package category
 
 import (
 	"context"
-	"go-tunas/helpers"
-	categoryModel "go-tunas/models"
-	"go-tunas/repositories/category"
-	"go-tunas/requestBody"
+	"github.com/ramdanariadi/grocery-be-golang/helpers"
+	categoryModel "github.com/ramdanariadi/grocery-be-golang/models"
+	"github.com/ramdanariadi/grocery-be-golang/repositories/category"
+	"github.com/ramdanariadi/grocery-be-golang/requestBody"
 )
 
 type CategoryServiceImpl struct {

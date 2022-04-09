@@ -2,8 +2,8 @@ package tests
 
 import (
 	"fmt"
+	"github.com/ramdanariadi/grocery-be-golang/helpers"
 	"github.com/streadway/amqp"
-	"go-tunas/helpers"
 	"testing"
 )
 

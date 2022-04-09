@@ -2,7 +2,7 @@ package customresponses
 
 import (
 	"encoding/json"
-	"go-tunas/helpers"
+	"github.com/ramdanariadi/grocery-be-golang/helpers"
 	"net/http"
 )
 

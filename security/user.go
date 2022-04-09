@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"github.com/google/uuid"
-	"go-tunas/helpers"
+	"github.com/ramdanariadi/grocery-be-golang/helpers"
 	"golang.org/x/crypto/bcrypt"
 )
 

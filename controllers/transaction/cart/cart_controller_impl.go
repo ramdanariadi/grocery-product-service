@@ -3,11 +3,11 @@ package cart
 import (
 	"database/sql"
 	"github.com/gorilla/mux"
-	"go-tunas/customresponses"
-	"go-tunas/helpers"
-	"go-tunas/repositories/product"
-	"go-tunas/repositories/transactions"
-	"go-tunas/services/transaction"
+	"github.com/ramdanariadi/grocery-be-golang/customresponses"
+	"github.com/ramdanariadi/grocery-be-golang/helpers"
+	"github.com/ramdanariadi/grocery-be-golang/repositories/product"
+	"github.com/ramdanariadi/grocery-be-golang/repositories/transactions"
+	"github.com/ramdanariadi/grocery-be-golang/services/transaction"
 	"net/http"
 	"strconv"
 )

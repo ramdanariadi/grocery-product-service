@@ -3,8 +3,8 @@ package ErrorHandlers
 import (
 	"fmt"
 	"github.com/go-playground/validator/v10"
-	"go-tunas/customresponses"
-	"go-tunas/exception"
+	"github.com/ramdanariadi/grocery-be-golang/customresponses"
+	"github.com/ramdanariadi/grocery-be-golang/exception"
 	"net/http"
 )
 

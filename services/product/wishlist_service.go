@@ -1,7 +1,7 @@
 package product
 
 import (
-	"go-tunas/customresponses/product"
+	"github.com/ramdanariadi/grocery-be-golang/customresponses/product"
 )
 
 type WishlistService interface {

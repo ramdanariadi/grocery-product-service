@@ -3,9 +3,9 @@ package product
 import (
 	"database/sql"
 	"github.com/gorilla/mux"
-	"go-tunas/customresponses"
-	productrepositories "go-tunas/repositories/product"
-	"go-tunas/services/product"
+	"github.com/ramdanariadi/grocery-be-golang/customresponses"
+	productrepositories "github.com/ramdanariadi/grocery-be-golang/repositories/product"
+	"github.com/ramdanariadi/grocery-be-golang/services/product"
 	"net/http"
 )
 

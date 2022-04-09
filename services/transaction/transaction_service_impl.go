@@ -2,10 +2,10 @@ package transaction
 
 import (
 	"context"
-	"go-tunas/customresponses/transaction"
-	"go-tunas/helpers"
-	"go-tunas/models"
-	"go-tunas/repositories/transactions"
+	"github.com/ramdanariadi/grocery-be-golang/customresponses/transaction"
+	"github.com/ramdanariadi/grocery-be-golang/helpers"
+	"github.com/ramdanariadi/grocery-be-golang/models"
+	"github.com/ramdanariadi/grocery-be-golang/repositories/transactions"
 )
 
 type TransactinoServiceImpl struct {

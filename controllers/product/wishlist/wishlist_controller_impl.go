@@ -3,10 +3,10 @@ package wishlist
 import (
 	"database/sql"
 	"github.com/gorilla/mux"
-	"go-tunas/customresponses"
-	"go-tunas/repositories/product"
-	"go-tunas/repositories/transactions"
-	product2 "go-tunas/services/product"
+	"github.com/ramdanariadi/grocery-be-golang/customresponses"
+	"github.com/ramdanariadi/grocery-be-golang/repositories/product"
+	"github.com/ramdanariadi/grocery-be-golang/repositories/transactions"
+	product2 "github.com/ramdanariadi/grocery-be-golang/services/product"
 	"net/http"
 )
 

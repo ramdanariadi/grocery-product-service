@@ -1,4 +1,4 @@
-module go-tunas
+module github.com/ramdanariadi/grocery-be-golang
 
 go 1.17
 

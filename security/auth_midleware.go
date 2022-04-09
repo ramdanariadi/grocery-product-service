@@ -4,8 +4,8 @@ import (
 	_ "embed"
 	"fmt"
 	"github.com/golang-jwt/jwt"
-	"go-tunas/customresponses"
-	"go-tunas/helpers"
+	"github.com/ramdanariadi/grocery-be-golang/customresponses"
+	"github.com/ramdanariadi/grocery-be-golang/helpers"
 	"net/http"
 	"strings"
 )

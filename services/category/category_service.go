@@ -1,8 +1,8 @@
 package category
 
 import (
-	"go-tunas/models"
-	"go-tunas/requestBody"
+	"github.com/ramdanariadi/grocery-be-golang/models"
+	"github.com/ramdanariadi/grocery-be-golang/requestBody"
 )
 
 type CategoryService interface {

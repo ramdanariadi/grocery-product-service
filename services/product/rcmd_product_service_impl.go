@@ -2,10 +2,10 @@ package product
 
 import (
 	"context"
-	"go-tunas/helpers"
-	"go-tunas/models"
-	"go-tunas/repositories/product"
-	"go-tunas/requestBody"
+	"github.com/ramdanariadi/grocery-be-golang/helpers"
+	"github.com/ramdanariadi/grocery-be-golang/models"
+	"github.com/ramdanariadi/grocery-be-golang/repositories/product"
+	"github.com/ramdanariadi/grocery-be-golang/requestBody"
 )
 
 type RcmdProductServiceImpl struct {

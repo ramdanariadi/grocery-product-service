@@ -3,11 +3,11 @@ package transaction
 import (
 	"context"
 	"github.com/google/uuid"
-	"go-tunas/customresponses/product"
-	"go-tunas/helpers"
-	"go-tunas/models"
-	productrepo "go-tunas/repositories/product"
-	"go-tunas/repositories/transactions"
+	"github.com/ramdanariadi/grocery-be-golang/customresponses/product"
+	"github.com/ramdanariadi/grocery-be-golang/helpers"
+	"github.com/ramdanariadi/grocery-be-golang/models"
+	productrepo "github.com/ramdanariadi/grocery-be-golang/repositories/product"
+	"github.com/ramdanariadi/grocery-be-golang/repositories/transactions"
 )
 
 type CartServiceImpl struct {

@@ -3,9 +3,9 @@ package product
 import (
 	"context"
 	"database/sql"
-	"go-tunas/helpers"
-	"go-tunas/models"
-	"go-tunas/requestBody"
+	"github.com/ramdanariadi/grocery-be-golang/helpers"
+	"github.com/ramdanariadi/grocery-be-golang/models"
+	"github.com/ramdanariadi/grocery-be-golang/requestBody"
 )
 
 type RcmdProductRepositoryImpl struct {

@@ -3,8 +3,8 @@ package transactions
 import (
 	"context"
 	"database/sql"
-	"go-tunas/customresponses/transaction"
-	"go-tunas/models"
+	"github.com/ramdanariadi/grocery-be-golang/customresponses/transaction"
+	"github.com/ramdanariadi/grocery-be-golang/models"
 )
 
 type TransactionRepository interface {

@@ -3,11 +3,11 @@ package product
 import (
 	"context"
 	"github.com/google/uuid"
-	productresponse "go-tunas/customresponses/product"
-	"go-tunas/helpers"
-	"go-tunas/models"
-	"go-tunas/repositories/product"
-	"go-tunas/repositories/transactions"
+	productresponse "github.com/ramdanariadi/grocery-be-golang/customresponses/product"
+	"github.com/ramdanariadi/grocery-be-golang/helpers"
+	"github.com/ramdanariadi/grocery-be-golang/models"
+	"github.com/ramdanariadi/grocery-be-golang/repositories/product"
+	"github.com/ramdanariadi/grocery-be-golang/repositories/transactions"
 )
 
 type WishlistServiceImpl struct {

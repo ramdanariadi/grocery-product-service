@@ -3,8 +3,8 @@ package transactions
 import (
 	"context"
 	"database/sql"
-	"go-tunas/customresponses/product"
-	"go-tunas/models"
+	"github.com/ramdanariadi/grocery-be-golang/customresponses/product"
+	"github.com/ramdanariadi/grocery-be-golang/models"
 )
 
 type WishlistRepository interface {
