@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/go-tunas.iml" filepath="$PROJECT_DIR$/.idea/go-tunas.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../goTunasMailing/.idea/goTunasMailing.iml" filepath="$PROJECT_DIR$/../goTunasMailing/.idea/goTunasMailing.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../goTunasReport/.idea/goTunasReport.iml" filepath="$PROJECT_DIR$/../goTunasReport/.idea/goTunasReport.iml" />
     </modules>
   </component>
 </project>

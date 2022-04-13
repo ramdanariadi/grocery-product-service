@@ -21,5 +21,5 @@ type ProductModel struct {
 	Description string      `json:"description"`
 	ImageUrl    interface{} `json:"imageUrl"`
 	Name        string      `json:"name"`
-	CategoryId  string
+	CategoryId  string      `json:"categoryId"`
 }

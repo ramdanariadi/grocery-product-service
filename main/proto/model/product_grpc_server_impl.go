@@ -3,29 +3,50 @@ package model
 import (
 	"context"
 	"database/sql"
-	helpers2 "github.com/ramdanariadi/grocery-be-golang/main/helpers"
-	productrepo "github.com/ramdanariadi/grocery-be-golang/main/repositories/product"
+	"encoding/json"
+	"github.com/go-redis/redis/v8"
+	"github.com/ramdanariadi/grocery-be-golang/main/helpers"
+	"github.com/ramdanariadi/grocery-be-golang/main/models"
+	"github.com/ramdanariadi/grocery-be-golang/main/repositories/product"
 	"github.com/ramdanariadi/grocery-be-golang/main/requestBody"
+	"github.com/ramdanariadi/grocery-be-golang/main/utils"
+	"time"
 )
 
 type ProductServiceServerImpl struct {
-	Repository productrepo.ProductRepositoryImpl
+	Repository  product.ProductRepositoryImpl
+	RedisClient *redis.Client
 }
 
 func NewProductServiceServerImpl(db *sql.DB) *ProductServiceServerImpl {
 	return &ProductServiceServerImpl{
-		Repository: productrepo.ProductRepositoryImpl{
+		Repository: product.ProductRepositoryImpl{
 			DB: db,
 		},
+		RedisClient: utils.NewRedisClient(),
 	}
 }
 
 func (server ProductServiceServerImpl) FindById(ctx context.Context, id *ProductId) (*ResponseWithData, error) {
 	tx, err := server.Repository.DB.Begin()
-	helpers2.PanicIfError(err)
-	defer helpers2.CommitOrRollback(tx)
+	helpers.PanicIfError(err)
+	defer helpers.CommitOrRollback(tx)
 
-	productModel := server.Repository.FindById(ctx, tx, id.Id)
+	var productModel models.ProductModel
+	cache, _ := server.RedisClient.Get(ctx, id.GetId()).Result()
+	helpers.LogIfError(err)
+
+	if cache != "" {
+		err := json.Unmarshal([]byte(cache), &productModel)
+		helpers.LogIfError(err)
+	} else {
+		productModel = server.Repository.FindById(ctx, tx, id.Id)
+		bytes, err := json.Marshal(productModel)
+		helpers.LogIfError(err)
+		err = server.RedisClient.Set(ctx, id.GetId(), bytes, 1*time.Hour).Err()
+		helpers.LogIfError(err)
+	}
+
 	imageUrl := ""
 	if str, ok := productModel.ImageUrl.(string); ok {
 		imageUrl = str
@@ -46,28 +67,28 @@ func (server ProductServiceServerImpl) FindById(ctx context.Context, id *Product
 	}, nil
 }
 
-func (server ProductServiceServerImpl) FindAll(ctx context.Context, empty *ProductEmpty) (*MultipleDataResponse, error) {
+func (server ProductServiceServerImpl) FindAll(ctx context.Context, _ *ProductEmpty) (*MultipleDataResponse, error) {
 	tx, err := server.Repository.DB.Begin()
-	helpers2.PanicIfError(err)
-	defer helpers2.CommitOrRollback(tx)
+	helpers.PanicIfError(err)
+	defer helpers.CommitOrRollback(tx)
 
 	products := server.Repository.FindAll(ctx, tx)
 	var data []*Product
 
-	for _, product := range products {
+	for _, productModel := range products {
 		var imageUrl string
-		if str, ok := product.ImageUrl.(string); ok {
+		if str, ok := productModel.ImageUrl.(string); ok {
 			imageUrl = str
 		}
 
 		data = append(data, &Product{
-			Id:         product.Id,
-			Name:       product.Name,
-			Price:      uint64(product.Price),
-			CategoryId: product.CategoryId,
-			Category:   product.Category,
+			Id:         productModel.Id,
+			Name:       productModel.Name,
+			Price:      uint64(productModel.Price),
+			CategoryId: productModel.CategoryId,
+			Category:   productModel.Category,
 			ImageUrl:   imageUrl,
-			Weight:     uint32(product.Weight),
+			Weight:     uint32(productModel.Weight),
 		})
 	}
 
@@ -80,8 +101,8 @@ func (server ProductServiceServerImpl) FindAll(ctx context.Context, empty *Produ
 
 func (server ProductServiceServerImpl) Save(ctx context.Context, product *Product) (*Response, error) {
 	tx, err := server.Repository.DB.Begin()
-	helpers2.PanicIfError(err)
-	defer helpers2.CommitOrRollback(tx)
+	helpers.PanicIfError(err)
+	defer helpers.CommitOrRollback(tx)
 
 	newProduct := requestBody.ProductSaveRequest{
 		Name:        product.Name,
@@ -101,8 +122,8 @@ func (server ProductServiceServerImpl) Save(ctx context.Context, product *Produc
 
 func (server ProductServiceServerImpl) Update(ctx context.Context, product *Product) (*Response, error) {
 	tx, err := server.Repository.DB.Begin()
-	helpers2.PanicIfError(err)
-	defer helpers2.CommitOrRollback(tx)
+	helpers.PanicIfError(err)
+	defer helpers.CommitOrRollback(tx)
 
 	updateProduct := requestBody.ProductSaveRequest{
 		Name:        product.Name,
@@ -120,9 +141,9 @@ func (server ProductServiceServerImpl) Update(ctx context.Context, product *Prod
 
 func (server ProductServiceServerImpl) Delete(ctx context.Context, id *ProductId) (*Response, error) {
 	tx, err := server.Repository.DB.Begin()
-	helpers2.PanicIfError(err)
+	helpers.PanicIfError(err)
 	status := server.Repository.Delete(ctx, tx, id.Id)
-	defer helpers2.CommitOrRollback(tx)
+	defer helpers.CommitOrRollback(tx)
 	return &Response{Status: status, Message: "OK"}, nil
 }
 
