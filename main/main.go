@@ -3,7 +3,7 @@ package main
 import (
 	_ "github.com/lib/pq"
 	"github.com/ramdanariadi/grocery-be-golang/main/helpers"
-	protoModel "github.com/ramdanariadi/grocery-be-golang/main/proto/model"
+	protoModel "github.com/ramdanariadi/grocery-be-golang/main/proto/product"
 	"github.com/ramdanariadi/grocery-be-golang/main/utils"
 	"google.golang.org/grpc"
 	"log"

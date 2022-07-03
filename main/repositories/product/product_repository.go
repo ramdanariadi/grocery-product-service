@@ -10,7 +10,8 @@ import (
 
 type ProductRepository interface {
 	FindById(context context.Context, tx *sql.Tx, id string) models.ProductModel
-	FindAll(context context.Context, tx *sql.Tx) []models.ProductModel
+	FindAll(context context.Context, tx *sql.Tx) *sql.Rows
+	FindByCategory(context context.Context, tx *sql.Tx, id string) *sql.Rows
 	Save(context context.Context, tx *sql.Tx, saveRequest requestBody.ProductSaveRequest) bool
 	SaveFromCSV(waitgroup *sync.WaitGroup, context context.Context, tx *sql.Tx, saveModel models.ProductModelCSV, index int) bool
 	SaveFromCSVWithChannel(waitgroup *sync.WaitGroup, context context.Context, tx *sql.Tx, product chan models.ProductModelCSV) bool

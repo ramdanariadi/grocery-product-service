@@ -32,17 +32,31 @@ func (repository ProductRepositoryImpl) FindById(context context.Context, tx *sq
 	return product
 }
 
-func (repository ProductRepositoryImpl) FindAll(context context.Context, tx *sql.Tx) []models.ProductModel {
+func (repository ProductRepositoryImpl) FindAll(context context.Context, tx *sql.Tx) *sql.Rows {
 	query := "SELECT products.id, name, price, per_unit, weight, category, category_id, description, products.image_url  " +
 		"FROM products " +
 		"JOIN category ON products.category_id = category.id"
 
 	rows, err := tx.QueryContext(context, query)
 	helpers.PanicIfError(err)
+	return rows
+}
+
+func (repository ProductRepositoryImpl) FindByCategory(context context.Context, tx *sql.Tx, id string) *sql.Rows {
+	query := "SELECT products.id, name, price, per_unit, weight, category, category_id, description, products.image_url  " +
+		"FROM products " +
+		"JOIN category ON products.category_id = category.id " +
+		"WHERE products.category_id = $1"
+	rows, err := tx.QueryContext(context, query, id)
+	helpers.PanicIfError(err)
+	return rows
+}
+
+func fetchProducts(rows *sql.Rows) []models.ProductModel {
 	var products []models.ProductModel
 	for rows.Next() {
 		productTmp := models.ProductModel{}
-		err = rows.Scan(&productTmp.Id, &productTmp.Name, &productTmp.Price, &productTmp.PerUnit,
+		err := rows.Scan(&productTmp.Id, &productTmp.Name, &productTmp.Price, &productTmp.PerUnit,
 			&productTmp.Weight, &productTmp.Category, &productTmp.CategoryId,
 			&productTmp.Description, &productTmp.ImageUrl)
 		helpers.PanicIfError(err)

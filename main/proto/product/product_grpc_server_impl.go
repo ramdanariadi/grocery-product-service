@@ -1,4 +1,4 @@
-package model
+package product
 
 import (
 	"context"
@@ -67,36 +67,56 @@ func (server ProductServiceServerImpl) FindById(ctx context.Context, id *Product
 	}, nil
 }
 
+func (server ProductServiceServerImpl) FindProductsByCategory(ctx context.Context, id *CategoryId) (*MultipleDataResponse, error) {
+	tx, err := server.Repository.DB.Begin()
+	helpers.PanicIfError(err)
+	defer helpers.CommitOrRollback(tx)
+
+	if err != nil {
+		return nil, err
+	}
+	productsRaw := server.Repository.FindByCategory(ctx, tx, id.Id)
+	products := fetchProducts(productsRaw)
+
+	return &MultipleDataResponse{
+		Status:  len(products) > 0,
+		Data:    products,
+		Message: "",
+	}, nil
+}
+
 func (server ProductServiceServerImpl) FindAll(ctx context.Context, _ *ProductEmpty) (*MultipleDataResponse, error) {
 	tx, err := server.Repository.DB.Begin()
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 
-	products := server.Repository.FindAll(ctx, tx)
-	var data []*Product
-
-	for _, productModel := range products {
-		var imageUrl string
-		if str, ok := productModel.ImageUrl.(string); ok {
-			imageUrl = str
-		}
-
-		data = append(data, &Product{
-			Id:         productModel.Id,
-			Name:       productModel.Name,
-			Price:      uint64(productModel.Price),
-			CategoryId: productModel.CategoryId,
-			Category:   productModel.Category,
-			ImageUrl:   imageUrl,
-			Weight:     uint32(productModel.Weight),
-		})
-	}
+	productsRaw := server.Repository.FindAll(ctx, tx)
+	products := fetchProducts(productsRaw)
 
 	return &MultipleDataResponse{
 		Status:  len(products) > 0,
-		Data:    data,
+		Data:    products,
 		Message: "",
 	}, nil
+}
+
+func fetchProducts(rows *sql.Rows) []*Product {
+	var products []*Product
+	for rows.Next() {
+		productTmp := Product{ImageUrl: ""}
+		var imageUrl sql.NullString
+		err := rows.Scan(&productTmp.Id, &productTmp.Name, &productTmp.Price, &productTmp.PerUnit,
+			&productTmp.Weight, &productTmp.Category, &productTmp.CategoryId,
+			&productTmp.Description, &imageUrl)
+		helpers.PanicIfError(err)
+
+		if imageUrl.Valid {
+			productTmp.ImageUrl = imageUrl.String
+		}
+
+		products = append(products, &productTmp)
+	}
+	return products
 }
 
 func (server ProductServiceServerImpl) Save(ctx context.Context, product *Product) (*Response, error) {

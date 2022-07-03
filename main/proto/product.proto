@@ -1,7 +1,7 @@
 syntax="proto3";
 
 package proto;
-option go_package="/proto/model";
+option go_package="/proto/product";
 
 option java_multiple_files = true;
 option java_package = "com.proto.product";
@@ -19,6 +19,10 @@ message Product{
 }
 
 message ProductId{
+  string id = 1;
+}
+
+message CategoryId{
   string id = 1;
 }
 
@@ -46,6 +50,7 @@ message MultipleDataResponse{
 service ProductService{
   rpc FindById(ProductId) returns(ResponseWithData);
   rpc FindAll(ProductEmpty) returns(MultipleDataResponse);
+  rpc FindProductsByCategory(CategoryId) returns(MultipleDataResponse);
   rpc Save(Product) returns(Response);
   rpc Update(Product) returns(Response);
   rpc Delete(ProductId) returns(Response);

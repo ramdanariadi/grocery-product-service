@@ -121,7 +121,7 @@ func (repository TransactionRepositoryImpl) Save(context context.Context, tx *sq
 	result, err = tx.ExecContext(context, sqlDetailTransaction, values...)
 	helpers.PanicIfError(err)
 
-	//for _, dt := range model.DetailTransaction {
+	//for _, dt := range product.DetailTransaction {
 	//	id, err := uuid.NewUUID()
 	//	helpers.PanicIfError(err)
 	//
