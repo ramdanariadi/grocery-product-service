@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/ramdanariadi/grocery-be-golang/main/helpers"
-	"github.com/ramdanariadi/grocery-be-golang/main/proto/model"
+	"github.com/ramdanariadi/grocery-be-golang/main/proto/product"
 	"github.com/ramdanariadi/grocery-be-golang/main/utils"
 	"golang.org/x/net/context"
 	"testing"
@@ -13,7 +13,7 @@ import (
 
 func Test_write_redis(t *testing.T) {
 	redisClient := utils.NewRedisClient()
-	product := model.Product{
+	product := product.Product{
 		Id:          "s8s978",
 		Name:        "Brocolly",
 		CategoryId:  "hgu8023",
