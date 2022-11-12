@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/ramdanariadi/grocery-be-golang/main/helpers"
 	"github.com/ramdanariadi/grocery-be-golang/main/models"
-	"github.com/ramdanariadi/grocery-be-golang/main/requestBody"
+	"github.com/ramdanariadi/grocery-be-golang/main/proto/product"
 	"sync"
 )
 
@@ -65,13 +65,13 @@ func fetchProducts(rows *sql.Rows) []models.ProductModel {
 	return products
 }
 
-func (repository ProductRepositoryImpl) Save(context context.Context, tx *sql.Tx, saveRequest requestBody.ProductSaveRequest) bool {
+func (repository ProductRepositoryImpl) Save(context context.Context, tx *sql.Tx, product product.Product) bool {
 	sql := "INSERT INTO products(id, name, weight, price, per_unit, category_id, description, " +
 		"image_url, deleted) " +
 		"VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)"
 	id, _ := uuid.NewUUID()
-	result, err := tx.ExecContext(context, sql, id, saveRequest.Name, saveRequest.Weight, saveRequest.Price,
-		saveRequest.PerUnit, saveRequest.Category, saveRequest.Description, saveRequest.ImageUrl, false)
+	result, err := tx.ExecContext(context, sql, id, product.Name, product.Weight, product.Price,
+		product.PerUnit, product.Category, product.Description, product.ImageUrl, false)
 	helpers.PanicIfError(err)
 	affected, err := result.RowsAffected()
 	helpers.PanicIfError(err)
@@ -145,12 +145,12 @@ func (repository ProductRepositoryImpl) SaveFromCSVWithChannel(waitgroup *sync.W
 	return true
 }
 
-func (repository ProductRepositoryImpl) Update(context context.Context, tx *sql.Tx, updateRequest requestBody.ProductSaveRequest, id string) bool {
+func (repository ProductRepositoryImpl) Update(context context.Context, tx *sql.Tx, product product.Product) bool {
 	sql := "UPDATE products SET name=$1, price=$2, weight=$3, category_id=$4, per_unit=$5," +
 		"description=$6, image_url=$7" +
 		"WHERE id = $8"
-	result, err := tx.ExecContext(context, sql, updateRequest.Name, updateRequest.Price, updateRequest.Weight,
-		updateRequest.Category, updateRequest.PerUnit, updateRequest.Description, updateRequest.ImageUrl, id)
+	result, err := tx.ExecContext(context, sql, product.Name, product.Price, product.Weight,
+		product.Category, product.PerUnit, product.Description, product.ImageUrl, product.Id)
 	helpers.PanicIfError(err)
 	affected, err := result.RowsAffected()
 	helpers.PanicIfError(err)

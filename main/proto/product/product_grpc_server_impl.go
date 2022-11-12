@@ -8,7 +8,6 @@ import (
 	"github.com/ramdanariadi/grocery-be-golang/main/helpers"
 	"github.com/ramdanariadi/grocery-be-golang/main/models"
 	"github.com/ramdanariadi/grocery-be-golang/main/repositories/product"
-	"github.com/ramdanariadi/grocery-be-golang/main/requestBody"
 	"github.com/ramdanariadi/grocery-be-golang/main/utils"
 	"time"
 )
@@ -124,16 +123,7 @@ func (server ProductServiceServerImpl) Save(ctx context.Context, product *Produc
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 
-	newProduct := requestBody.ProductSaveRequest{
-		Name:        product.Name,
-		Price:       int64(product.Price),
-		Weight:      uint(product.Weight),
-		PerUnit:     int(product.PerUnit),
-		Description: product.Description,
-		Category:    product.CategoryId,
-		ImageUrl:    product.ImageUrl,
-	}
-	saved := server.Repository.Save(ctx, tx, newProduct)
+	saved := server.Repository.Save(ctx, tx, *product)
 	return &Response{
 		Status:  saved,
 		Message: "OK",
@@ -145,14 +135,7 @@ func (server ProductServiceServerImpl) Update(ctx context.Context, product *Prod
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 
-	updateProduct := requestBody.ProductSaveRequest{
-		Name:        product.Name,
-		Price:       int64(product.Price),
-		Weight:      uint(product.Weight),
-		PerUnit:     int(product.PerUnit),
-		Description: product.Description,
-	}
-	updated := server.Repository.Update(ctx, tx, updateProduct, product.Id)
+	updated := server.Repository.Update(ctx, tx, *product)
 	return &Response{
 		Status:  updated,
 		Message: "OK",

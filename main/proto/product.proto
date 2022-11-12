@@ -26,23 +26,21 @@ message CategoryId{
   string id = 1;
 }
 
-message ProductEmpty{
-
-}
+message ProductEmpty{}
 
 message Response{
-  bool status = 1;
+  string code = 1;
   string message = 2;
 }
 
 message ResponseWithData{
-  bool status = 1;
+  string status = 1;
   string message = 2;
   Product data = 3;
 }
 
 message MultipleDataResponse{
-  bool status = 1;
+  string status = 1;
   string message = 2;
   repeated Product data = 3;
 }
