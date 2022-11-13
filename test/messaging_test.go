@@ -2,7 +2,7 @@ package test
 
 import (
 	"fmt"
-	"github.com/ramdanariadi/grocery-be-golang/main/helpers"
+	"github.com/ramdanariadi/grocery-product-service/main/helpers"
 	"github.com/streadway/amqp"
 	"testing"
 )

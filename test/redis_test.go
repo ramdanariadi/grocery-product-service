@@ -3,9 +3,9 @@ package test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/ramdanariadi/grocery-be-golang/main/helpers"
-	"github.com/ramdanariadi/grocery-be-golang/main/proto/product"
-	"github.com/ramdanariadi/grocery-be-golang/main/utils"
+	"github.com/ramdanariadi/grocery-product-service/main/helpers"
+	"github.com/ramdanariadi/grocery-product-service/main/proto/product"
+	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"golang.org/x/net/context"
 	"testing"
 	"time"

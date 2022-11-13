@@ -1,4 +1,4 @@
-module github.com/ramdanariadi/grocery-be-golang
+module github.com/ramdanariadi/grocery-product-service
 
 go 1.17
 
