@@ -2,8 +2,8 @@ package utils
 
 import (
 	"encoding/csv"
-	"github.com/ramdanariadi/grocery-be-golang/main/helpers"
-	"github.com/ramdanariadi/grocery-be-golang/main/models"
+	"github.com/ramdanariadi/grocery-product-service/main/helpers"
+	"github.com/ramdanariadi/grocery-product-service/main/models"
 	"os"
 	"strconv"
 )

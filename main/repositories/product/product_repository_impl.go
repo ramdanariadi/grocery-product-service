@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/google/uuid"
-	"github.com/ramdanariadi/grocery-be-golang/main/helpers"
-	"github.com/ramdanariadi/grocery-be-golang/main/models"
+	"github.com/ramdanariadi/grocery-product-service/main/helpers"
+	"github.com/ramdanariadi/grocery-product-service/main/models"
 	"sync"
 )
 

@@ -2,9 +2,9 @@ package main
 
 import (
 	_ "github.com/lib/pq"
-	"github.com/ramdanariadi/grocery-be-golang/main/helpers"
-	protoModel "github.com/ramdanariadi/grocery-be-golang/main/proto/product"
-	"github.com/ramdanariadi/grocery-be-golang/main/utils"
+	"github.com/ramdanariadi/grocery-product-service/main/helpers"
+	protoModel "github.com/ramdanariadi/grocery-product-service/main/proto/product"
+	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"google.golang.org/grpc"
 	"log"
 	"net"

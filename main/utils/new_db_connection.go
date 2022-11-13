@@ -3,7 +3,7 @@ package utils
 import (
 	"database/sql"
 	_ "github.com/lib/pq"
-	"github.com/ramdanariadi/grocery-be-golang/main/helpers"
+	"github.com/ramdanariadi/grocery-product-service/main/helpers"
 )
 
 func NewDbConnection() (*sql.DB, error) {

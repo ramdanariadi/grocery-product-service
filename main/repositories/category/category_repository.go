@@ -3,8 +3,8 @@ package category
 import (
 	"context"
 	"database/sql"
-	"github.com/ramdanariadi/grocery-be-golang/main/models"
-	"github.com/ramdanariadi/grocery-be-golang/main/requestBody"
+	"github.com/ramdanariadi/grocery-product-service/main/models"
+	"github.com/ramdanariadi/grocery-product-service/main/requestBody"
 )
 
 type CategoryRepository interface {

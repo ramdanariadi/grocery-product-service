@@ -3,7 +3,7 @@ package product
 import (
 	"context"
 	"database/sql"
-	"github.com/ramdanariadi/grocery-be-golang/main/models"
+	"github.com/ramdanariadi/grocery-product-service/main/models"
 	"sync"
 )
 
