@@ -3,7 +3,7 @@ package main
 import (
 	_ "github.com/lib/pq"
 	"github.com/ramdanariadi/grocery-product-service/main/helpers"
-	protoModel "github.com/ramdanariadi/grocery-product-service/main/proto/product"
+	protoModel "github.com/ramdanariadi/grocery-product-service/main/service/product"
 	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"google.golang.org/grpc"
 	"log"

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"github.com/go-redis/redis/v8"
+	"github.com/google/uuid"
 	"github.com/ramdanariadi/grocery-product-service/main/helpers"
 	"github.com/ramdanariadi/grocery-product-service/main/models"
 	"github.com/ramdanariadi/grocery-product-service/main/repositories/product"
@@ -50,7 +51,7 @@ func (server ProductServiceServerImpl) FindById(ctx context.Context, id *Product
 	if str, ok := productModel.ImageUrl.(string); ok {
 		imageUrl = str
 	}
-	grpcProductModel := &Product{
+	grpcProductModel := Product{
 		Id:         productModel.Id,
 		Name:       productModel.Name,
 		Weight:     productModel.Weight,
@@ -62,7 +63,7 @@ func (server ProductServiceServerImpl) FindById(ctx context.Context, id *Product
 	return &ResponseWithData{
 		Message: "OK",
 		Status:  "Success",
-		Data:    grpcProductModel,
+		Data:    &grpcProductModel,
 	}, nil
 }
 
@@ -123,8 +124,9 @@ func (server ProductServiceServerImpl) Save(ctx context.Context, product *Produc
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 
+	id, _ := uuid.NewUUID()
 	productModel := models.ProductModel{
-		Id:          product.Id,
+		Id:          id.String(),
 		Name:        product.Name,
 		Weight:      product.Weight,
 		Category:    product.Category,

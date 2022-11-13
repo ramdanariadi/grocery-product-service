@@ -65,12 +65,10 @@ func fetchProducts(rows *sql.Rows) []models.ProductModel {
 }
 
 func (repository ProductRepositoryImpl) Save(context context.Context, tx *sql.Tx, product models.ProductModel) bool {
-	sql := "INSERT INTO products(id, name, weight, price, per_unit, category_id, description, " +
-		"image_url, deleted) " +
+	sql := "INSERT INTO products(id, name, weight, price, per_unit, category_id, description, image_url, deleted) " +
 		"VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)"
-	id, _ := uuid.NewUUID()
-	result, err := tx.ExecContext(context, sql, id, product.Name, product.Weight, product.Price,
-		product.PerUnit, product.Category, product.Description, product.ImageUrl, false)
+	result, err := tx.ExecContext(context, sql, product.Id, product.Name, product.Weight, product.Price,
+		product.PerUnit, product.CategoryId, product.Description, product.ImageUrl, false)
 	helpers.PanicIfError(err)
 	affected, err := result.RowsAffected()
 	helpers.PanicIfError(err)

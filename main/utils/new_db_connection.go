@@ -7,7 +7,7 @@ import (
 )
 
 func NewDbConnection() (*sql.DB, error) {
-	connStr := "postgres://postgres:secret@localhost/productService?sslmode=disable"
+	connStr := "postgres://postgres:secret@localhost/grocery-product-service?sslmode=disable"
 	db, err := sql.Open("postgres", connStr)
 	helpers.PanicIfError(err)
 	return db, err
