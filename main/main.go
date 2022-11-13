@@ -20,8 +20,8 @@ func main() {
 
 	implementedServer := protoModel.NewProductServiceServerImpl(db)
 	protoModel.RegisterProductServiceServer(grpcServer, implementedServer)
+	log.Println("gRPC server running on port 9000")
 
 	err = grpcServer.Serve(listen)
 	helpers.PanicIfError(err)
-	log.Println("gRPC server running on port 9000")
 }

@@ -1,7 +1,6 @@
 package product
 
 import (
-	"context"
 	"database/sql"
 	"encoding/json"
 	"github.com/go-redis/redis/v8"
@@ -9,6 +8,7 @@ import (
 	"github.com/ramdanariadi/grocery-be-golang/main/models"
 	"github.com/ramdanariadi/grocery-be-golang/main/repositories/product"
 	"github.com/ramdanariadi/grocery-be-golang/main/utils"
+	"golang.org/x/net/context"
 	"time"
 )
 
@@ -53,15 +53,15 @@ func (server ProductServiceServerImpl) FindById(ctx context.Context, id *Product
 	grpcProductModel := &Product{
 		Id:         productModel.Id,
 		Name:       productModel.Name,
-		Weight:     uint32(productModel.Weight),
+		Weight:     productModel.Weight,
 		Category:   productModel.Category,
 		ImageUrl:   imageUrl,
 		CategoryId: productModel.CategoryId,
-		Price:      uint64(productModel.Price),
+		Price:      productModel.Price,
 	}
 	return &ResponseWithData{
 		Message: "OK",
-		Status:  true,
+		Status:  "Success",
 		Data:    grpcProductModel,
 	}, nil
 }
@@ -76,11 +76,11 @@ func (server ProductServiceServerImpl) FindProductsByCategory(ctx context.Contex
 	}
 	productsRaw := server.Repository.FindByCategory(ctx, tx, id.Id)
 	products := fetchProducts(productsRaw)
-
+	status, message := utils.FetchResponseForCollection(len(products) > 0)
 	return &MultipleDataResponse{
-		Status:  len(products) > 0,
+		Status:  status,
 		Data:    products,
-		Message: "",
+		Message: message,
 	}, nil
 }
 
@@ -91,11 +91,11 @@ func (server ProductServiceServerImpl) FindAll(ctx context.Context, _ *ProductEm
 
 	productsRaw := server.Repository.FindAll(ctx, tx)
 	products := fetchProducts(productsRaw)
-
+	status, message := utils.FetchResponseForCollection(len(products) > 0)
 	return &MultipleDataResponse{
-		Status:  len(products) > 0,
+		Status:  status,
 		Data:    products,
-		Message: "",
+		Message: message,
 	}, nil
 }
 
@@ -123,10 +123,21 @@ func (server ProductServiceServerImpl) Save(ctx context.Context, product *Produc
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 
-	saved := server.Repository.Save(ctx, tx, *product)
+	productModel := models.ProductModel{
+		Id:          product.Id,
+		Name:        product.Name,
+		Weight:      product.Weight,
+		Category:    product.Category,
+		CategoryId:  product.CategoryId,
+		Price:       product.Price,
+		Description: product.Description,
+		ImageUrl:    product.ImageUrl,
+	}
+	saved := server.Repository.Save(ctx, tx, productModel)
+	status, message := utils.FetchResponseForModifying(saved)
 	return &Response{
-		Status:  saved,
-		Message: "OK",
+		Status:  status,
+		Message: message,
 	}, nil
 }
 
@@ -135,19 +146,31 @@ func (server ProductServiceServerImpl) Update(ctx context.Context, product *Prod
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 
-	updated := server.Repository.Update(ctx, tx, *product)
+	productModel := models.ProductModel{
+		Id:          product.Id,
+		Name:        product.Name,
+		Weight:      product.Weight,
+		Category:    product.Category,
+		CategoryId:  product.CategoryId,
+		Price:       product.Price,
+		Description: product.Description,
+		ImageUrl:    product.ImageUrl,
+	}
+	updated := server.Repository.Update(ctx, tx, productModel)
+	status, message := utils.FetchResponseForModifying(updated)
 	return &Response{
-		Status:  updated,
-		Message: "OK",
+		Status:  status,
+		Message: message,
 	}, nil
 }
 
 func (server ProductServiceServerImpl) Delete(ctx context.Context, id *ProductId) (*Response, error) {
 	tx, err := server.Repository.DB.Begin()
 	helpers.PanicIfError(err)
-	status := server.Repository.Delete(ctx, tx, id.Id)
+	deleted := server.Repository.Delete(ctx, tx, id.Id)
+	status, message := utils.FetchResponseForModifying(deleted)
 	defer helpers.CommitOrRollback(tx)
-	return &Response{Status: status, Message: "OK"}, nil
+	return &Response{Status: status, Message: message}, nil
 }
 
 func (server ProductServiceServerImpl) mustEmbedUnimplementedProductServiceServer() {

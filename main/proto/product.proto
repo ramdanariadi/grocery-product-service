@@ -29,7 +29,7 @@ message CategoryId{
 message ProductEmpty{}
 
 message Response{
-  string code = 1;
+  string status = 1;
   string message = 2;
 }
 

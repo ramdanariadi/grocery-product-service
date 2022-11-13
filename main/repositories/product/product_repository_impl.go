@@ -7,7 +7,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/ramdanariadi/grocery-be-golang/main/helpers"
 	"github.com/ramdanariadi/grocery-be-golang/main/models"
-	"github.com/ramdanariadi/grocery-be-golang/main/proto/product"
 	"sync"
 )
 
@@ -65,7 +64,7 @@ func fetchProducts(rows *sql.Rows) []models.ProductModel {
 	return products
 }
 
-func (repository ProductRepositoryImpl) Save(context context.Context, tx *sql.Tx, product product.Product) bool {
+func (repository ProductRepositoryImpl) Save(context context.Context, tx *sql.Tx, product models.ProductModel) bool {
 	sql := "INSERT INTO products(id, name, weight, price, per_unit, category_id, description, " +
 		"image_url, deleted) " +
 		"VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)"
@@ -145,7 +144,7 @@ func (repository ProductRepositoryImpl) SaveFromCSVWithChannel(waitgroup *sync.W
 	return true
 }
 
-func (repository ProductRepositoryImpl) Update(context context.Context, tx *sql.Tx, product product.Product) bool {
+func (repository ProductRepositoryImpl) Update(context context.Context, tx *sql.Tx, product models.ProductModel) bool {
 	sql := "UPDATE products SET name=$1, price=$2, weight=$3, category_id=$4, per_unit=$5," +
 		"description=$6, image_url=$7" +
 		"WHERE id = $8"
