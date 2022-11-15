@@ -1,10 +1,13 @@
-syntax="proto3";
+syntax = "proto3";
 
 package proto;
-option go_package="/service/product";
+option go_package = "/service/product";
 
 option java_multiple_files = true;
-option java_package = "com.proto.product";
+option java_package = "id.grocery.tunas.proto";
+
+import "proto/response.proto";
+import "proto/category.proto";
 
 message Product{
   string name = 1;
@@ -22,33 +25,24 @@ message ProductId{
   string id = 1;
 }
 
-message CategoryId{
-  string id = 1;
-}
-
 message ProductEmpty{}
 
-message Response{
-  string status = 1;
-  string message = 2;
-}
-
-message ResponseWithData{
+message ProductResponse{
   string status = 1;
   string message = 2;
   Product data = 3;
 }
 
-message MultipleDataResponse{
+message MultipleProductResponse{
   string status = 1;
   string message = 2;
   repeated Product data = 3;
 }
 
 service ProductService{
-  rpc FindById(ProductId) returns(ResponseWithData);
-  rpc FindAll(ProductEmpty) returns(MultipleDataResponse);
-  rpc FindProductsByCategory(CategoryId) returns(MultipleDataResponse);
+  rpc FindById(ProductId) returns(ProductResponse);
+  rpc FindAll(ProductEmpty) returns(MultipleProductResponse);
+  rpc FindProductsByCategory(CategoryId) returns(MultipleProductResponse);
   rpc Save(Product) returns(Response);
   rpc Update(Product) returns(Response);
   rpc Delete(ProductId) returns(Response);

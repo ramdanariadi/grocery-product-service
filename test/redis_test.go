@@ -1,10 +1,8 @@
 package test
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/ramdanariadi/grocery-product-service/main/helpers"
-	"github.com/ramdanariadi/grocery-product-service/main/proto/product"
 	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"golang.org/x/net/context"
 	"testing"
@@ -12,23 +10,6 @@ import (
 )
 
 func Test_write_redis(t *testing.T) {
-	redisClient := utils.NewRedisClient()
-	product := product.Product{
-		Id:          "s8s978",
-		Name:        "Brocolly",
-		CategoryId:  "hgu8023",
-		ImageUrl:    "",
-		Description: "Good for health",
-		PerUnit:     100,
-		Weight:      10,
-		Price:       1000,
-		Category:    "Vegetables",
-	}
-	bytes, err := json.Marshal(product)
-	helpers.LogIfError(err)
-	ctx := context.Background()
-	err = redisClient.Set(ctx, "s8s978", bytes, 1*time.Hour).Err()
-	helpers.LogIfError(err)
 }
 
 func Test_read_redis(t *testing.T) {

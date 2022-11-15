@@ -51,19 +51,6 @@ func (repository ProductRepositoryImpl) FindByCategory(context context.Context, 
 	return rows
 }
 
-func fetchProducts(rows *sql.Rows) []models.ProductModel {
-	var products []models.ProductModel
-	for rows.Next() {
-		productTmp := models.ProductModel{}
-		err := rows.Scan(&productTmp.Id, &productTmp.Name, &productTmp.Price, &productTmp.PerUnit,
-			&productTmp.Weight, &productTmp.Category, &productTmp.CategoryId,
-			&productTmp.Description, &productTmp.ImageUrl)
-		helpers.PanicIfError(err)
-		products = append(products, productTmp)
-	}
-	return products
-}
-
 func (repository ProductRepositoryImpl) Save(context context.Context, tx *sql.Tx, product models.ProductModel) bool {
 	sql := "INSERT INTO products(id, name, weight, price, per_unit, category_id, description, image_url, deleted) " +
 		"VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)"

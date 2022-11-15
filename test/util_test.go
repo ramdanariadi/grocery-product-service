@@ -11,6 +11,7 @@ import (
 	utils2 "github.com/ramdanariadi/grocery-product-service/main/utils"
 	"os"
 	"path/filepath"
+	"reflect"
 	"sync"
 	"testing"
 	"time"
@@ -116,5 +117,11 @@ func Test_insert_product_from_csv_with_channel(t *testing.T) {
 	fmt.Println("waitgroup done", time.Now())
 }
 
-func Test_WSC(t *testing.T) {
+func TestObjectEmpty(t *testing.T) {
+	model := models.CategoryModel{}
+	var n interface{}
+	equal := reflect.DeepEqual(model, n)
+	zero := reflect.ValueOf(model).IsZero()
+	fmt.Println(zero)
+	fmt.Println(equal)
 }

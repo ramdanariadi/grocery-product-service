@@ -8,6 +8,8 @@ package product
 
 import (
 	context "context"
+	"github.com/ramdanariadi/grocery-product-service/main/service/category"
+	"github.com/ramdanariadi/grocery-product-service/main/service/response"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -22,12 +24,12 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProductServiceClient interface {
-	FindById(ctx context.Context, in *ProductId, opts ...grpc.CallOption) (*ResponseWithData, error)
-	FindAll(ctx context.Context, in *ProductEmpty, opts ...grpc.CallOption) (*MultipleDataResponse, error)
-	FindProductsByCategory(ctx context.Context, in *CategoryId, opts ...grpc.CallOption) (*MultipleDataResponse, error)
-	Save(ctx context.Context, in *Product, opts ...grpc.CallOption) (*Response, error)
-	Update(ctx context.Context, in *Product, opts ...grpc.CallOption) (*Response, error)
-	Delete(ctx context.Context, in *ProductId, opts ...grpc.CallOption) (*Response, error)
+	FindById(ctx context.Context, in *ProductId, opts ...grpc.CallOption) (*ProductResponse, error)
+	FindAll(ctx context.Context, in *ProductEmpty, opts ...grpc.CallOption) (*MultipleProductResponse, error)
+	FindProductsByCategory(ctx context.Context, in *category.CategoryId, opts ...grpc.CallOption) (*MultipleProductResponse, error)
+	Save(ctx context.Context, in *Product, opts ...grpc.CallOption) (*response.Response, error)
+	Update(ctx context.Context, in *Product, opts ...grpc.CallOption) (*response.Response, error)
+	Delete(ctx context.Context, in *ProductId, opts ...grpc.CallOption) (*response.Response, error)
 }
 
 type productServiceClient struct {
@@ -38,8 +40,8 @@ func NewProductServiceClient(cc grpc.ClientConnInterface) ProductServiceClient {
 	return &productServiceClient{cc}
 }
 
-func (c *productServiceClient) FindById(ctx context.Context, in *ProductId, opts ...grpc.CallOption) (*ResponseWithData, error) {
-	out := new(ResponseWithData)
+func (c *productServiceClient) FindById(ctx context.Context, in *ProductId, opts ...grpc.CallOption) (*ProductResponse, error) {
+	out := new(ProductResponse)
 	err := c.cc.Invoke(ctx, "/proto.ProductService/FindById", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -47,8 +49,8 @@ func (c *productServiceClient) FindById(ctx context.Context, in *ProductId, opts
 	return out, nil
 }
 
-func (c *productServiceClient) FindAll(ctx context.Context, in *ProductEmpty, opts ...grpc.CallOption) (*MultipleDataResponse, error) {
-	out := new(MultipleDataResponse)
+func (c *productServiceClient) FindAll(ctx context.Context, in *ProductEmpty, opts ...grpc.CallOption) (*MultipleProductResponse, error) {
+	out := new(MultipleProductResponse)
 	err := c.cc.Invoke(ctx, "/proto.ProductService/FindAll", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -56,8 +58,8 @@ func (c *productServiceClient) FindAll(ctx context.Context, in *ProductEmpty, op
 	return out, nil
 }
 
-func (c *productServiceClient) FindProductsByCategory(ctx context.Context, in *CategoryId, opts ...grpc.CallOption) (*MultipleDataResponse, error) {
-	out := new(MultipleDataResponse)
+func (c *productServiceClient) FindProductsByCategory(ctx context.Context, in *category.CategoryId, opts ...grpc.CallOption) (*MultipleProductResponse, error) {
+	out := new(MultipleProductResponse)
 	err := c.cc.Invoke(ctx, "/proto.ProductService/FindProductsByCategory", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -65,8 +67,8 @@ func (c *productServiceClient) FindProductsByCategory(ctx context.Context, in *C
 	return out, nil
 }
 
-func (c *productServiceClient) Save(ctx context.Context, in *Product, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *productServiceClient) Save(ctx context.Context, in *Product, opts ...grpc.CallOption) (*response.Response, error) {
+	out := new(response.Response)
 	err := c.cc.Invoke(ctx, "/proto.ProductService/Save", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -74,8 +76,8 @@ func (c *productServiceClient) Save(ctx context.Context, in *Product, opts ...gr
 	return out, nil
 }
 
-func (c *productServiceClient) Update(ctx context.Context, in *Product, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *productServiceClient) Update(ctx context.Context, in *Product, opts ...grpc.CallOption) (*response.Response, error) {
+	out := new(response.Response)
 	err := c.cc.Invoke(ctx, "/proto.ProductService/Update", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -83,8 +85,8 @@ func (c *productServiceClient) Update(ctx context.Context, in *Product, opts ...
 	return out, nil
 }
 
-func (c *productServiceClient) Delete(ctx context.Context, in *ProductId, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *productServiceClient) Delete(ctx context.Context, in *ProductId, opts ...grpc.CallOption) (*response.Response, error) {
+	out := new(response.Response)
 	err := c.cc.Invoke(ctx, "/proto.ProductService/Delete", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -96,12 +98,12 @@ func (c *productServiceClient) Delete(ctx context.Context, in *ProductId, opts .
 // All implementations must embed UnimplementedProductServiceServer
 // for forward compatibility
 type ProductServiceServer interface {
-	FindById(context.Context, *ProductId) (*ResponseWithData, error)
-	FindAll(context.Context, *ProductEmpty) (*MultipleDataResponse, error)
-	FindProductsByCategory(context.Context, *CategoryId) (*MultipleDataResponse, error)
-	Save(context.Context, *Product) (*Response, error)
-	Update(context.Context, *Product) (*Response, error)
-	Delete(context.Context, *ProductId) (*Response, error)
+	FindById(context.Context, *ProductId) (*ProductResponse, error)
+	FindAll(context.Context, *ProductEmpty) (*MultipleProductResponse, error)
+	FindProductsByCategory(context.Context, *category.CategoryId) (*MultipleProductResponse, error)
+	Save(context.Context, *Product) (*response.Response, error)
+	Update(context.Context, *Product) (*response.Response, error)
+	Delete(context.Context, *ProductId) (*response.Response, error)
 	mustEmbedUnimplementedProductServiceServer()
 }
 
@@ -109,22 +111,22 @@ type ProductServiceServer interface {
 type UnimplementedProductServiceServer struct {
 }
 
-func (UnimplementedProductServiceServer) FindById(context.Context, *ProductId) (*ResponseWithData, error) {
+func (UnimplementedProductServiceServer) FindById(context.Context, *ProductId) (*ProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindById not implemented")
 }
-func (UnimplementedProductServiceServer) FindAll(context.Context, *ProductEmpty) (*MultipleDataResponse, error) {
+func (UnimplementedProductServiceServer) FindAll(context.Context, *ProductEmpty) (*MultipleProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindAll not implemented")
 }
-func (UnimplementedProductServiceServer) FindProductsByCategory(context.Context, *CategoryId) (*MultipleDataResponse, error) {
+func (UnimplementedProductServiceServer) FindProductsByCategory(context.Context, *category.CategoryId) (*MultipleProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindProductsByCategory not implemented")
 }
-func (UnimplementedProductServiceServer) Save(context.Context, *Product) (*Response, error) {
+func (UnimplementedProductServiceServer) Save(context.Context, *Product) (*response.Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Save not implemented")
 }
-func (UnimplementedProductServiceServer) Update(context.Context, *Product) (*Response, error) {
+func (UnimplementedProductServiceServer) Update(context.Context, *Product) (*response.Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
-func (UnimplementedProductServiceServer) Delete(context.Context, *ProductId) (*Response, error) {
+func (UnimplementedProductServiceServer) Delete(context.Context, *ProductId) (*response.Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
 func (UnimplementedProductServiceServer) mustEmbedUnimplementedProductServiceServer() {}
@@ -177,7 +179,7 @@ func _ProductService_FindAll_Handler(srv interface{}, ctx context.Context, dec f
 }
 
 func _ProductService_FindProductsByCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CategoryId)
+	in := new(category.CategoryId)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -189,7 +191,7 @@ func _ProductService_FindProductsByCategory_Handler(srv interface{}, ctx context
 		FullMethod: "/proto.ProductService/FindProductsByCategory",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductServiceServer).FindProductsByCategory(ctx, req.(*CategoryId))
+		return srv.(ProductServiceServer).FindProductsByCategory(ctx, req.(*category.CategoryId))
 	}
 	return interceptor(ctx, in, info, handler)
 }

@@ -15,7 +15,7 @@ func TestResponseUtil(t *testing.T) {
 	foos = append(foos, foo{
 		a: "a",
 	})
-	status, message := utils.FetchResponseForCollection(len(foos) > 0)
+	status, message := utils.FetchResponseForQuerying(len(foos) > 0)
 	fmt.Println(status)
 	fmt.Println(message)
 }

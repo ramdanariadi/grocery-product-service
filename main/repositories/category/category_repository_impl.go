@@ -7,7 +7,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/ramdanariadi/grocery-product-service/main/helpers"
 	"github.com/ramdanariadi/grocery-product-service/main/models"
-	"github.com/ramdanariadi/grocery-product-service/main/requestBody"
 )
 
 type CategoryRepositoryImpl struct {
@@ -24,34 +23,20 @@ func (repository CategoryRepositoryImpl) FindById(context context.Context, tx *s
 	if err != nil {
 		return models.CategoryModel{}
 	}
-	cm.Deleted = false
 
 	return cm
 }
 
-func (repository CategoryRepositoryImpl) FindAll(context context.Context, tx *sql.Tx) []models.CategoryModel {
+func (repository CategoryRepositoryImpl) FindAll(context context.Context, tx *sql.Tx) *sql.Rows {
 	query := "select id, category, image_url from category where deleted is false"
 	result, err := tx.QueryContext(context, query)
 	if err != nil {
 		panic("query error")
 	}
-	var categoriesModel []models.CategoryModel
-	for result.Next() {
-		cm := models.CategoryModel{}
-
-		err := result.Scan(&cm.Id, &cm.Category, &cm.ImageUrl)
-		if err != nil {
-			panic("scan error")
-		}
-		cm.Deleted = false
-
-		categoriesModel = append(categoriesModel, cm)
-
-	}
-	return categoriesModel
+	return result
 }
 
-func (repository CategoryRepositoryImpl) Save(context context.Context, tx *sql.Tx, requestBody requestBody.CategorySaveRequest) bool {
+func (repository CategoryRepositoryImpl) Save(context context.Context, tx *sql.Tx, requestBody models.CategoryModel) bool {
 	id, _ := uuid.NewUUID()
 	fmt.Println(requestBody.Category)
 	fmt.Println(id)
@@ -69,9 +54,9 @@ func (repository CategoryRepositoryImpl) Save(context context.Context, tx *sql.T
 	return affected > 0
 }
 
-func (repository CategoryRepositoryImpl) Update(context context.Context, tx *sql.Tx, requestBody requestBody.CategorySaveRequest, id string) bool {
+func (repository CategoryRepositoryImpl) Update(context context.Context, tx *sql.Tx, request models.CategoryModel, id string) bool {
 	sql := "UPDATE category SET category = $1, image_url = $2 WHERE id = $3"
-	result, err := tx.ExecContext(context, sql, requestBody.Category, requestBody.ImageUrl, id)
+	result, err := tx.ExecContext(context, sql, request.Category, request.ImageUrl, id)
 	helpers.PanicIfError(err)
 
 	affected, err := result.RowsAffected()

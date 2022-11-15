@@ -13,7 +13,7 @@ const Success = "SUCCESS"
 // Positive message(s)
 const Ok = "OK"
 
-func FetchResponseForCollection(status bool, message ...string) (string, string) {
+func FetchResponseForQuerying(status bool, message ...string) (string, string) {
 	if status {
 		if len(message) > 0 {
 			return Success, message[0]
