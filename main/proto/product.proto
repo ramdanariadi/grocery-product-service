@@ -19,6 +19,8 @@ message Product{
   string categoryId = 7;
   uint64 perUnit = 8;
   string description = 9;
+  bool isRecommended = 10;
+  bool isTop = 11;
 }
 
 message ProductId{

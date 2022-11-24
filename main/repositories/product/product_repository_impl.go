@@ -3,11 +3,8 @@ package product
 import (
 	"context"
 	"database/sql"
-	"fmt"
-	"github.com/google/uuid"
 	"github.com/ramdanariadi/grocery-product-service/main/helpers"
 	"github.com/ramdanariadi/grocery-product-service/main/models"
-	"sync"
 )
 
 type ProductRepositoryImpl struct {
@@ -52,89 +49,23 @@ func (repository ProductRepositoryImpl) FindByCategory(context context.Context, 
 }
 
 func (repository ProductRepositoryImpl) Save(context context.Context, tx *sql.Tx, product models.ProductModel) bool {
-	sql := "INSERT INTO products(id, name, weight, price, per_unit, category_id, description, image_url, deleted) " +
-		"VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)"
+	sql := "INSERT INTO products(id, name, weight, price, per_unit, category_id, description, image_url, deleted, is_top, is_recommended) " +
+		"VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)"
 	result, err := tx.ExecContext(context, sql, product.Id, product.Name, product.Weight, product.Price,
-		product.PerUnit, product.CategoryId, product.Description, product.ImageUrl, false)
+		product.PerUnit, product.CategoryId, product.Description, product.ImageUrl, false, false, false)
 	helpers.PanicIfError(err)
 	affected, err := result.RowsAffected()
 	helpers.PanicIfError(err)
 	return affected > 0
-}
-
-func (repository ProductRepositoryImpl) SaveFromCSV(waitgroup *sync.WaitGroup, context context.Context, tx *sql.Tx, saveModel models.ProductModelCSV, index int) bool {
-
-	defer waitgroup.Done()
-
-	waitgroup.Add(1)
-	sqlInsert := "INSERT INTO " +
-		"product(id,deleted,price,weight,category_id,per_unit,description,image_url,name) " +
-		"VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)"
-	result, err := tx.ExecContext(context, sqlInsert, saveModel.Id, saveModel.Deleted, saveModel.Price, saveModel.Weight, saveModel.CategoryId, saveModel.PerUnit, saveModel.Description, saveModel.ImageUrl.(string), saveModel.Name)
-	if err != nil {
-		fmt.Println("err exec context")
-	}
-
-	affected, err := result.RowsAffected()
-	if err != nil {
-		fmt.Println("error rows affected")
-	}
-	if index%100 == 0 {
-		fmt.Println(index)
-	}
-	return affected > 0
-}
-
-func (repository ProductRepositoryImpl) SaveFromCSVWithChannel(waitgroup *sync.WaitGroup, context context.Context, tx *sql.Tx, channel chan models.ProductModelCSV) bool {
-	for i := 0; i < 10000; i++ {
-		go func(index int) {
-			defer waitgroup.Done()
-			waitgroup.Add(1)
-
-			saveModel := <-channel
-			id, _ := uuid.NewUUID()
-			saveModel.Id = id.String()
-			var outerError error
-			for {
-				func(outerError *error) {
-					defer func() {
-						err := recover()
-						if err != nil {
-							*outerError = fmt.Errorf("error %v", err)
-						}
-					}()
-
-				}(&outerError)
-
-				sqlInsert := "INSERT INTO " +
-					"product(id,deleted,price,weight,category_id,per_unit,description,image_url,name) " +
-					"VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)"
-				_, err := tx.ExecContext(context, sqlInsert, saveModel.Id, saveModel.Deleted, saveModel.Price, saveModel.Weight, saveModel.CategoryId, saveModel.PerUnit, saveModel.Description, saveModel.ImageUrl.(string), saveModel.Name)
-				if err != nil {
-					fmt.Println("err exec context : ", err)
-					//panic(err)
-				}
-
-				if index%100 == 0 {
-					fmt.Println(index)
-				}
-
-				if outerError == nil {
-					break
-				}
-				//break
-			}
-		}(i)
-	}
-	return true
 }
 
 func (repository ProductRepositoryImpl) Update(context context.Context, tx *sql.Tx, product models.ProductModel) bool {
 	sql := "UPDATE products SET name=$1, price=$2, weight=$3, category_id=$4, per_unit=$5," +
-		"description=$6, image_url=$7" +
-		"WHERE id = $8"
+		"description=$6, image_url=$7, is_top=$8, is_recommended=$9" +
+		"WHERE id = $10"
 	result, err := tx.ExecContext(context, sql, product.Name, product.Price, product.Weight,
-		product.Category, product.PerUnit, product.Description, product.ImageUrl, product.Id)
+		product.Category, product.PerUnit, product.Description, product.ImageUrl, product.IsTop,
+		product.IsRecommended, product.Id)
 	helpers.PanicIfError(err)
 	affected, err := result.RowsAffected()
 	helpers.PanicIfError(err)
@@ -143,7 +74,7 @@ func (repository ProductRepositoryImpl) Update(context context.Context, tx *sql.
 }
 
 func (repository ProductRepositoryImpl) Delete(context context.Context, tx *sql.Tx, id string) bool {
-	sql := "DELETE FROM products WHERE id = $1"
+	sql := "UPDATE products set deleted = true WHERE id = $1"
 	result, err := tx.ExecContext(context, sql, id)
 	helpers.PanicIfError(err)
 	affected, err := result.RowsAffected()
