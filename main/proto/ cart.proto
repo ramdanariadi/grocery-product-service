@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package proto;
+option go_package = "/service/cart";
+
+option java_multiple_files = true;
+option java_package = "id.grocery.tunas.proto";
+
+import "proto/response.proto";
+
+message Cart{
+  string Id        = 1;
+  uint32 total = 2;
+  string ProductId = 3;
+  string UserId    = 4;
+}
+
+message CartId{
+  string Id        = 1;
+}
+
+message CartEmpty{}
+
+message MultipleCartResponse{
+  string status = 1;
+  string message = 2;
+  repeated Cart data = 3;
+}
+
+service CartService{
+  rpc Save(Cart) returns(Response);
+  rpc Delete(CartId) returns(Response);
+  rpc FindAll(CartEmpty) returns(MultipleCartResponse);
+}

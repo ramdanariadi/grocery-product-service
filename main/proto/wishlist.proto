@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package proto;
+option go_package = "/service/wishlist";
+
+option java_multiple_files = true;
+option java_package = "id.grocery.tunas.proto";
+
+import 'proto/response.proto';
+
+message Wishlist{
+  string Id        = 1;
+  string ProductId = 2;
+  string UserId    = 3;
+}
+
+message WishlistId{
+  string Id        = 1;
+}
+
+message WishListEmpty{}
+
+message MultipleWishlistResponse{
+  string status = 1;
+  string message = 2;
+  repeated Wishlist data = 3;
+}
+
+service WishlistService{
+  rpc Save(Wishlist) returns(Response);
+  rpc Delete(WishlistId) returns(Response);
+  rpc FindAll(WishListEmpty) returns(MultipleWishlistResponse);
+}
