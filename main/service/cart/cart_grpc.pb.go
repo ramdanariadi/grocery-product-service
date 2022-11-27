@@ -25,7 +25,7 @@ const _ = grpc.SupportPackageIsVersion7
 type CartServiceClient interface {
 	Save(ctx context.Context, in *Cart, opts ...grpc.CallOption) (*response.Response, error)
 	Delete(ctx context.Context, in *CartId, opts ...grpc.CallOption) (*response.Response, error)
-	FindAll(ctx context.Context, in *CartEmpty, opts ...grpc.CallOption) (*MultipleCartResponse, error)
+	FindByUserId(ctx context.Context, in *UserId, opts ...grpc.CallOption) (*MultipleCartResponse, error)
 }
 
 type cartServiceClient struct {
@@ -54,9 +54,9 @@ func (c *cartServiceClient) Delete(ctx context.Context, in *CartId, opts ...grpc
 	return out, nil
 }
 
-func (c *cartServiceClient) FindAll(ctx context.Context, in *CartEmpty, opts ...grpc.CallOption) (*MultipleCartResponse, error) {
+func (c *cartServiceClient) FindByUserId(ctx context.Context, in *UserId, opts ...grpc.CallOption) (*MultipleCartResponse, error) {
 	out := new(MultipleCartResponse)
-	err := c.cc.Invoke(ctx, "/proto.CartService/FindAll", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.CartService/FindByUserId", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +69,7 @@ func (c *cartServiceClient) FindAll(ctx context.Context, in *CartEmpty, opts ...
 type CartServiceServer interface {
 	Save(context.Context, *Cart) (*response.Response, error)
 	Delete(context.Context, *CartId) (*response.Response, error)
-	FindAll(context.Context, *CartEmpty) (*MultipleCartResponse, error)
+	FindByUserId(context.Context, *UserId) (*MultipleCartResponse, error)
 	mustEmbedUnimplementedCartServiceServer()
 }
 
@@ -83,8 +83,8 @@ func (UnimplementedCartServiceServer) Save(context.Context, *Cart) (*response.Re
 func (UnimplementedCartServiceServer) Delete(context.Context, *CartId) (*response.Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
-func (UnimplementedCartServiceServer) FindAll(context.Context, *CartEmpty) (*MultipleCartResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method FindAll not implemented")
+func (UnimplementedCartServiceServer) FindByUserId(context.Context, *UserId) (*MultipleCartResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindByUserId not implemented")
 }
 func (UnimplementedCartServiceServer) mustEmbedUnimplementedCartServiceServer() {}
 
@@ -135,20 +135,20 @@ func _CartService_Delete_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CartService_FindAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CartEmpty)
+func _CartService_FindByUserId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserId)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CartServiceServer).FindAll(ctx, in)
+		return srv.(CartServiceServer).FindByUserId(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.CartService/FindAll",
+		FullMethod: "/proto.CartService/FindByUserId",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CartServiceServer).FindAll(ctx, req.(*CartEmpty))
+		return srv.(CartServiceServer).FindByUserId(ctx, req.(*UserId))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -169,8 +169,8 @@ var CartService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _CartService_Delete_Handler,
 		},
 		{
-			MethodName: "FindAll",
-			Handler:    _CartService_FindAll_Handler,
+			MethodName: "FindByUserId",
+			Handler:    _CartService_FindByUserId_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

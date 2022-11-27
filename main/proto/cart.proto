@@ -19,6 +19,10 @@ message CartId{
   string Id        = 1;
 }
 
+message UserId{
+  string Id = 1;
+}
+
 message CartEmpty{}
 
 message MultipleCartResponse{
@@ -30,5 +34,5 @@ message MultipleCartResponse{
 service CartService{
   rpc Save(Cart) returns(Response);
   rpc Delete(CartId) returns(Response);
-  rpc FindAll(CartEmpty) returns(MultipleCartResponse);
+  rpc FindByUserId(UserId) returns(MultipleCartResponse);
 }
