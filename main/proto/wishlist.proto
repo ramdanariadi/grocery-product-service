@@ -18,6 +18,10 @@ message WishlistId{
   string Id        = 1;
 }
 
+message UserId{
+  string Id = 1;
+}
+
 message WishListEmpty{}
 
 message MultipleWishlistResponse{
@@ -29,5 +33,5 @@ message MultipleWishlistResponse{
 service WishlistService{
   rpc Save(Wishlist) returns(Response);
   rpc Delete(WishlistId) returns(Response);
-  rpc FindAll(WishListEmpty) returns(MultipleWishlistResponse);
+  rpc FindByUserId(UserId) returns(MultipleWishlistResponse);
 }
