@@ -52,12 +52,14 @@ func fetchCategories(rows *sql.Rows) []*Category {
 	var categoriesModel []*Category
 	for rows.Next() {
 		cm := Category{}
-
-		err := rows.Scan(&cm.Id, &cm.Category, &cm.ImageUrl)
+		var imageUrl sql.NullString
+		err := rows.Scan(&cm.Id, &cm.Category, &imageUrl)
 		if err != nil {
 			panic("scan error")
 		}
-
+		if imageUrl.Valid {
+			cm.ImageUrl = imageUrl.String
+		}
 		categoriesModel = append(categoriesModel, &cm)
 
 	}

@@ -14,11 +14,24 @@ message Wishlist{
   string UserId    = 3;
 }
 
-message WishlistId{
+message WishlistDetail{
   string Id        = 1;
+  string ProductId = 2;
+  string UserId    = 3;
+  string Name = 4;
+  uint64 Price = 5;
+  uint32 Weight = 6;
+  string Category = 7;
+  uint64 PerUnit = 8;
+  string ImageUrl = 9;
 }
 
-message UserId{
+message UserAndWishlistId{
+  string WishlistId = 1;
+  string UserId = 2;
+}
+
+message WishlistUserId{
   string Id = 1;
 }
 
@@ -27,11 +40,11 @@ message WishListEmpty{}
 message MultipleWishlistResponse{
   string status = 1;
   string message = 2;
-  repeated Wishlist data = 3;
+  repeated WishlistDetail data = 3;
 }
 
 service WishlistService{
   rpc Save(Wishlist) returns(Response);
-  rpc Delete(WishlistId) returns(Response);
-  rpc FindByUserId(UserId) returns(MultipleWishlistResponse);
+  rpc Delete(UserAndWishlistId) returns(Response);
+  rpc FindByUserId(WishlistUserId) returns(MultipleWishlistResponse);
 }

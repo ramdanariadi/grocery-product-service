@@ -3,11 +3,11 @@ package models
 type CartModel struct {
 	Id        string
 	Name      string
-	Price     int64
-	Weight    uint
+	Price     uint64
+	Weight    uint32
 	Category  string
-	PerUnit   int
-	Total     int
+	PerUnit   uint64
+	Total     uint32
 	ImageUrl  interface{}
 	ProductId string
 	UserId    string

@@ -3,7 +3,6 @@ package transactions
 import (
 	"context"
 	"database/sql"
-	"github.com/ramdanariadi/grocery-product-service/main/customresponses/product"
 	"github.com/ramdanariadi/grocery-product-service/main/helpers"
 	"github.com/ramdanariadi/grocery-product-service/main/models"
 )
@@ -12,28 +11,18 @@ type WishlistRepositoryImpl struct {
 	DB *sql.DB
 }
 
-func (w WishlistRepositoryImpl) FindByUserId(context context.Context, tx *sql.Tx, userId string) []product.WishlistResponse {
-	query := "SELECT id, name, price, weight, category, per_unit, image_url FROM liked WHERE user_id = $1"
+func (w WishlistRepositoryImpl) FindByUserId(context context.Context, tx *sql.Tx, userId string) *sql.Rows {
+	query := "SELECT id, name, price, weight, category, per_unit, image_url FROM liked WHERE customer_id = $1"
 	rows, err := tx.QueryContext(context, query, userId)
 	helpers.PanicIfError(err)
-
-	var wishlists []product.WishlistResponse
-
-	for rows.Next() {
-		wishlistTmp := product.WishlistResponse{}
-		err := rows.Scan(&wishlistTmp.Id, &wishlistTmp.Name, &wishlistTmp.Price, &wishlistTmp.Weight, &wishlistTmp.Category,
-			&wishlistTmp.PerUnit, &wishlistTmp.ImageUrl)
-		helpers.PanicIfError(err)
-		wishlists = append(wishlists, wishlistTmp)
-	}
-	return wishlists
+	return rows
 }
 
-func (w WishlistRepositoryImpl) FindByUserAndProductId(context context.Context, tx *sql.Tx, userId string, productId string) product.WishlistResponse {
+func (w WishlistRepositoryImpl) FindByUserAndProductId(context context.Context, tx *sql.Tx, userId string, productId string) models.WishlistModel {
 	query := "SELECT id, name, price, weight, category, per_unit, image_url FROM liked WHERE user_id = $1 AND product_id = $2"
 	rows := tx.QueryRowContext(context, query, userId, productId)
 
-	wishlist := product.WishlistResponse{}
+	wishlist := models.WishlistModel{}
 	err := rows.Scan(&wishlist.Id, &wishlist.Name, &wishlist.Price, &wishlist.Weight, &wishlist.Category,
 		&wishlist.PerUnit, &wishlist.ImageUrl)
 	helpers.PanicIfError(err)

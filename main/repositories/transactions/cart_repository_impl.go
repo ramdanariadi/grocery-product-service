@@ -11,21 +11,17 @@ type CartRepositoryImpl struct {
 	DB *sql.DB
 }
 
-func (repository CartRepositoryImpl) FindByUserId(context context.Context, tx *sql.Tx, userId string) []models.CartModel {
-	query := "SELECT id, name, price, weight, category, total, per_unit, image_url FROM cart WHERE user_id = $1"
+func (repository CartRepositoryImpl) FindByUserId(context context.Context, tx *sql.Tx, userId string) *sql.Rows {
+	query := "SELECT id, name, price, weight, category, total, per_unit, image_url FROM cart WHERE customer_id = $1"
 	rows, err := tx.QueryContext(context, query, userId)
 	helpers.PanicIfError(err)
+	return rows
+}
 
-	var carts []models.CartModel
-
-	for rows.Next() {
-		cart := models.CartModel{}
-		err := rows.Scan(&cart.Id, &cart.Name, &cart.Price, &cart.Weight, &cart.Category,
-			&cart.Total, &cart.PerUnit, &cart.ImageUrl)
-		helpers.PanicIfError(err)
-		carts = append(carts, cart)
-	}
-	return carts
+func (repository CartRepositoryImpl) FindByUserAndProductId(context context.Context, tx *sql.Tx, userId string, productId string) *sql.Row {
+	query := "SELECT id, name, price, weight, category, total, per_unit, image_url FROM cart WHERE user_id = $1"
+	row := tx.QueryRowContext(context, query, userId)
+	return row
 }
 
 func (repository CartRepositoryImpl) Save(context context.Context, tx *sql.Tx, product models.CartModel) bool {

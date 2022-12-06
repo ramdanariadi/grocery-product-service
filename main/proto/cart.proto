@@ -10,16 +10,30 @@ import "proto/response.proto";
 
 message Cart{
   string Id        = 1;
-  uint32 total = 2;
+  uint32 total     = 2;
   string ProductId = 3;
   string UserId    = 4;
 }
 
-message CartId{
-  string Id        = 1;
+message CartDetail{
+  string Id = 1;
+  string Name = 2;
+  uint64 Price = 3;
+  uint32 Weight = 4;
+  string Category = 5;
+  uint32 PerUnit = 6;
+  uint32 Total = 7;
+  string ImageUrl = 8;
+  string ProductId = 9;
+  string UserId = 10;
 }
 
-message UserId{
+message CartAndUserId{
+  string Id        = 1;
+  string UserId = 2;
+}
+
+message CartUserId{
   string Id = 1;
 }
 
@@ -28,11 +42,11 @@ message CartEmpty{}
 message MultipleCartResponse{
   string status = 1;
   string message = 2;
-  repeated Cart data = 3;
+  repeated CartDetail data = 3;
 }
 
 service CartService{
   rpc Save(Cart) returns(Response);
-  rpc Delete(CartId) returns(Response);
-  rpc FindByUserId(UserId) returns(MultipleCartResponse);
+  rpc Delete(CartAndUserId) returns(Response);
+  rpc FindByUserId(CartUserId) returns(MultipleCartResponse);
 }
