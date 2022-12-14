@@ -9,33 +9,31 @@ option java_package = "id.grocery.tunas.proto";
 import 'proto/response.proto';
 
 message Wishlist{
-  string Id        = 1;
-  string ProductId = 2;
-  string UserId    = 3;
+  string id        = 1;
+  string product_id = 2;
+  string user_id    = 3;
 }
 
 message WishlistDetail{
-  string Id        = 1;
-  string ProductId = 2;
-  string UserId    = 3;
-  string Name = 4;
-  uint64 Price = 5;
-  uint32 Weight = 6;
-  string Category = 7;
-  uint64 PerUnit = 8;
-  string ImageUrl = 9;
+  string id        = 1;
+  string product_id = 2;
+  string user_id    = 3;
+  string name = 4;
+  uint64 price = 5;
+  uint32 weight = 6;
+  string category = 7;
+  uint64 per_unit = 8;
+  string image_url = 9;
 }
 
 message UserAndWishlistId{
-  string WishlistId = 1;
-  string UserId = 2;
+  string wishlist_id = 1;
+  string user_id = 2;
 }
 
 message WishlistUserId{
-  string Id = 1;
+  string id = 1;
 }
-
-message WishListEmpty{}
 
 message MultipleWishlistResponse{
   string status = 1;

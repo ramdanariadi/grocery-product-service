@@ -9,32 +9,32 @@ option java_package = "id.grocery.tunas.proto";
 import "proto/response.proto";
 
 message Cart{
-  string Id        = 1;
+  string id        = 1;
   uint32 total     = 2;
-  string ProductId = 3;
-  string UserId    = 4;
+  string product_id = 3;
+  string user_id    = 4;
 }
 
 message CartDetail{
-  string Id = 1;
-  string Name = 2;
-  uint64 Price = 3;
-  uint32 Weight = 4;
-  string Category = 5;
-  uint32 PerUnit = 6;
-  uint32 Total = 7;
-  string ImageUrl = 8;
-  string ProductId = 9;
-  string UserId = 10;
+  string id = 1;
+  string name = 2;
+  uint64 price = 3;
+  uint32 weight = 4;
+  string category = 5;
+  uint32 per_unit = 6;
+  uint32 total = 7;
+  string image_url = 8;
+  string product_id = 9;
+  string user_id = 10;
 }
 
 message CartAndUserId{
-  string Id        = 1;
-  string UserId = 2;
+  string id = 1;
+  string user_id = 2;
 }
 
 message CartUserId{
-  string Id = 1;
+  string id = 1;
 }
 
 message CartEmpty{}

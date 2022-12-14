@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package proto;
+option go_package = "/service/transaction";
+
+option java_multiple_files = true;
+option java_package = "id.grocery.tunas.proto";
+
+import "proto/response.proto";
+
+message TransactionUserId {
+  string id = 1;
+}
+
+message TransactionId{
+  string id = 1;
+}
+
+message TransactionProduct {
+  string product_id = 1;
+  uint32 total = 2;
+}
+
+message TransactionBody {
+  string user_id = 1;
+  repeated TransactionProduct products = 2;
+}
+
+message TransactionProductDetail{
+  string name = 1;
+  string id = 2;
+  string category = 3;
+  string imageUrl = 4;
+  uint64 price = 5;
+  uint32 weight = 6;
+  string category_id = 7;
+  uint64 per_unit = 8;
+  string description = 9;
+  uint32 total = 10;
+}
+
+message Transaction{
+   string transaction_id = 1;
+   uint64 total_price = 2;
+   int64 transaction_date = 3;
+   repeated TransactionProductDetail products = 4;
+}
+
+message Transactions{
+  repeated Transaction transactions = 1;
+}
+
+service TransactionService{
+  rpc FindByTransactionId(TransactionId) returns(Transaction);
+  rpc FindByUserId(TransactionUserId) returns (Transactions);
+  rpc Save(TransactionBody) returns(Response);
+  rpc Delete(TransactionId) returns(Response);
+}

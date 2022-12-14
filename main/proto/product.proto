@@ -16,11 +16,11 @@ message Product{
   string imageUrl = 4;
   uint64 price = 5;
   uint32 weight = 6;
-  string categoryId = 7;
-  uint64 perUnit = 8;
+  string category_id = 7;
+  uint64 per_unit = 8;
   string description = 9;
-  bool isRecommended = 10;
-  bool isTop = 11;
+  bool is_recommended = 10;
+  bool is_top = 11;
 }
 
 message ProductId{
