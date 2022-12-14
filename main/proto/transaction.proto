@@ -37,10 +37,11 @@ message TransactionProductDetail{
   uint64 per_unit = 8;
   string description = 9;
   uint32 total = 10;
+  string product_id = 11;
 }
 
 message Transaction{
-   string transaction_id = 1;
+   string id = 1;
    uint64 total_price = 2;
    int64 transaction_date = 3;
    repeated TransactionProductDetail products = 4;

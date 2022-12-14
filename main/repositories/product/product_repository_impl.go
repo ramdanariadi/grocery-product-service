@@ -28,6 +28,27 @@ func (repository ProductRepositoryImpl) FindById(context context.Context, tx *sq
 	return product
 }
 
+func (repository ProductRepositoryImpl) FindByIds(context context.Context, tx *sql.Tx, ids []string) []*models.ProductModel {
+	query := "SELECT products.id, name, price, per_unit, weight, category, category_id, description, products.image_url  " +
+		"FROM products " +
+		"JOIN category ON products.category_id = category.id " +
+		"WHERE products.id in $1"
+	rows, _ := tx.QueryContext(context, query, ids)
+	var products []*models.ProductModel
+
+	for rows.Next() {
+		product := models.ProductModel{}
+		err := rows.Scan(&product.Id, &product.Name, &product.Price, &product.PerUnit, &product.Weight,
+			&product.Category, &product.CategoryId,
+			&product.Description, &product.ImageUrl)
+		if err != nil {
+			continue
+		}
+		products = append(products, &product)
+	}
+	return products
+}
+
 func (repository ProductRepositoryImpl) FindAll(context context.Context, tx *sql.Tx) *sql.Rows {
 	query := "SELECT products.id, name, price, per_unit, weight, category, category_id, description, products.image_url  " +
 		"FROM products " +
