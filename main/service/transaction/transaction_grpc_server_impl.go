@@ -2,6 +2,7 @@ package transaction
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"github.com/ramdanariadi/grocery-product-service/main/helpers"
 	"github.com/ramdanariadi/grocery-product-service/main/models"
@@ -14,6 +15,13 @@ import (
 type TransactionServiceServerImpl struct {
 	Repository        transactions.TransactionRepositoryImpl
 	ProductRepository product.ProductRepositoryImpl
+}
+
+func NewTransactionServiceServer(db *sql.DB) *TransactionServiceServerImpl {
+	return &TransactionServiceServerImpl{
+		Repository:        transactions.TransactionRepositoryImpl{DB: db},
+		ProductRepository: product.ProductRepositoryImpl{DB: db},
+	}
 }
 
 func (transaction TransactionServiceServerImpl) FindByTransactionId(ctx context.Context, id *TransactionId) (*Transaction, error) {
