@@ -1,27 +1,25 @@
 package models
 
-import "google.golang.org/genproto/googleapis/type/date"
-
 type TransactionModel struct {
-	Id                string
-	UserId            string
-	Name              string
-	TotalPrice        uint64
-	TransactionDate   date.Date
-	DetailTransaction []DetailTransactionProductModel
+	Id                string                           `json:"id"`
+	UserId            string                           `json:"user_id"`
+	Name              string                           `json:"name"`
+	TotalPrice        uint64                           `json:"total_price"`
+	TransactionDate   string                           `json:"transaction_date"`
+	DetailTransaction []*DetailTransactionProductModel `json:"detail_transaction"`
 }
 
 type DetailTransactionProductModel struct {
-	Id            string      `json:"id"`
-	ProductId     string      `json:"productId"`
-	TransactionId string      `json:"transactionId"`
-	Price         uint64      `json:"price"`
-	Weight        uint32      `json:"weight"`
-	Category      string      `json:"category"`
-	PerUnit       uint64      `json:"perUnit"`
-	Description   string      `json:"description"`
-	ImageUrl      interface{} `json:"imageUrl"`
-	Name          string      `json:"name"`
-	CategoryId    string      `json:"categoryId"`
-	Total         uint        `json:"total"`
+	Id            string `json:"id"`
+	ProductId     string `json:"productId"`
+	TransactionId string `json:"transactionId"`
+	Price         uint64 `json:"price"`
+	Weight        uint   `json:"weight"`
+	Category      string `json:"category"`
+	PerUnit       uint   `json:"perUnit"`
+	Description   string `json:"description"`
+	ImageUrl      string `json:"imageUrl"`
+	Name          string `json:"name"`
+	CategoryId    string `json:"categoryId"`
+	Total         uint   `json:"total"`
 }

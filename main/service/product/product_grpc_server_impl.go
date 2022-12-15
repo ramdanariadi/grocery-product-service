@@ -51,19 +51,15 @@ func (server ProductServiceServerImpl) FindById(ctx context.Context, id *Product
 		helpers.LogIfError(err)
 	}
 
-	imageUrl := ""
-	if str, ok := productModel.ImageUrl.(string); ok {
-		imageUrl = str
-	}
 	grpcProductModel := Product{
 		Id:          productModel.Id,
 		Name:        productModel.Name,
-		Weight:      productModel.Weight,
+		Weight:      uint32(productModel.Weight),
 		Category:    productModel.Category,
-		ImageUrl:    imageUrl,
+		ImageUrl:    productModel.ImageUrl,
 		CategoryId:  productModel.CategoryId,
 		Price:       productModel.Price,
-		PerUnit:     productModel.PerUnit,
+		PerUnit:     uint64(productModel.PerUnit),
 		Description: productModel.Description,
 	}
 	return &ProductResponse{
@@ -83,7 +79,7 @@ func (server ProductServiceServerImpl) FindProductsByCategory(ctx context.Contex
 	}
 	raws := server.Repository.FindByCategory(ctx, tx, id.Id)
 	products := fetchProducts(raws)
-	status, message := utils.FetchResponseForQuerying(len(products) > 0)
+	status, message := utils.ResponseForQuerying(len(products) > 0)
 	return &MultipleProductResponse{
 		Status:  status,
 		Data:    products,
@@ -98,7 +94,7 @@ func (server ProductServiceServerImpl) FindAll(ctx context.Context, _ *ProductEm
 
 	raws := server.Repository.FindAll(ctx, tx)
 	products := fetchProducts(raws)
-	status, message := utils.FetchResponseForQuerying(len(products) > 0)
+	status, message := utils.ResponseForQuerying(len(products) > 0)
 	return &MultipleProductResponse{
 		Status:  status,
 		Data:    products,
@@ -140,15 +136,16 @@ func (server ProductServiceServerImpl) Save(ctx context.Context, product *Produc
 	productModel := models.ProductModel{
 		Id:          id.String(),
 		Name:        product.Name,
-		Weight:      product.Weight,
+		Weight:      uint(product.Weight),
 		Category:    category.Category,
 		CategoryId:  category.Id,
 		Price:       product.Price,
+		PerUnit:     uint(product.PerUnit),
 		Description: product.Description,
 		ImageUrl:    product.ImageUrl,
 	}
 	saved := server.Repository.Save(ctx, tx, productModel)
-	status, message := utils.FetchResponseForModifying(saved)
+	status, message := utils.ResponseForModifying(saved)
 	return &response.Response{
 		Status:  status,
 		Message: message,
@@ -170,15 +167,16 @@ func (server ProductServiceServerImpl) Update(ctx context.Context, product *Prod
 	productModel := models.ProductModel{
 		Id:          product.Id,
 		Name:        product.Name,
-		Weight:      product.Weight,
+		Weight:      uint(product.Weight),
 		Category:    category.Category,
 		CategoryId:  category.Id,
 		Price:       product.Price,
+		PerUnit:     uint(product.PerUnit),
 		Description: product.Description,
 		ImageUrl:    product.ImageUrl,
 	}
 	updated := server.Repository.Update(ctx, tx, productModel)
-	status, message := utils.FetchResponseForModifying(updated)
+	status, message := utils.ResponseForModifying(updated)
 	return &response.Response{
 		Status:  status,
 		Message: message,
@@ -189,7 +187,7 @@ func (server ProductServiceServerImpl) Delete(ctx context.Context, id *ProductId
 	tx, err := server.Repository.DB.Begin()
 	helpers.PanicIfError(err)
 	deleted := server.Repository.Delete(ctx, tx, id.Id)
-	status, message := utils.FetchResponseForModifying(deleted)
+	status, message := utils.ResponseForModifying(deleted)
 	defer helpers.CommitOrRollback(tx)
 	return &response.Response{Status: status, Message: message}, nil
 }

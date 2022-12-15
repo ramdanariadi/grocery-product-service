@@ -24,7 +24,7 @@ func NewCategoryServiceServerImpl(db *sql.DB) *CategoryServiceServerImpl {
 func (server *CategoryServiceServerImpl) FindById(context context.Context, categoryId *CategoryId) (*CategoryResponse, error) {
 	tx, _ := server.Repository.DB.Begin()
 	categoryById := server.Repository.FindById(context, tx, categoryId.String())
-	sts, message := utils.FetchResponseForQuerying(!reflect.ValueOf(categoryById).IsZero())
+	sts, message := utils.ResponseForQuerying(!reflect.ValueOf(categoryById).IsZero())
 	grpcCategory := Category{
 		Category: categoryById.Category,
 		Id:       categoryById.Id,
@@ -40,7 +40,7 @@ func (server *CategoryServiceServerImpl) FindAll(context context.Context, _ *Emp
 	tx, _ := server.Repository.DB.Begin()
 	rows := server.Repository.FindAll(context, tx)
 	categories := fetchCategories(rows)
-	status, message := utils.FetchResponseForQuerying(len(categories) > 0)
+	status, message := utils.ResponseForQuerying(len(categories) > 0)
 	return &MultipleCategoryResponse{
 		Status:  status,
 		Message: message,
@@ -76,7 +76,7 @@ func (server *CategoryServiceServerImpl) Save(context context.Context, category 
 
 	tx, _ := server.Repository.DB.Begin()
 	saved := server.Repository.Save(context, tx, categoryModel)
-	sts, message := utils.FetchResponseForQuerying(saved)
+	sts, message := utils.ResponseForQuerying(saved)
 	return &response.Response{
 		Status:  sts,
 		Message: message,
@@ -90,7 +90,7 @@ func (server *CategoryServiceServerImpl) Update(context context.Context, categor
 
 	tx, _ := server.Repository.DB.Begin()
 	updated := server.Repository.Update(context, tx, categoryModel, category.Id)
-	sts, message := utils.FetchResponseForQuerying(updated)
+	sts, message := utils.ResponseForQuerying(updated)
 	return &response.Response{
 		Status:  sts,
 		Message: message,
@@ -99,7 +99,7 @@ func (server *CategoryServiceServerImpl) Update(context context.Context, categor
 func (server *CategoryServiceServerImpl) Delete(context context.Context, categoryId *CategoryId) (*response.Response, error) {
 	tx, _ := server.Repository.DB.Begin()
 	deleted := server.Repository.Delete(context, tx, categoryId.String())
-	sts, message := utils.FetchResponseForModifying(deleted)
+	sts, message := utils.ResponseForModifying(deleted)
 	return &response.Response{Status: sts, Message: message}, nil
 }
 func (server *CategoryServiceServerImpl) mustEmbedUnimplementedCategoryServiceServer() {}

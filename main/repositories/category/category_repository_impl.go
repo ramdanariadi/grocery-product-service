@@ -19,7 +19,7 @@ func NewCategoryRepository(db *sql.DB) *CategoryRepositoryImpl {
 
 func (repository CategoryRepositoryImpl) FindById(context context.Context, tx *sql.Tx, id string) models.CategoryModel {
 	query := "select id, category, image_url " +
-		"from category where deleted is false and id = $1"
+		"from category where deleted_at is false and id = $1"
 	row := tx.QueryRowContext(context, query, id)
 	cm := models.CategoryModel{}
 
@@ -32,7 +32,7 @@ func (repository CategoryRepositoryImpl) FindById(context context.Context, tx *s
 }
 
 func (repository CategoryRepositoryImpl) FindAll(context context.Context, tx *sql.Tx) *sql.Rows {
-	query := "select id, category, image_url from category where deleted is false"
+	query := "select id, category, image_url from category where deleted_at is false"
 	result, err := tx.QueryContext(context, query)
 	if err != nil {
 		panic("query error")
@@ -45,7 +45,7 @@ func (repository CategoryRepositoryImpl) Save(context context.Context, tx *sql.T
 	fmt.Println(requestBody.Category)
 	fmt.Println(id)
 	fmt.Println("Image url ", requestBody.ImageUrl)
-	sqlInsert := "INSERT INTO category (id, category, image_url, deleted) values($1,$2,$3,$4)"
+	sqlInsert := "INSERT INTO category (id, category, image_url, deleted_at) values($1,$2,$3,$4)"
 	result, err := tx.ExecContext(context, sqlInsert, id.String(), requestBody.Category, requestBody.ImageUrl, false)
 	//result, err := tx.ExecContext(context, sqlInsert, id.String(), requestBody.Category, requestBody.ImageUrl, false)
 	helpers.PanicIfError(err)
@@ -69,7 +69,7 @@ func (repository CategoryRepositoryImpl) Update(context context.Context, tx *sql
 }
 
 func (repository CategoryRepositoryImpl) Delete(context context.Context, tx *sql.Tx, id string) bool {
-	sql := "DELETE FROM category WHERE id = $1"
+	sql := "UPDATE category SET deleted_at = NOW() WHERE id = $1"
 	result, err := tx.ExecContext(context, sql, id)
 	helpers.PanicIfError(err)
 	affected, err := result.RowsAffected()

@@ -32,15 +32,15 @@ func (server CartServiceServerImpl) Save(ctx context.Context, cart *Cart) (*resp
 		ImageUrl:  productModel.ImageUrl,
 		ProductId: productModel.Id,
 		Name:      productModel.Name,
-		Weight:    productModel.Weight,
+		Weight:    uint32(productModel.Weight),
 		Category:  productModel.Category,
 		Price:     productModel.Price,
-		PerUnit:   productModel.PerUnit,
+		PerUnit:   uint64(productModel.PerUnit),
 		UserId:    cart.UserId,
 		Total:     cart.Total,
 	}
 	saved := server.Repository.Save(ctx, tx, cartModel)
-	status, message := utils.FetchResponseForModifying(saved)
+	status, message := utils.ResponseForModifying(saved)
 	return &response.Response{
 		Message: message,
 		Status:  status,
@@ -52,7 +52,7 @@ func (server CartServiceServerImpl) Delete(ctx context.Context, id *CartAndUserI
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 	deleted := server.Repository.Delete(ctx, tx, id.UserId, id.Id)
-	status, message := utils.FetchResponseForModifying(deleted)
+	status, message := utils.ResponseForModifying(deleted)
 	return &response.Response{Message: message, Status: status}, nil
 }
 
@@ -62,7 +62,7 @@ func (server CartServiceServerImpl) FindByUserId(ctx context.Context, id *CartUs
 	defer helpers.CommitOrRollback(tx)
 	rows := server.Repository.FindByUserId(ctx, tx, id.Id)
 	wishlist := fetchWishlist(rows)
-	satus, message := utils.FetchResponseForQuerying(len(wishlist) > 0)
+	satus, message := utils.ResponseForQuerying(len(wishlist) > 0)
 	return &MultipleCartResponse{Status: satus, Message: message, Data: wishlist}, nil
 }
 

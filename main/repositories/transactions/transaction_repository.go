@@ -7,8 +7,8 @@ import (
 )
 
 type TransactionRepository interface {
-	FindByTransactionId(context context.Context, tx *sql.Tx, id string) (*sql.Row, *sql.Rows)
-	FindByUserId(context context.Context, tx *sql.Tx, userId string) (*sql.Rows, *sql.Rows)
+	FindByTransactionId(context context.Context, tx *sql.Tx, id string) *models.TransactionModel
+	FindByUserId(context context.Context, tx *sql.Tx, userId string) []*models.TransactionModel
 	Save(context context.Context, tx *sql.Tx, model models.TransactionModel)
 	Delete(context context.Context, tx *sql.Tx, id string)
 }

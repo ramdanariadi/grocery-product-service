@@ -30,21 +30,21 @@ func (server WishlistServiceServerImpl) Save(ctx context.Context, wishlist *Wish
 	defer helpers.CommitOrRollback(tx)
 	productModel := server.ProductRepository.FindById(ctx, tx, wishlist.ProductId)
 	if utils.IsStructEmpty(productModel) {
-		status, message := utils.FetchResponseForModifying(false)
+		status, message := utils.ResponseForModifying(false)
 		return &response.Response{Status: status, Message: message}, nil
 	}
 	wishlistModel := models.WishlistModel{
 		ImageUrl:  productModel.ImageUrl,
 		Name:      productModel.Name,
-		Weight:    productModel.Weight,
+		Weight:    uint32(productModel.Weight),
 		Category:  productModel.Category,
 		Price:     productModel.Price,
-		PerUnit:   productModel.PerUnit,
+		PerUnit:   uint64(productModel.PerUnit),
 		UserId:    wishlist.UserId,
 		ProductId: productModel.Id,
 	}
 	save := server.Repository.Save(ctx, tx, wishlistModel)
-	status, message := utils.FetchResponseForModifying(save)
+	status, message := utils.ResponseForModifying(save)
 	return &response.Response{Status: status, Message: message}, nil
 }
 
@@ -53,7 +53,7 @@ func (server WishlistServiceServerImpl) Delete(ctx context.Context, id *UserAndW
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 	deleted := server.Repository.Delete(ctx, tx, id.UserId, id.WishlistId)
-	status, message := utils.FetchResponseForModifying(deleted)
+	status, message := utils.ResponseForModifying(deleted)
 	return &response.Response{
 		Status:  status,
 		Message: message,
@@ -67,7 +67,7 @@ func (server WishlistServiceServerImpl) FindByUserId(ctx context.Context, id *Wi
 	wishlistModels := server.Repository.FindByUserId(ctx, tx, id.Id)
 	log.Println("wishlist user id " + id.Id)
 	wishlist := fetchWishlist(wishlistModels)
-	status, message := utils.FetchResponseForQuerying(len(wishlist) > 0)
+	status, message := utils.ResponseForQuerying(len(wishlist) > 0)
 	return &MultipleWishlistResponse{
 		Status:  status,
 		Message: message,
