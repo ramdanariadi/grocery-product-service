@@ -24,17 +24,22 @@ func NewTransactionServiceServer(db *sql.DB) *TransactionServiceServerImpl {
 	}
 }
 
-func (transaction TransactionServiceServerImpl) FindByTransactionId(ctx context.Context, id *TransactionId) (*Transaction, error) {
+func (transaction TransactionServiceServerImpl) FindByTransactionId(ctx context.Context, id *TransactionId) (*TransactionResponse, error) {
 	tx, err := transaction.Repository.DB.Begin()
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 	transactionModel := transaction.Repository.FindByTransactionId(ctx, tx, id.Id)
-	transactionData := Transaction{
-		Id:         transactionModel.Id,
-		TotalPrice: transactionModel.TotalPrice,
+	var transactionData Transaction
+	if !utils.IsStructEmpty(transactionModel) {
+		transactionData = Transaction{
+			Id:         transactionModel.Id,
+			TotalPrice: transactionModel.TotalPrice,
+		}
+		attachTransactionDetail(&transactionData, transactionModel.DetailTransaction)
 	}
-	attachTransactionDetail(&transactionData, transactionModel.DetailTransaction)
-	return &transactionData, nil
+
+	status, message := utils.ResponseForQuerying(!utils.IsStructEmpty(transactionModel))
+	return &TransactionResponse{Status: status, Message: message, Data: &transactionData}, nil
 }
 
 func attachTransactionDetail(transaction *Transaction, detailTransaction []*models.DetailTransactionProductModel) {
@@ -57,12 +62,16 @@ func attachTransactionDetail(transaction *Transaction, detailTransaction []*mode
 	transaction.Products = transactionProductDetail
 }
 
-func (transaction TransactionServiceServerImpl) FindByUserId(ctx context.Context, id *TransactionUserId) (*Transactions, error) {
+func (transaction TransactionServiceServerImpl) FindByUserId(ctx context.Context, id *TransactionUserId) (*MultipleTransactionResponse, error) {
 	tx, err := transaction.Repository.DB.Begin()
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 	transactionModels := transaction.Repository.FindByUserId(ctx, tx, id.Id)
-	var transactionData Transactions
+	status, message := utils.ResponseForQuerying(true)
+	result := MultipleTransactionResponse{
+		Status:  status,
+		Message: message,
+	}
 
 	for _, t := range transactionModels {
 		tTemp := Transaction{
@@ -70,10 +79,9 @@ func (transaction TransactionServiceServerImpl) FindByUserId(ctx context.Context
 			TotalPrice: t.TotalPrice,
 		}
 		attachTransactionDetail(&tTemp, t.DetailTransaction)
-		transactionData.Transactions = append(transactionData.Transactions, &tTemp)
+		result.Data = append(result.Data, &tTemp)
 	}
-
-	return &transactionData, nil
+	return &result, nil
 }
 
 func (transaction TransactionServiceServerImpl) Save(ctx context.Context, body *TransactionBody) (*response.Response, error) {

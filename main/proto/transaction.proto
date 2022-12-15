@@ -47,13 +47,21 @@ message Transaction{
    repeated TransactionProductDetail products = 4;
 }
 
-message Transactions{
-  repeated Transaction transactions = 1;
+message TransactionResponse{
+  string status = 1;
+  string message = 2;
+  Transaction data = 3;
+}
+
+message MultipleTransactionResponse{
+  string status = 1;
+  string message = 2;
+  repeated Transaction data = 3;
 }
 
 service TransactionService{
-  rpc FindByTransactionId(TransactionId) returns(Transaction);
-  rpc FindByUserId(TransactionUserId) returns (Transactions);
+  rpc FindByTransactionId(TransactionId) returns(TransactionResponse);
+  rpc FindByUserId(TransactionUserId) returns (MultipleTransactionResponse);
   rpc Save(TransactionBody) returns(Response);
   rpc Delete(TransactionId) returns(Response);
 }

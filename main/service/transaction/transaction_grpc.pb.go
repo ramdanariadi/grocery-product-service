@@ -23,8 +23,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TransactionServiceClient interface {
-	FindByTransactionId(ctx context.Context, in *TransactionId, opts ...grpc.CallOption) (*Transaction, error)
-	FindByUserId(ctx context.Context, in *TransactionUserId, opts ...grpc.CallOption) (*Transactions, error)
+	FindByTransactionId(ctx context.Context, in *TransactionId, opts ...grpc.CallOption) (*TransactionResponse, error)
+	FindByUserId(ctx context.Context, in *TransactionUserId, opts ...grpc.CallOption) (*MultipleTransactionResponse, error)
 	Save(ctx context.Context, in *TransactionBody, opts ...grpc.CallOption) (*response.Response, error)
 	Delete(ctx context.Context, in *TransactionId, opts ...grpc.CallOption) (*response.Response, error)
 }
@@ -37,8 +37,8 @@ func NewTransactionServiceClient(cc grpc.ClientConnInterface) TransactionService
 	return &transactionServiceClient{cc}
 }
 
-func (c *transactionServiceClient) FindByTransactionId(ctx context.Context, in *TransactionId, opts ...grpc.CallOption) (*Transaction, error) {
-	out := new(Transaction)
+func (c *transactionServiceClient) FindByTransactionId(ctx context.Context, in *TransactionId, opts ...grpc.CallOption) (*TransactionResponse, error) {
+	out := new(TransactionResponse)
 	err := c.cc.Invoke(ctx, "/proto.TransactionService/FindByTransactionId", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -46,8 +46,8 @@ func (c *transactionServiceClient) FindByTransactionId(ctx context.Context, in *
 	return out, nil
 }
 
-func (c *transactionServiceClient) FindByUserId(ctx context.Context, in *TransactionUserId, opts ...grpc.CallOption) (*Transactions, error) {
-	out := new(Transactions)
+func (c *transactionServiceClient) FindByUserId(ctx context.Context, in *TransactionUserId, opts ...grpc.CallOption) (*MultipleTransactionResponse, error) {
+	out := new(MultipleTransactionResponse)
 	err := c.cc.Invoke(ctx, "/proto.TransactionService/FindByUserId", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -77,8 +77,8 @@ func (c *transactionServiceClient) Delete(ctx context.Context, in *TransactionId
 // All implementations must embed UnimplementedTransactionServiceServer
 // for forward compatibility
 type TransactionServiceServer interface {
-	FindByTransactionId(context.Context, *TransactionId) (*Transaction, error)
-	FindByUserId(context.Context, *TransactionUserId) (*Transactions, error)
+	FindByTransactionId(context.Context, *TransactionId) (*TransactionResponse, error)
+	FindByUserId(context.Context, *TransactionUserId) (*MultipleTransactionResponse, error)
 	Save(context.Context, *TransactionBody) (*response.Response, error)
 	Delete(context.Context, *TransactionId) (*response.Response, error)
 	mustEmbedUnimplementedTransactionServiceServer()
@@ -88,10 +88,10 @@ type TransactionServiceServer interface {
 type UnimplementedTransactionServiceServer struct {
 }
 
-func (UnimplementedTransactionServiceServer) FindByTransactionId(context.Context, *TransactionId) (*Transaction, error) {
+func (UnimplementedTransactionServiceServer) FindByTransactionId(context.Context, *TransactionId) (*TransactionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindByTransactionId not implemented")
 }
-func (UnimplementedTransactionServiceServer) FindByUserId(context.Context, *TransactionUserId) (*Transactions, error) {
+func (UnimplementedTransactionServiceServer) FindByUserId(context.Context, *TransactionUserId) (*MultipleTransactionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindByUserId not implemented")
 }
 func (UnimplementedTransactionServiceServer) Save(context.Context, *TransactionBody) (*response.Response, error) {
