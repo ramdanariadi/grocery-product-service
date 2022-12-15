@@ -13,6 +13,10 @@ type CategoryRepositoryImpl struct {
 	DB *sql.DB
 }
 
+func NewCategoryRepository(db *sql.DB) *CategoryRepositoryImpl {
+	return &CategoryRepositoryImpl{DB: db}
+}
+
 func (repository CategoryRepositoryImpl) FindById(context context.Context, tx *sql.Tx, id string) models.CategoryModel {
 	query := "select id, category, image_url " +
 		"from category where deleted is false and id = $1"

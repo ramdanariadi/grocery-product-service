@@ -3,6 +3,7 @@ package transactions
 import (
 	"context"
 	"database/sql"
+	"github.com/google/uuid"
 	"github.com/ramdanariadi/grocery-product-service/main/helpers"
 	"github.com/ramdanariadi/grocery-product-service/main/models"
 )
@@ -12,7 +13,7 @@ type WishlistRepositoryImpl struct {
 }
 
 func (w WishlistRepositoryImpl) FindByUserId(context context.Context, tx *sql.Tx, userId string) *sql.Rows {
-	query := "SELECT id, name, price, weight, category, per_unit, image_url FROM liked WHERE customer_id = $1"
+	query := "SELECT id, name, price, weight, category, per_unit, image_url FROM liked WHERE user_id = $1"
 	rows, err := tx.QueryContext(context, query, userId)
 	helpers.PanicIfError(err)
 	return rows
@@ -32,7 +33,8 @@ func (w WishlistRepositoryImpl) FindByUserAndProductId(context context.Context, 
 func (w WishlistRepositoryImpl) Save(context context.Context, tx *sql.Tx, product models.WishlistModel) bool {
 	sql := "INSERT INTO liked(id, name, category, image_url, per_unit, price, weight, product_id, user_id) " +
 		"VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)"
-	result, err := tx.ExecContext(context, sql, product.Id, product.Name, product.Category, product.ImageUrl, product.PerUnit,
+	id, _ := uuid.NewUUID()
+	result, err := tx.ExecContext(context, sql, id, product.Name, product.Category, product.ImageUrl, product.PerUnit,
 		product.Price, product.Weight, product.ProductId, product.UserId)
 	helpers.PanicIfError(err)
 	affected, err := result.RowsAffected()
@@ -40,9 +42,9 @@ func (w WishlistRepositoryImpl) Save(context context.Context, tx *sql.Tx, produc
 	return affected > 0
 }
 
-func (w WishlistRepositoryImpl) Delete(context context.Context, tx *sql.Tx, userId string, productId string) bool {
-	sql := "DELETE FROM liked WHERE user_id = $1 AND product_id = $2"
-	result, err := tx.ExecContext(context, sql, userId, productId)
+func (w WishlistRepositoryImpl) Delete(context context.Context, tx *sql.Tx, userId string, wishlistId string) bool {
+	sql := "DELETE FROM liked WHERE user_id = $1 AND id = $2"
+	result, err := tx.ExecContext(context, sql, userId, wishlistId)
 	helpers.PanicIfError(err)
 	affected, err := result.RowsAffected()
 	if err != nil {

@@ -3,10 +3,12 @@ package product
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"github.com/go-redis/redis/v8"
 	"github.com/google/uuid"
 	"github.com/ramdanariadi/grocery-product-service/main/helpers"
 	"github.com/ramdanariadi/grocery-product-service/main/models"
+	categoryRepo "github.com/ramdanariadi/grocery-product-service/main/repositories/category"
 	"github.com/ramdanariadi/grocery-product-service/main/repositories/product"
 	"github.com/ramdanariadi/grocery-product-service/main/service/category"
 	"github.com/ramdanariadi/grocery-product-service/main/service/response"
@@ -54,13 +56,15 @@ func (server ProductServiceServerImpl) FindById(ctx context.Context, id *Product
 		imageUrl = str
 	}
 	grpcProductModel := Product{
-		Id:         productModel.Id,
-		Name:       productModel.Name,
-		Weight:     productModel.Weight,
-		Category:   productModel.Category,
-		ImageUrl:   imageUrl,
-		CategoryId: productModel.CategoryId,
-		Price:      productModel.Price,
+		Id:          productModel.Id,
+		Name:        productModel.Name,
+		Weight:      productModel.Weight,
+		Category:    productModel.Category,
+		ImageUrl:    imageUrl,
+		CategoryId:  productModel.CategoryId,
+		Price:       productModel.Price,
+		PerUnit:     productModel.PerUnit,
+		Description: productModel.Description,
 	}
 	return &ProductResponse{
 		Message: "OK",
@@ -126,13 +130,19 @@ func (server ProductServiceServerImpl) Save(ctx context.Context, product *Produc
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 
+	categoryRepository := categoryRepo.NewCategoryRepository(server.Repository.DB)
+	category := categoryRepository.FindById(ctx, tx, product.CategoryId)
+	if utils.IsStructEmpty(category) {
+		return &response.Response{}, errors.New("BAD_REQUEST")
+	}
+
 	id, _ := uuid.NewUUID()
 	productModel := models.ProductModel{
 		Id:          id.String(),
 		Name:        product.Name,
 		Weight:      product.Weight,
-		Category:    product.Category,
-		CategoryId:  product.CategoryId,
+		Category:    category.Category,
+		CategoryId:  category.Id,
 		Price:       product.Price,
 		Description: product.Description,
 		ImageUrl:    product.ImageUrl,
@@ -150,12 +160,19 @@ func (server ProductServiceServerImpl) Update(ctx context.Context, product *Prod
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 
+	categoryRepository := categoryRepo.NewCategoryRepository(server.Repository.DB)
+	category := categoryRepository.FindById(ctx, tx, product.CategoryId)
+	categoryModel := models.CategoryModel{}
+	if utils.IsStructEmpty(categoryModel) {
+		return &response.Response{}, errors.New("BAD_REQUEST")
+	}
+
 	productModel := models.ProductModel{
 		Id:          product.Id,
 		Name:        product.Name,
 		Weight:      product.Weight,
-		Category:    product.Category,
-		CategoryId:  product.CategoryId,
+		Category:    category.Category,
+		CategoryId:  category.Id,
 		Price:       product.Price,
 		Description: product.Description,
 		ImageUrl:    product.ImageUrl,

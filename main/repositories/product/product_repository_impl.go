@@ -15,12 +15,11 @@ func (repository ProductRepositoryImpl) FindById(context context.Context, tx *sq
 	query := "SELECT products.id, name, price, per_unit, weight, category, category_id, description, products.image_url  " +
 		"FROM products " +
 		"JOIN category ON products.category_id = category.id " +
-		"WHERE products.id = $1"
+		"WHERE products.id = $1 AND products.deleted IS NULL"
 	row := tx.QueryRowContext(context, query, id)
 	product := models.ProductModel{}
 	err := row.Scan(&product.Id, &product.Name, &product.Price, &product.PerUnit, &product.Weight,
-		&product.Category, &product.CategoryId,
-		&product.Description, &product.ImageUrl)
+		&product.Category, &product.CategoryId, &product.Description, &product.ImageUrl)
 	if err != nil {
 		return models.ProductModel{}
 	}
@@ -32,7 +31,7 @@ func (repository ProductRepositoryImpl) FindByIds(context context.Context, tx *s
 	query := "SELECT products.id, name, price, per_unit, weight, category, category_id, description, products.image_url  " +
 		"FROM products " +
 		"JOIN category ON products.category_id = category.id " +
-		"WHERE products.id in $1"
+		"WHERE products.id IN $1 AND deleted IS NULL"
 	rows, _ := tx.QueryContext(context, query, ids)
 	var products []*models.ProductModel
 
@@ -52,7 +51,8 @@ func (repository ProductRepositoryImpl) FindByIds(context context.Context, tx *s
 func (repository ProductRepositoryImpl) FindAll(context context.Context, tx *sql.Tx) *sql.Rows {
 	query := "SELECT products.id, name, price, per_unit, weight, category, category_id, description, products.image_url  " +
 		"FROM products " +
-		"JOIN category ON products.category_id = category.id"
+		"JOIN category ON products.category_id = category.id " +
+		"WHERE products.deleted IS NULL"
 
 	rows, err := tx.QueryContext(context, query)
 	helpers.PanicIfError(err)
@@ -63,7 +63,7 @@ func (repository ProductRepositoryImpl) FindByCategory(context context.Context, 
 	query := "SELECT products.id, name, price, per_unit, weight, category, category_id, description, products.image_url  " +
 		"FROM products " +
 		"JOIN category ON products.category_id = category.id " +
-		"WHERE products.category_id = $1"
+		"WHERE products.category_id = $1 AND deleted IS NULL"
 	rows, err := tx.QueryContext(context, query, id)
 	helpers.PanicIfError(err)
 	return rows
@@ -83,9 +83,9 @@ func (repository ProductRepositoryImpl) Save(context context.Context, tx *sql.Tx
 func (repository ProductRepositoryImpl) Update(context context.Context, tx *sql.Tx, product models.ProductModel) bool {
 	sql := "UPDATE products SET name=$1, price=$2, weight=$3, category_id=$4, per_unit=$5," +
 		"description=$6, image_url=$7, is_top=$8, is_recommended=$9" +
-		"WHERE id = $10"
+		"WHERE id = $10 AND deleted IS NULL"
 	result, err := tx.ExecContext(context, sql, product.Name, product.Price, product.Weight,
-		product.Category, product.PerUnit, product.Description, product.ImageUrl, product.IsTop,
+		product.CategoryId, product.PerUnit, product.Description, product.ImageUrl, product.IsTop,
 		product.IsRecommended, product.Id)
 	helpers.PanicIfError(err)
 	affected, err := result.RowsAffected()
@@ -95,7 +95,7 @@ func (repository ProductRepositoryImpl) Update(context context.Context, tx *sql.
 }
 
 func (repository ProductRepositoryImpl) Delete(context context.Context, tx *sql.Tx, id string) bool {
-	sql := "UPDATE products set deleted = true WHERE id = $1"
+	sql := "UPDATE products set deleted = NOW() WHERE id = $1"
 	result, err := tx.ExecContext(context, sql, id)
 	helpers.PanicIfError(err)
 	affected, err := result.RowsAffected()

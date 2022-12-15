@@ -2,12 +2,14 @@ package wishlist
 
 import (
 	"database/sql"
+	"github.com/ramdanariadi/grocery-product-service/main/helpers"
 	"github.com/ramdanariadi/grocery-product-service/main/models"
 	"github.com/ramdanariadi/grocery-product-service/main/repositories/product"
 	"github.com/ramdanariadi/grocery-product-service/main/repositories/transactions"
 	"github.com/ramdanariadi/grocery-product-service/main/service/response"
 	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"golang.org/x/net/context"
+	"log"
 )
 
 type WishlistServiceServerImpl struct {
@@ -23,8 +25,14 @@ func NewWishlistServer(db *sql.DB) *WishlistServiceServerImpl {
 }
 
 func (server WishlistServiceServerImpl) Save(ctx context.Context, wishlist *Wishlist) (*response.Response, error) {
-	tx, _ := server.Repository.DB.Begin()
-	productModel := server.ProductRepository.FindById(ctx, tx, wishlist.Id)
+	tx, err := server.Repository.DB.Begin()
+	helpers.PanicIfError(err)
+	defer helpers.CommitOrRollback(tx)
+	productModel := server.ProductRepository.FindById(ctx, tx, wishlist.ProductId)
+	if utils.IsStructEmpty(productModel) {
+		status, message := utils.FetchResponseForModifying(false)
+		return &response.Response{Status: status, Message: message}, nil
+	}
 	wishlistModel := models.WishlistModel{
 		ImageUrl:  productModel.ImageUrl,
 		Name:      productModel.Name,
@@ -41,7 +49,9 @@ func (server WishlistServiceServerImpl) Save(ctx context.Context, wishlist *Wish
 }
 
 func (server WishlistServiceServerImpl) Delete(ctx context.Context, id *UserAndWishlistId) (*response.Response, error) {
-	tx, _ := server.Repository.DB.Begin()
+	tx, err := server.Repository.DB.Begin()
+	helpers.PanicIfError(err)
+	defer helpers.CommitOrRollback(tx)
 	deleted := server.Repository.Delete(ctx, tx, id.UserId, id.WishlistId)
 	status, message := utils.FetchResponseForModifying(deleted)
 	return &response.Response{
@@ -51,8 +61,11 @@ func (server WishlistServiceServerImpl) Delete(ctx context.Context, id *UserAndW
 }
 
 func (server WishlistServiceServerImpl) FindByUserId(ctx context.Context, id *WishlistUserId) (*MultipleWishlistResponse, error) {
-	tx, _ := server.Repository.DB.Begin()
+	tx, err := server.Repository.DB.Begin()
+	helpers.PanicIfError(err)
+	defer helpers.CommitOrRollback(tx)
 	wishlistModels := server.Repository.FindByUserId(ctx, tx, id.Id)
+	log.Println("wishlist user id " + id.Id)
 	wishlist := fetchWishlist(wishlistModels)
 	status, message := utils.FetchResponseForQuerying(len(wishlist) > 0)
 	return &MultipleWishlistResponse{
@@ -66,9 +79,20 @@ func fetchWishlist(rows *sql.Rows) []*WishlistDetail {
 	var wishlists []*WishlistDetail
 	for rows.Next() {
 		wishlist := WishlistDetail{}
-		rows.Scan(&wishlist.Id, &wishlist.Name, &wishlist.Price, &wishlist.Category, &wishlist.PerUnit, &wishlist.ImageUrl)
+		var imageUrl sql.NullString
+		err := rows.Scan(&wishlist.Id, &wishlist.Name, &wishlist.Price, &wishlist.Weight, &wishlist.Category, &wishlist.PerUnit, &imageUrl)
+		if err != nil {
+			log.Println("scan error : " + err.Error())
+			continue
+		}
+
+		if imageUrl.Valid {
+			wishlist.ImageUrl = imageUrl.String
+		}
+
 		wishlists = append(wishlists, &wishlist)
 	}
+	rows.Close()
 	return wishlists
 }
 

@@ -3,6 +3,7 @@ package cart
 import (
 	"context"
 	"database/sql"
+	"github.com/ramdanariadi/grocery-product-service/main/helpers"
 	"github.com/ramdanariadi/grocery-product-service/main/models"
 	"github.com/ramdanariadi/grocery-product-service/main/repositories/product"
 	"github.com/ramdanariadi/grocery-product-service/main/repositories/transactions"
@@ -23,7 +24,9 @@ func NewCartServiceImpl(db *sql.DB) *CartServiceServerImpl {
 }
 
 func (server CartServiceServerImpl) Save(ctx context.Context, cart *Cart) (*response.Response, error) {
-	tx, _ := server.ProductRepository.DB.Begin()
+	tx, err := server.ProductRepository.DB.Begin()
+	helpers.PanicIfError(err)
+	defer helpers.CommitOrRollback(tx)
 	productModel := server.ProductRepository.FindById(ctx, tx, cart.ProductId)
 	cartModel := models.CartModel{
 		ImageUrl:  productModel.ImageUrl,
@@ -45,14 +48,18 @@ func (server CartServiceServerImpl) Save(ctx context.Context, cart *Cart) (*resp
 }
 
 func (server CartServiceServerImpl) Delete(ctx context.Context, id *CartAndUserId) (*response.Response, error) {
-	tx, _ := server.Repository.DB.Begin()
+	tx, err := server.Repository.DB.Begin()
+	helpers.PanicIfError(err)
+	defer helpers.CommitOrRollback(tx)
 	deleted := server.Repository.Delete(ctx, tx, id.UserId, id.Id)
 	status, message := utils.FetchResponseForModifying(deleted)
 	return &response.Response{Message: message, Status: status}, nil
 }
 
 func (server CartServiceServerImpl) FindByUserId(ctx context.Context, id *CartUserId) (*MultipleCartResponse, error) {
-	tx, _ := server.Repository.DB.Begin()
+	tx, err := server.Repository.DB.Begin()
+	helpers.PanicIfError(err)
+	defer helpers.CommitOrRollback(tx)
 	rows := server.Repository.FindByUserId(ctx, tx, id.Id)
 	wishlist := fetchWishlist(rows)
 	satus, message := utils.FetchResponseForQuerying(len(wishlist) > 0)

@@ -26,6 +26,7 @@ func NewTransactionServiceServer(db *sql.DB) *TransactionServiceServerImpl {
 
 func (transaction TransactionServiceServerImpl) FindByTransactionId(ctx context.Context, id *TransactionId) (*Transaction, error) {
 	tx, _ := transaction.Repository.DB.Begin()
+	defer helpers.CommitOrRollback(tx)
 	transactionRow, detailTransactionRows := transaction.Repository.FindByTransactionId(ctx, tx, id.Id)
 	transactionData := Transaction{}
 	transactionRow.Scan(transactionData.Id, transactionData.TotalPrice, transactionData.TransactionDate)
@@ -43,6 +44,7 @@ func (transaction TransactionServiceServerImpl) FindByTransactionId(ctx context.
 
 func (transaction TransactionServiceServerImpl) FindByUserId(ctx context.Context, id *TransactionUserId) (*Transactions, error) {
 	tx, _ := transaction.Repository.DB.Begin()
+	defer helpers.CommitOrRollback(tx)
 	transactionRows, detailTransactionRows := transaction.Repository.FindByUserId(ctx, tx, id.Id)
 	var transactionData Transactions
 	for transactionRows.Next() {
@@ -72,6 +74,7 @@ func attachDetailProductToTransaction(transactions *Transactions, detail *Transa
 
 func (transaction TransactionServiceServerImpl) Save(ctx context.Context, body *TransactionBody) (*response.Response, error) {
 	tx, _ := transaction.Repository.DB.Begin()
+	defer helpers.CommitOrRollback(tx)
 	helpers.CommitOrRollback(tx)
 	var ids []string
 	for _, d := range body.Products {
