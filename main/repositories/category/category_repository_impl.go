@@ -18,21 +18,25 @@ func NewCategoryRepository(db *sql.DB) *CategoryRepositoryImpl {
 }
 
 func (repository CategoryRepositoryImpl) FindById(context context.Context, tx *sql.Tx, id string) models.CategoryModel {
-	query := "select id, category, image_url " +
-		"from category where deleted_at is false and id = $1"
+	query := "SELECT id, category, image_url " +
+		"FROM category WHERE deleted_at IS NULL and id = $1"
 	row := tx.QueryRowContext(context, query, id)
 	cm := models.CategoryModel{}
-
-	err := row.Scan(&cm.Id, &cm.Category, &cm.ImageUrl)
+	var imageUrl sql.NullString
+	err := row.Scan(&cm.Id, &cm.Category, &imageUrl)
 	if err != nil {
 		return models.CategoryModel{}
+	}
+
+	if imageUrl.Valid {
+		cm.ImageUrl = imageUrl.String
 	}
 
 	return cm
 }
 
 func (repository CategoryRepositoryImpl) FindAll(context context.Context, tx *sql.Tx) *sql.Rows {
-	query := "select id, category, image_url from category where deleted_at is false"
+	query := "SELECT id, category, image_url FROM category WHERE deleted_at IS NULL"
 	result, err := tx.QueryContext(context, query)
 	if err != nil {
 		panic("query error")
@@ -45,9 +49,8 @@ func (repository CategoryRepositoryImpl) Save(context context.Context, tx *sql.T
 	fmt.Println(requestBody.Category)
 	fmt.Println(id)
 	fmt.Println("Image url ", requestBody.ImageUrl)
-	sqlInsert := "INSERT INTO category (id, category, image_url, deleted_at) values($1,$2,$3,$4)"
+	sqlInsert := "INSERT INTO category (id, category, image_url, deleted_at) VALUES($1,$2,$3,$4)"
 	result, err := tx.ExecContext(context, sqlInsert, id.String(), requestBody.Category, requestBody.ImageUrl, false)
-	//result, err := tx.ExecContext(context, sqlInsert, id.String(), requestBody.Category, requestBody.ImageUrl, false)
 	helpers.PanicIfError(err)
 
 	affected, err := result.RowsAffected()
@@ -59,7 +62,7 @@ func (repository CategoryRepositoryImpl) Save(context context.Context, tx *sql.T
 }
 
 func (repository CategoryRepositoryImpl) Update(context context.Context, tx *sql.Tx, request models.CategoryModel, id string) bool {
-	sql := "UPDATE category SET category = $1, image_url = $2 WHERE id = $3"
+	sql := "UPDATE category SET category = $1, image_url = $2, updated_at = NOW() WHERE id = $3"
 	result, err := tx.ExecContext(context, sql, request.Category, request.ImageUrl, id)
 	helpers.PanicIfError(err)
 

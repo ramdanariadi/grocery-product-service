@@ -3,7 +3,6 @@ package product
 import (
 	"database/sql"
 	"encoding/json"
-	"errors"
 	"github.com/go-redis/redis/v8"
 	"github.com/google/uuid"
 	"github.com/ramdanariadi/grocery-product-service/main/helpers"
@@ -36,12 +35,12 @@ func (server ProductServiceServerImpl) FindById(ctx context.Context, id *Product
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 
-	var productModel models.ProductModel
+	var productModel *models.ProductModel
 	cache, _ := server.RedisClient.Get(ctx, id.GetId()).Result()
 	helpers.LogIfError(err)
 
 	if cache != "" {
-		err := json.Unmarshal([]byte(cache), &productModel)
+		err := json.Unmarshal([]byte(cache), productModel)
 		helpers.LogIfError(err)
 	} else {
 		productModel = server.Repository.FindById(ctx, tx, id.Id)
@@ -163,9 +162,10 @@ func (server ProductServiceServerImpl) Save(ctx context.Context, product *Produc
 	defer helpers.CommitOrRollback(tx)
 
 	categoryRepository := categoryRepo.NewCategoryRepository(server.Repository.DB)
-	category := categoryRepository.FindById(ctx, tx, product.CategoryId)
-	if utils.IsStructEmpty(category) {
-		return &response.Response{}, errors.New("BAD_REQUEST")
+	categoryModel := categoryRepository.FindById(ctx, tx, product.CategoryId)
+	if utils.IsStructEmpty(categoryModel) {
+		status, _ := utils.ResponseForQuerying(false)
+		return &response.Response{Status: status, Message: "INVALID_CATEGORY"}, nil
 	}
 
 	id, _ := uuid.NewUUID()
@@ -173,8 +173,8 @@ func (server ProductServiceServerImpl) Save(ctx context.Context, product *Produc
 		Id:          id.String(),
 		Name:        product.Name,
 		Weight:      uint(product.Weight),
-		Category:    category.Category,
-		CategoryId:  category.Id,
+		Category:    categoryModel.Category,
+		CategoryId:  categoryModel.Id,
 		Price:       product.Price,
 		PerUnit:     uint(product.PerUnit),
 		Description: product.Description,
@@ -194,18 +194,18 @@ func (server ProductServiceServerImpl) Update(ctx context.Context, product *Prod
 	defer helpers.CommitOrRollback(tx)
 
 	categoryRepository := categoryRepo.NewCategoryRepository(server.Repository.DB)
-	category := categoryRepository.FindById(ctx, tx, product.CategoryId)
-	categoryModel := models.CategoryModel{}
+	categoryModel := categoryRepository.FindById(ctx, tx, product.CategoryId)
 	if utils.IsStructEmpty(categoryModel) {
-		return &response.Response{}, errors.New("BAD_REQUEST")
+		status, _ := utils.ResponseForQuerying(false)
+		return &response.Response{Status: status, Message: "INVALID_CATEGORY"}, nil
 	}
 
 	productModel := models.ProductModel{
 		Id:          product.Id,
 		Name:        product.Name,
 		Weight:      uint(product.Weight),
-		Category:    category.Category,
-		CategoryId:  category.Id,
+		Category:    categoryModel.Category,
+		CategoryId:  categoryModel.Id,
 		Price:       product.Price,
 		PerUnit:     uint(product.PerUnit),
 		Description: product.Description,

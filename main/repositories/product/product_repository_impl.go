@@ -13,20 +13,23 @@ type ProductRepositoryImpl struct {
 	DB *sql.DB
 }
 
-func (repository ProductRepositoryImpl) FindById(context context.Context, tx *sql.Tx, id string) models.ProductModel {
+func (repository ProductRepositoryImpl) FindById(context context.Context, tx *sql.Tx, id string) *models.ProductModel {
 	query := "SELECT products.id, name, price, per_unit, weight, category, category_id, description, products.image_url  " +
 		"FROM products " +
 		"JOIN category ON products.category_id = category.id " +
 		"WHERE products.id = $1 AND products.deleted_at IS NULL"
 	row := tx.QueryRowContext(context, query, id)
 	product := models.ProductModel{}
+	var imageUrl sql.NullString
 	err := row.Scan(&product.Id, &product.Name, &product.Price, &product.PerUnit, &product.Weight,
-		&product.Category, &product.CategoryId, &product.Description, &product.ImageUrl)
-	if err != nil {
-		return models.ProductModel{}
+		&product.Category, &product.CategoryId, &product.Description, &imageUrl)
+	helpers.PanicIfError(err)
+
+	if imageUrl.Valid {
+		product.ImageUrl = imageUrl.String
 	}
-	//helpers.PanicIfError(err)
-	return product
+
+	return &product
 }
 
 func (repository ProductRepositoryImpl) FindByIds(context context.Context, tx *sql.Tx, ids []string) []*models.ProductModel {
@@ -89,10 +92,10 @@ func (repository ProductRepositoryImpl) FindWhere(context context.Context, tx *s
 }
 
 func (repository ProductRepositoryImpl) Save(context context.Context, tx *sql.Tx, product models.ProductModel) bool {
-	sql := "INSERT INTO products(id, name, weight, price, per_unit, category_id, description, image_url, deleted_at, is_top, is_recommended) " +
-		"VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)"
+	sql := "INSERT INTO products(id, name, weight, price, per_unit, category_id, description, image_url, is_top, is_recommended, created_at) " +
+		"VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,NOW())"
 	result, err := tx.ExecContext(context, sql, product.Id, product.Name, product.Weight, product.Price,
-		product.PerUnit, product.CategoryId, product.Description, product.ImageUrl, false, false, false)
+		product.PerUnit, product.CategoryId, product.Description, product.ImageUrl, false, false)
 	helpers.PanicIfError(err)
 	affected, err := result.RowsAffected()
 	helpers.PanicIfError(err)
@@ -101,7 +104,7 @@ func (repository ProductRepositoryImpl) Save(context context.Context, tx *sql.Tx
 
 func (repository ProductRepositoryImpl) Update(context context.Context, tx *sql.Tx, product models.ProductModel) bool {
 	sql := "UPDATE products SET name=$1, price=$2, weight=$3, category_id=$4, per_unit=$5," +
-		"description=$6, image_url=$7, is_top=$8, is_recommended=$9" +
+		"description=$6, image_url=$7, is_top=$8, is_recommended=$9, updated_at = NOW()" +
 		"WHERE id = $10 AND deleted_at IS NULL"
 	result, err := tx.ExecContext(context, sql, product.Name, product.Price, product.Weight,
 		product.CategoryId, product.PerUnit, product.Description, product.ImageUrl, product.IsTop,

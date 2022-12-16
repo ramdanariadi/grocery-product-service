@@ -43,8 +43,8 @@ func (server WishlistServiceServerImpl) Save(ctx context.Context, wishlist *Wish
 		UserId:    wishlist.UserId,
 		ProductId: productModel.Id,
 	}
-	save := server.Repository.Save(ctx, tx, wishlistModel)
-	status, message := utils.ResponseForModifying(save)
+	server.Repository.Save(ctx, tx, wishlistModel)
+	status, message := utils.ResponseForModifying(true)
 	return &response.Response{Status: status, Message: message}, nil
 }
 

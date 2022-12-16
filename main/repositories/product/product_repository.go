@@ -7,7 +7,7 @@ import (
 )
 
 type ProductRepository interface {
-	FindById(context context.Context, tx *sql.Tx, id string) models.ProductModel
+	FindById(context context.Context, tx *sql.Tx, id string) *models.ProductModel
 	FindByIds(context context.Context, tx *sql.Tx, ids []string) []*models.ProductModel
 	FindAll(context context.Context, tx *sql.Tx) *sql.Rows
 	FindByCategory(context context.Context, tx *sql.Tx, id string) *sql.Rows

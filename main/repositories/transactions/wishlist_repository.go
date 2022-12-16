@@ -9,6 +9,6 @@ import (
 type WishlistRepository interface {
 	FindByUserId(context context.Context, tx *sql.Tx, userId string) *sql.Rows
 	FindByUserAndProductId(context context.Context, tx *sql.Tx, userId string, productId string) models.WishlistModel
-	Save(context context.Context, tx *sql.Tx, product models.WishlistModel) bool
+	Save(context context.Context, tx *sql.Tx, product models.WishlistModel)
 	Delete(context context.Context, tx *sql.Tx, userId string, productId string) bool
 }
