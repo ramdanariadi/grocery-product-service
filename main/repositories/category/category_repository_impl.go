@@ -3,7 +3,6 @@ package category
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"github.com/google/uuid"
 	"github.com/ramdanariadi/grocery-product-service/main/helpers"
 	"github.com/ramdanariadi/grocery-product-service/main/models"
@@ -46,17 +45,12 @@ func (repository CategoryRepositoryImpl) FindAll(context context.Context, tx *sq
 
 func (repository CategoryRepositoryImpl) Save(context context.Context, tx *sql.Tx, requestBody models.CategoryModel) bool {
 	id, _ := uuid.NewUUID()
-	fmt.Println(requestBody.Category)
-	fmt.Println(id)
-	fmt.Println("Image url ", requestBody.ImageUrl)
-	sqlInsert := "INSERT INTO category (id, category, image_url, deleted_at) VALUES($1,$2,$3,$4)"
-	result, err := tx.ExecContext(context, sqlInsert, id.String(), requestBody.Category, requestBody.ImageUrl, false)
+	sqlInsert := "INSERT INTO category (id, category, image_url, created_at) VALUES($1,$2,$3,NOW())"
+	result, err := tx.ExecContext(context, sqlInsert, id, requestBody.Category, requestBody.ImageUrl)
 	helpers.PanicIfError(err)
 
 	affected, err := result.RowsAffected()
 	helpers.PanicIfError(err)
-
-	fmt.Println("Row affected : ", affected)
 
 	return affected > 0
 }
