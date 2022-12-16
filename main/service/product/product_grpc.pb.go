@@ -27,6 +27,8 @@ type ProductServiceClient interface {
 	FindById(ctx context.Context, in *ProductId, opts ...grpc.CallOption) (*ProductResponse, error)
 	FindAll(ctx context.Context, in *ProductEmpty, opts ...grpc.CallOption) (*MultipleProductResponse, error)
 	FindProductsByCategory(ctx context.Context, in *category.CategoryId, opts ...grpc.CallOption) (*MultipleProductResponse, error)
+	FindRecommendedProduct(ctx context.Context, in *ProductEmpty, opts ...grpc.CallOption) (*MultipleProductResponse, error)
+	FindTopProducts(ctx context.Context, in *ProductEmpty, opts ...grpc.CallOption) (*MultipleProductResponse, error)
 	Save(ctx context.Context, in *Product, opts ...grpc.CallOption) (*response.Response, error)
 	Update(ctx context.Context, in *Product, opts ...grpc.CallOption) (*response.Response, error)
 	Delete(ctx context.Context, in *ProductId, opts ...grpc.CallOption) (*response.Response, error)
@@ -67,6 +69,24 @@ func (c *productServiceClient) FindProductsByCategory(ctx context.Context, in *c
 	return out, nil
 }
 
+func (c *productServiceClient) FindRecommendedProduct(ctx context.Context, in *ProductEmpty, opts ...grpc.CallOption) (*MultipleProductResponse, error) {
+	out := new(MultipleProductResponse)
+	err := c.cc.Invoke(ctx, "/proto.ProductService/FindRecommendedProduct", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productServiceClient) FindTopProducts(ctx context.Context, in *ProductEmpty, opts ...grpc.CallOption) (*MultipleProductResponse, error) {
+	out := new(MultipleProductResponse)
+	err := c.cc.Invoke(ctx, "/proto.ProductService/FindTopProducts", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *productServiceClient) Save(ctx context.Context, in *Product, opts ...grpc.CallOption) (*response.Response, error) {
 	out := new(response.Response)
 	err := c.cc.Invoke(ctx, "/proto.ProductService/Save", in, out, opts...)
@@ -101,6 +121,8 @@ type ProductServiceServer interface {
 	FindById(context.Context, *ProductId) (*ProductResponse, error)
 	FindAll(context.Context, *ProductEmpty) (*MultipleProductResponse, error)
 	FindProductsByCategory(context.Context, *category.CategoryId) (*MultipleProductResponse, error)
+	FindRecommendedProduct(context.Context, *ProductEmpty) (*MultipleProductResponse, error)
+	FindTopProducts(context.Context, *ProductEmpty) (*MultipleProductResponse, error)
 	Save(context.Context, *Product) (*response.Response, error)
 	Update(context.Context, *Product) (*response.Response, error)
 	Delete(context.Context, *ProductId) (*response.Response, error)
@@ -119,6 +141,12 @@ func (UnimplementedProductServiceServer) FindAll(context.Context, *ProductEmpty)
 }
 func (UnimplementedProductServiceServer) FindProductsByCategory(context.Context, *category.CategoryId) (*MultipleProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindProductsByCategory not implemented")
+}
+func (UnimplementedProductServiceServer) FindRecommendedProduct(context.Context, *ProductEmpty) (*MultipleProductResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindRecommendedProduct not implemented")
+}
+func (UnimplementedProductServiceServer) FindTopProducts(context.Context, *ProductEmpty) (*MultipleProductResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindTopProducts not implemented")
 }
 func (UnimplementedProductServiceServer) Save(context.Context, *Product) (*response.Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Save not implemented")
@@ -196,6 +224,42 @@ func _ProductService_FindProductsByCategory_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProductService_FindRecommendedProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductEmpty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductServiceServer).FindRecommendedProduct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.ProductService/FindRecommendedProduct",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductServiceServer).FindRecommendedProduct(ctx, req.(*ProductEmpty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductService_FindTopProducts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductEmpty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductServiceServer).FindTopProducts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.ProductService/FindTopProducts",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductServiceServer).FindTopProducts(ctx, req.(*ProductEmpty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ProductService_Save_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Product)
 	if err := dec(in); err != nil {
@@ -268,6 +332,14 @@ var ProductService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FindProductsByCategory",
 			Handler:    _ProductService_FindProductsByCategory_Handler,
+		},
+		{
+			MethodName: "FindRecommendedProduct",
+			Handler:    _ProductService_FindRecommendedProduct_Handler,
+		},
+		{
+			MethodName: "FindTopProducts",
+			Handler:    _ProductService_FindTopProducts_Handler,
 		},
 		{
 			MethodName: "Save",

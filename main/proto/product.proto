@@ -45,6 +45,8 @@ service ProductService{
   rpc FindById(ProductId) returns(ProductResponse);
   rpc FindAll(ProductEmpty) returns(MultipleProductResponse);
   rpc FindProductsByCategory(CategoryId) returns(MultipleProductResponse);
+  rpc FindRecommendedProduct(ProductEmpty) returns(MultipleProductResponse);
+  rpc FindTopProducts(ProductEmpty) returns(MultipleProductResponse);
   rpc Save(Product) returns(Response);
   rpc Update(Product) returns(Response);
   rpc Delete(ProductId) returns(Response);

@@ -87,6 +87,42 @@ func (server ProductServiceServerImpl) FindProductsByCategory(ctx context.Contex
 	}, nil
 }
 
+func (server ProductServiceServerImpl) FindRecommendedProduct(ctx context.Context, _ *ProductEmpty) (*MultipleProductResponse, error) {
+	tx, err := server.Repository.DB.Begin()
+	helpers.PanicIfError(err)
+	defer helpers.CommitOrRollback(tx)
+
+	if err != nil {
+		return nil, err
+	}
+	raws := server.Repository.FindWhere(ctx, tx, "products.is_recommended = $1", true)
+	products := fetchProducts(raws)
+	status, message := utils.ResponseForQuerying(len(products) > 0)
+	return &MultipleProductResponse{
+		Status:  status,
+		Data:    products,
+		Message: message,
+	}, nil
+}
+
+func (server ProductServiceServerImpl) FindTopProducts(ctx context.Context, _ *ProductEmpty) (*MultipleProductResponse, error) {
+	tx, err := server.Repository.DB.Begin()
+	helpers.PanicIfError(err)
+	defer helpers.CommitOrRollback(tx)
+
+	if err != nil {
+		return nil, err
+	}
+	raws := server.Repository.FindWhere(ctx, tx, "products.is_top = $1", true)
+	products := fetchProducts(raws)
+	status, message := utils.ResponseForQuerying(len(products) > 0)
+	return &MultipleProductResponse{
+		Status:  status,
+		Data:    products,
+		Message: message,
+	}, nil
+}
+
 func (server ProductServiceServerImpl) FindAll(ctx context.Context, _ *ProductEmpty) (*MultipleProductResponse, error) {
 	tx, err := server.Repository.DB.Begin()
 	helpers.PanicIfError(err)

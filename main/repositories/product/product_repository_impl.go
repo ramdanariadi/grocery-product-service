@@ -78,6 +78,16 @@ func (repository ProductRepositoryImpl) FindByCategory(context context.Context, 
 	return rows
 }
 
+func (repository ProductRepositoryImpl) FindWhere(context context.Context, tx *sql.Tx, where string, value ...any) *sql.Rows {
+	query := "SELECT products.id, name, price, per_unit, weight, category, category_id, description, products.image_url  " +
+		"FROM products " +
+		"JOIN category ON products.category_id = category.id " +
+		"WHERE " + where
+	rows, err := tx.QueryContext(context, query, value...)
+	helpers.PanicIfError(err)
+	return rows
+}
+
 func (repository ProductRepositoryImpl) Save(context context.Context, tx *sql.Tx, product models.ProductModel) bool {
 	sql := "INSERT INTO products(id, name, weight, price, per_unit, category_id, description, image_url, deleted_at, is_top, is_recommended) " +
 		"VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)"
