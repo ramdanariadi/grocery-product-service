@@ -12,7 +12,8 @@ import (
 func NewDbConnection() (*sql.DB, error) {
 	dbUsr := os.Getenv("DB_USR")
 	dbPass := os.Getenv("DB_PASS")
-	connStr := fmt.Sprintf("postgres://%s:%s@localhost/grocery-product-service?sslmode=disable", dbUsr, dbPass)
+	dbName := os.Getenv("DB_NAME")
+	connStr := fmt.Sprintf("postgres://%s:%s@localhost/%s?sslmode=disable", dbUsr, dbPass, dbName)
 	db, err := sql.Open("postgres", connStr)
 	helpers.PanicIfError(err)
 
