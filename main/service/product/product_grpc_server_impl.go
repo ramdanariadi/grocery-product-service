@@ -36,7 +36,7 @@ func (server ProductServiceServerImpl) FindById(ctx context.Context, id *Product
 	defer helpers.CommitOrRollback(tx)
 
 	var productModel *models.ProductModel
-	cache, _ := server.RedisClient.Get(ctx, id.GetId()).Result()
+	cache, err := server.RedisClient.Get(ctx, id.GetId()).Result()
 	helpers.LogIfError(err)
 
 	if cache != "" {
@@ -73,11 +73,8 @@ func (server ProductServiceServerImpl) FindProductsByCategory(ctx context.Contex
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 
-	if err != nil {
-		return nil, err
-	}
-	raws := server.Repository.FindByCategory(ctx, tx, id.Id)
-	products := fetchProducts(raws)
+	rows := server.Repository.FindByCategory(ctx, tx, id.Id)
+	products := fetchProducts(rows)
 	status, message := utils.ResponseForQuerying(len(products) > 0)
 	return &MultipleProductResponse{
 		Status:  status,
@@ -91,11 +88,8 @@ func (server ProductServiceServerImpl) FindRecommendedProduct(ctx context.Contex
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 
-	if err != nil {
-		return nil, err
-	}
-	raws := server.Repository.FindWhere(ctx, tx, "products.is_recommended = $1", true)
-	products := fetchProducts(raws)
+	rows := server.Repository.FindWhere(ctx, tx, "products.is_recommended = $1", true)
+	products := fetchProducts(rows)
 	status, message := utils.ResponseForQuerying(len(products) > 0)
 	return &MultipleProductResponse{
 		Status:  status,
@@ -109,11 +103,8 @@ func (server ProductServiceServerImpl) FindTopProducts(ctx context.Context, _ *P
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 
-	if err != nil {
-		return nil, err
-	}
-	raws := server.Repository.FindWhere(ctx, tx, "products.is_top = $1", true)
-	products := fetchProducts(raws)
+	rows := server.Repository.FindWhere(ctx, tx, "products.is_top = $1", true)
+	products := fetchProducts(rows)
 	status, message := utils.ResponseForQuerying(len(products) > 0)
 	return &MultipleProductResponse{
 		Status:  status,
@@ -127,8 +118,8 @@ func (server ProductServiceServerImpl) FindAll(ctx context.Context, _ *ProductEm
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 
-	raws := server.Repository.FindAll(ctx, tx)
-	products := fetchProducts(raws)
+	rows := server.Repository.FindAll(ctx, tx)
+	products := fetchProducts(rows)
 	status, message := utils.ResponseForQuerying(len(products) > 0)
 	return &MultipleProductResponse{
 		Status:  status,
@@ -153,6 +144,7 @@ func fetchProducts(rows *sql.Rows) []*Product {
 
 		products = append(products, &productTmp)
 	}
+	helpers.LogIfError(rows.Close())
 	return products
 }
 
@@ -163,7 +155,7 @@ func (server ProductServiceServerImpl) Save(ctx context.Context, product *Produc
 
 	categoryRepository := categoryRepo.NewCategoryRepository(server.Repository.DB)
 	categoryModel := categoryRepository.FindById(ctx, tx, product.CategoryId)
-	if utils.IsTypeEmpty(categoryModel) {
+	if categoryModel != nil {
 		status, _ := utils.ResponseForQuerying(false)
 		return &response.Response{Status: status, Message: "INVALID_CATEGORY"}, nil
 	}
@@ -180,8 +172,8 @@ func (server ProductServiceServerImpl) Save(ctx context.Context, product *Produc
 		Description: product.Description,
 		ImageUrl:    product.ImageUrl,
 	}
-	saved := server.Repository.Save(ctx, tx, productModel)
-	status, message := utils.ResponseForModifying(saved)
+	err = server.Repository.Save(ctx, tx, &productModel)
+	status, message := utils.ResponseForModifying(err == nil)
 	return &response.Response{
 		Status:  status,
 		Message: message,
@@ -195,7 +187,7 @@ func (server ProductServiceServerImpl) Update(ctx context.Context, product *Prod
 
 	categoryRepository := categoryRepo.NewCategoryRepository(server.Repository.DB)
 	categoryModel := categoryRepository.FindById(ctx, tx, product.CategoryId)
-	if utils.IsTypeEmpty(categoryModel) {
+	if categoryModel != nil {
 		status, _ := utils.ResponseForQuerying(false)
 		return &response.Response{Status: status, Message: "INVALID_CATEGORY"}, nil
 	}
@@ -211,8 +203,8 @@ func (server ProductServiceServerImpl) Update(ctx context.Context, product *Prod
 		Description: product.Description,
 		ImageUrl:    product.ImageUrl,
 	}
-	updated := server.Repository.Update(ctx, tx, productModel)
-	status, message := utils.ResponseForModifying(updated)
+	err = server.Repository.Update(ctx, tx, &productModel)
+	status, message := utils.ResponseForModifying(err == nil)
 	return &response.Response{
 		Status:  status,
 		Message: message,
@@ -222,9 +214,9 @@ func (server ProductServiceServerImpl) Update(ctx context.Context, product *Prod
 func (server ProductServiceServerImpl) Delete(ctx context.Context, id *ProductId) (*response.Response, error) {
 	tx, err := server.Repository.DB.Begin()
 	helpers.PanicIfError(err)
-	deleted := server.Repository.Delete(ctx, tx, id.Id)
-	status, message := utils.ResponseForModifying(deleted)
 	defer helpers.CommitOrRollback(tx)
+	err = server.Repository.Delete(ctx, tx, id.Id)
+	status, message := utils.ResponseForModifying(err == nil)
 	return &response.Response{Status: status, Message: message}, nil
 }
 

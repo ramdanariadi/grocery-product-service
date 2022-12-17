@@ -23,7 +23,11 @@ func (repository ProductRepositoryImpl) FindById(context context.Context, tx *sq
 	var imageUrl sql.NullString
 	err := row.Scan(&product.Id, &product.Name, &product.Price, &product.PerUnit, &product.Weight,
 		&product.Category, &product.CategoryId, &product.Description, &imageUrl)
-	helpers.PanicIfError(err)
+
+	if err != nil {
+		log.Println(err.Error())
+		return nil
+	}
 
 	if imageUrl.Valid {
 		product.ImageUrl = imageUrl.String
@@ -38,7 +42,7 @@ func (repository ProductRepositoryImpl) FindByIds(context context.Context, tx *s
 		"JOIN category ON products.category_id = category.id " +
 		"WHERE products.id = ANY($1) AND products.deleted_at IS NULL"
 	rows, err := tx.QueryContext(context, query, pq.Array(ids))
-	helpers.PanicIfError(err)
+	helpers.LogIfError(err)
 	var products []*models.ProductModel
 
 	for rows.Next() {
@@ -67,7 +71,7 @@ func (repository ProductRepositoryImpl) FindAll(context context.Context, tx *sql
 		"WHERE products.deleted_at IS NULL"
 
 	rows, err := tx.QueryContext(context, query)
-	helpers.PanicIfError(err)
+	helpers.LogIfError(err)
 	return rows
 }
 
@@ -77,7 +81,7 @@ func (repository ProductRepositoryImpl) FindByCategory(context context.Context, 
 		"JOIN category ON products.category_id = category.id " +
 		"WHERE products.category_id = $1 AND products.deleted_at IS NULL"
 	rows, err := tx.QueryContext(context, query, id)
-	helpers.PanicIfError(err)
+	helpers.LogIfError(err)
 	return rows
 }
 
@@ -87,40 +91,33 @@ func (repository ProductRepositoryImpl) FindWhere(context context.Context, tx *s
 		"JOIN category ON products.category_id = category.id " +
 		"WHERE " + where
 	rows, err := tx.QueryContext(context, query, value...)
-	helpers.PanicIfError(err)
+	helpers.LogIfError(err)
 	return rows
 }
 
-func (repository ProductRepositoryImpl) Save(context context.Context, tx *sql.Tx, product models.ProductModel) bool {
+func (repository ProductRepositoryImpl) Save(context context.Context, tx *sql.Tx, product *models.ProductModel) error {
 	sql := "INSERT INTO products(id, name, weight, price, per_unit, category_id, description, image_url, is_top, is_recommended, created_at) " +
 		"VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,NOW())"
-	result, err := tx.ExecContext(context, sql, product.Id, product.Name, product.Weight, product.Price,
+	_, err := tx.ExecContext(context, sql, product.Id, product.Name, product.Weight, product.Price,
 		product.PerUnit, product.CategoryId, product.Description, product.ImageUrl, false, false)
-	helpers.PanicIfError(err)
-	affected, err := result.RowsAffected()
-	helpers.PanicIfError(err)
-	return affected > 0
+	helpers.LogIfError(err)
+	return err
 }
 
-func (repository ProductRepositoryImpl) Update(context context.Context, tx *sql.Tx, product models.ProductModel) bool {
+func (repository ProductRepositoryImpl) Update(context context.Context, tx *sql.Tx, product *models.ProductModel) error {
 	sql := "UPDATE products SET name=$1, price=$2, weight=$3, category_id=$4, per_unit=$5," +
 		"description=$6, image_url=$7, is_top=$8, is_recommended=$9, updated_at = NOW()" +
 		"WHERE id = $10 AND deleted_at IS NULL"
-	result, err := tx.ExecContext(context, sql, product.Name, product.Price, product.Weight,
+	_, err := tx.ExecContext(context, sql, product.Name, product.Price, product.Weight,
 		product.CategoryId, product.PerUnit, product.Description, product.ImageUrl, product.IsTop,
 		product.IsRecommended, product.Id)
-	helpers.PanicIfError(err)
-	affected, err := result.RowsAffected()
-	helpers.PanicIfError(err)
-
-	return affected > 0
+	helpers.LogIfError(err)
+	return err
 }
 
-func (repository ProductRepositoryImpl) Delete(context context.Context, tx *sql.Tx, id string) bool {
+func (repository ProductRepositoryImpl) Delete(context context.Context, tx *sql.Tx, id string) error {
 	sql := "UPDATE products set deleted_at = NOW() WHERE id = $1"
-	result, err := tx.ExecContext(context, sql, id)
-	helpers.PanicIfError(err)
-	affected, err := result.RowsAffected()
-	helpers.PanicIfError(err)
-	return affected > 0
+	_, err := tx.ExecContext(context, sql, id)
+	helpers.LogIfError(err)
+	return err
 }

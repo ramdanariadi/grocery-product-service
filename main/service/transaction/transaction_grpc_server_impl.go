@@ -30,7 +30,7 @@ func (transaction TransactionServiceServerImpl) FindByTransactionId(ctx context.
 	defer helpers.CommitOrRollback(tx)
 	transactionModel := transaction.Repository.FindByTransactionId(ctx, tx, id.Id)
 	var transactionData Transaction
-	if !utils.IsTypeEmpty(*transactionModel) {
+	if transactionModel != nil {
 		transactionData = Transaction{
 			Id:         transactionModel.Id,
 			TotalPrice: transactionModel.TotalPrice,
@@ -38,7 +38,7 @@ func (transaction TransactionServiceServerImpl) FindByTransactionId(ctx context.
 		attachTransactionDetail(&transactionData, transactionModel.DetailTransaction)
 	}
 
-	status, message := utils.ResponseForQuerying(!utils.IsTypeEmpty(*transactionModel))
+	status, message := utils.ResponseForQuerying(transactionModel != nil)
 	return &TransactionResponse{Status: status, Message: message, Data: &transactionData}, nil
 }
 
@@ -109,8 +109,8 @@ func (transaction TransactionServiceServerImpl) Save(ctx context.Context, body *
 	}
 	transactionModel.DetailTransaction = detailTransaction
 	transactionModel.TotalPrice = totalPrice
-	transaction.Repository.Save(ctx, tx, transactionModel)
-	status, message := utils.ResponseForQuerying(true)
+	err = transaction.Repository.Save(ctx, tx, &transactionModel)
+	status, message := utils.ResponseForQuerying(err == nil)
 	return &response.Response{Status: status, Message: message}, nil
 }
 
@@ -127,8 +127,8 @@ func (transaction TransactionServiceServerImpl) Delete(ctx context.Context, id *
 	tx, err := transaction.Repository.DB.Begin()
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
-	transaction.Repository.Delete(ctx, tx, id.Id)
-	status, message := utils.ResponseForModifying(true)
+	err = transaction.Repository.Delete(ctx, tx, id.Id)
+	status, message := utils.ResponseForModifying(err == nil)
 	return &response.Response{Status: status, Message: message}, nil
 }
 

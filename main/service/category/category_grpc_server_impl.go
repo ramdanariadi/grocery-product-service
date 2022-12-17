@@ -26,7 +26,7 @@ func (server *CategoryServiceServerImpl) FindById(context context.Context, categ
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 	categoryById := server.Repository.FindById(context, tx, categoryId.Id)
-	status, message := utils.ResponseForQuerying(!utils.IsTypeEmpty(categoryById))
+	status, message := utils.ResponseForQuerying(categoryById != nil)
 	grpcCategory := Category{
 		Category: categoryById.Category,
 		Id:       categoryById.Id,
@@ -44,7 +44,7 @@ func (server *CategoryServiceServerImpl) FindAll(context context.Context, _ *Emp
 	defer helpers.CommitOrRollback(tx)
 	rows := server.Repository.FindAll(context, tx)
 	categories := fetchCategories(rows)
-	status, message := utils.ResponseForQuerying(len(categories) > 0)
+	status, message := utils.ResponseForQuerying(true)
 	return &MultipleCategoryResponse{
 		Status:  status,
 		Message: message,
@@ -67,6 +67,7 @@ func fetchCategories(rows *sql.Rows) []*Category {
 		categoriesModel = append(categoriesModel, &cm)
 
 	}
+	helpers.LogIfError(rows.Close())
 	return categoriesModel
 }
 
@@ -82,8 +83,8 @@ func (server *CategoryServiceServerImpl) Save(context context.Context, category 
 		Deleted:  false,
 	}
 
-	saved := server.Repository.Save(context, tx, categoryModel)
-	sts, message := utils.ResponseForQuerying(saved)
+	err = server.Repository.Save(context, tx, &categoryModel)
+	sts, message := utils.ResponseForQuerying(err == nil)
 	return &response.Response{
 		Status:  sts,
 		Message: message,
@@ -99,8 +100,8 @@ func (server *CategoryServiceServerImpl) Update(context context.Context, categor
 		ImageUrl: category.ImageUrl,
 	}
 
-	updated := server.Repository.Update(context, tx, categoryModel, category.Id)
-	sts, message := utils.ResponseForQuerying(updated)
+	err = server.Repository.Update(context, tx, &categoryModel, category.Id)
+	sts, message := utils.ResponseForQuerying(err == nil)
 	return &response.Response{
 		Status:  sts,
 		Message: message,
@@ -111,8 +112,8 @@ func (server *CategoryServiceServerImpl) Delete(context context.Context, categor
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 
-	deleted := server.Repository.Delete(context, tx, categoryId.Id)
-	sts, message := utils.ResponseForModifying(deleted)
+	err = server.Repository.Delete(context, tx, categoryId.Id)
+	sts, message := utils.ResponseForModifying(err == nil)
 	return &response.Response{Status: sts, Message: message}, nil
 }
 func (server *CategoryServiceServerImpl) mustEmbedUnimplementedCategoryServiceServer() {}

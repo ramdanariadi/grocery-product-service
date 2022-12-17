@@ -29,7 +29,7 @@ func (server WishlistServiceServerImpl) Save(ctx context.Context, wishlist *Wish
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 	productModel := server.ProductRepository.FindById(ctx, tx, wishlist.ProductId)
-	if utils.IsTypeEmpty(productModel) {
+	if productModel != nil {
 		status, message := utils.ResponseForModifying(false)
 		return &response.Response{Status: status, Message: message}, nil
 	}
@@ -43,8 +43,8 @@ func (server WishlistServiceServerImpl) Save(ctx context.Context, wishlist *Wish
 		UserId:    wishlist.UserId,
 		ProductId: productModel.Id,
 	}
-	server.Repository.Save(ctx, tx, wishlistModel)
-	status, message := utils.ResponseForModifying(true)
+	err = server.Repository.Save(ctx, tx, &wishlistModel)
+	status, message := utils.ResponseForModifying(err == nil)
 	return &response.Response{Status: status, Message: message}, nil
 }
 
@@ -52,8 +52,8 @@ func (server WishlistServiceServerImpl) Delete(ctx context.Context, id *UserAndW
 	tx, err := server.Repository.DB.Begin()
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
-	deleted := server.Repository.Delete(ctx, tx, id.UserId, id.WishlistId)
-	status, message := utils.ResponseForModifying(deleted)
+	err = server.Repository.Delete(ctx, tx, id.UserId, id.WishlistId)
+	status, message := utils.ResponseForModifying(err == nil)
 	return &response.Response{
 		Status:  status,
 		Message: message,
@@ -91,7 +91,7 @@ func fetchWishlist(rows *sql.Rows) []*WishlistDetail {
 
 		wishlists = append(wishlists, &wishlist)
 	}
-	rows.Close()
+	helpers.LogIfError(rows.Close())
 	return wishlists
 }
 
