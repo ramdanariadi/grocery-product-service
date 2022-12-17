@@ -2,13 +2,17 @@ package utils
 
 import (
 	"database/sql"
+	"fmt"
 	_ "github.com/lib/pq"
 	"github.com/ramdanariadi/grocery-product-service/main/helpers"
+	"os"
 	"time"
 )
 
 func NewDbConnection() (*sql.DB, error) {
-	connStr := "postgres://postgres:secret@localhost/grocery-product-service?sslmode=disable"
+	dbUsr := os.Getenv("DB_USR")
+	dbPass := os.Getenv("DB_PASS")
+	connStr := fmt.Sprintf("postgres://%s:%s@localhost/grocery-product-service?sslmode=disable", dbUsr, dbPass)
 	db, err := sql.Open("postgres", connStr)
 	helpers.PanicIfError(err)
 
