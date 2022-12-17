@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/ramdanariadi/grocery-product-service/main/helpers"
 	"github.com/ramdanariadi/grocery-product-service/main/models"
+	"log"
 	"strings"
 	"time"
 )
@@ -22,7 +23,10 @@ func (repository TransactionRepositoryImpl) FindByTransactionId(context context.
 	row := tx.QueryRowContext(context, queryTransaction, id)
 	transactionModel := models.TransactionModel{}
 	err := row.Scan(&transactionModel.Id, &transactionModel.TotalPrice, &transactionModel.TransactionDate)
-	helpers.PanicIfError(err)
+	if err != nil {
+		log.Println(err.Error())
+		return &transactionModel
+	}
 
 	queryDetailTransaction := "SELECT id, name, image_url, product_id, price, weight, per_unit, total, transaction_id " +
 		"FROM detail_transaction " +
@@ -59,7 +63,7 @@ func attachDetailTransaction(transaction *models.TransactionModel, detailTransac
 }
 
 func (repository TransactionRepositoryImpl) FindByUserId(context context.Context, tx *sql.Tx, userId string) []*models.TransactionModel {
-	sqlDetailTransaction := "SELECT name, dt.id, image_url, product_id, price, weight, per_unit, total, transaction_id " +
+	sqlDetailTransaction := "SELECT dt.id, name, image_url, product_id, price, weight, per_unit, total, transaction_id " +
 		"FROM detail_transaction dt " +
 		"JOIN transaction t ON t.id = dt.transaction_id " +
 		"WHERE t.user_id = $1 AND dt.deleted_at IS NULL"

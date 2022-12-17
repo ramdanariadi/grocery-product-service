@@ -163,7 +163,7 @@ func (server ProductServiceServerImpl) Save(ctx context.Context, product *Produc
 
 	categoryRepository := categoryRepo.NewCategoryRepository(server.Repository.DB)
 	categoryModel := categoryRepository.FindById(ctx, tx, product.CategoryId)
-	if utils.IsStructEmpty(categoryModel) {
+	if utils.IsTypeEmpty(categoryModel) {
 		status, _ := utils.ResponseForQuerying(false)
 		return &response.Response{Status: status, Message: "INVALID_CATEGORY"}, nil
 	}
@@ -195,7 +195,7 @@ func (server ProductServiceServerImpl) Update(ctx context.Context, product *Prod
 
 	categoryRepository := categoryRepo.NewCategoryRepository(server.Repository.DB)
 	categoryModel := categoryRepository.FindById(ctx, tx, product.CategoryId)
-	if utils.IsStructEmpty(categoryModel) {
+	if utils.IsTypeEmpty(categoryModel) {
 		status, _ := utils.ResponseForQuerying(false)
 		return &response.Response{Status: status, Message: "INVALID_CATEGORY"}, nil
 	}

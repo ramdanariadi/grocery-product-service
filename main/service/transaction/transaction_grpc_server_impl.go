@@ -30,7 +30,7 @@ func (transaction TransactionServiceServerImpl) FindByTransactionId(ctx context.
 	defer helpers.CommitOrRollback(tx)
 	transactionModel := transaction.Repository.FindByTransactionId(ctx, tx, id.Id)
 	var transactionData Transaction
-	if !utils.IsStructEmpty(transactionModel) {
+	if !utils.IsTypeEmpty(*transactionModel) {
 		transactionData = Transaction{
 			Id:         transactionModel.Id,
 			TotalPrice: transactionModel.TotalPrice,
@@ -38,7 +38,7 @@ func (transaction TransactionServiceServerImpl) FindByTransactionId(ctx context.
 		attachTransactionDetail(&transactionData, transactionModel.DetailTransaction)
 	}
 
-	status, message := utils.ResponseForQuerying(!utils.IsStructEmpty(transactionModel))
+	status, message := utils.ResponseForQuerying(!utils.IsTypeEmpty(*transactionModel))
 	return &TransactionResponse{Status: status, Message: message, Data: &transactionData}, nil
 }
 

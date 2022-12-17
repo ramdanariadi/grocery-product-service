@@ -26,7 +26,7 @@ func (server *CategoryServiceServerImpl) FindById(context context.Context, categ
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 	categoryById := server.Repository.FindById(context, tx, categoryId.Id)
-	status, message := utils.ResponseForQuerying(!utils.IsStructEmpty(categoryById))
+	status, message := utils.ResponseForQuerying(!utils.IsTypeEmpty(categoryById))
 	grpcCategory := Category{
 		Category: categoryById.Category,
 		Id:       categoryById.Id,
