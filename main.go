@@ -17,7 +17,7 @@ import (
 func main() {
 	db, err := utils.NewDbConnection()
 
-	listen, err := net.Listen("tcp", "localhost:9090")
+	listen, err := net.Listen("tcp", ":50051")
 	helpers.PanicIfError(err)
 
 	grpcServer := grpc.NewServer()
@@ -37,7 +37,7 @@ func main() {
 	transactionImplementedServer := transaction.NewTransactionServiceServer(db)
 	transaction.RegisterTransactionServiceServer(grpcServer, transactionImplementedServer)
 
-	log.Println("gRPC server running on port 9090")
+	log.Println("gRPC server running on port 50051")
 
 	err = grpcServer.Serve(listen)
 	helpers.PanicIfError(err)
