@@ -1,0 +1,6 @@
+Dockerfile
+openapi.json
+test-local.http
+.dockerignore
+.gitignore
+README.md
