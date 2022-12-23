@@ -12,7 +12,7 @@ import (
 
 func NewDbConnection() (*sql.DB, error) {
 
-	dbUsr := os.Getenv("DB_USER")
+	dbUsr := os.Getenv("DB_USERNAME")
 	dbPass := os.Getenv("DB_PASS")
 	dbName := os.Getenv("DB_NAME")
 	dbHost := os.Getenv("DB_HOST")

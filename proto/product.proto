@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package proto;
+option go_package = "/service/repository";
+
+option java_multiple_files = true;
+option java_package = "id.grocery.tunas.proto";
+
+import "proto/response.proto";
+import "proto/category.proto";
+
+message Product{
+  string name = 1;
+  string id = 2;
+  string category = 3;
+  string imageUrl = 4;
+  uint64 price = 5;
+  uint32 weight = 6;
+  string category_id = 7;
+  uint64 per_unit = 8;
+  string description = 9;
+  bool is_recommended = 10;
+  bool is_top = 11;
+}
+
+message ProductId{
+  string id = 1;
+}
+
+message ProductEmpty{}
+
+message ProductResponse{
+  string status = 1;
+  string message = 2;
+  Product data = 3;
+}
+
+message MultipleProductResponse{
+  string status = 1;
+  string message = 2;
+  repeated Product data = 3;
+}
+
+service ProductService{
+  rpc FindById(ProductId) returns(ProductResponse);
+  rpc FindAll(ProductEmpty) returns(MultipleProductResponse);
+  rpc FindProductsByCategory(CategoryId) returns(MultipleProductResponse);
+  rpc FindRecommendedProduct(ProductEmpty) returns(MultipleProductResponse);
+  rpc FindTopProducts(ProductEmpty) returns(MultipleProductResponse);
+  rpc Save(Product) returns(Response);
+  rpc Update(Product) returns(Response);
+  rpc Delete(ProductId) returns(Response);
+}
