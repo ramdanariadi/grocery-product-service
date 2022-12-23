@@ -14,9 +14,9 @@ type ProductRepositoryImpl struct {
 }
 
 func (repository ProductRepositoryImpl) FindById(context context.Context, tx *sql.Tx, id string) *model.ProductModel {
-	query := "SELECT products.id, name, price, per_unit, weight, repository, category_id, description, products.image_url  " +
+	query := "SELECT products.id, name, price, per_unit, weight, category, category_id, description, products.image_url  " +
 		"FROM products " +
-		"JOIN repository ON products.category_id = repository.id " +
+		"JOIN category ON products.category_id = category.id " +
 		"WHERE products.id = $1 AND products.deleted_at IS NULL"
 	row := tx.QueryRowContext(context, query, id)
 	product := model.ProductModel{}
@@ -86,9 +86,9 @@ func (repository ProductRepositoryImpl) FindByCategory(context context.Context, 
 }
 
 func (repository ProductRepositoryImpl) FindWhere(context context.Context, tx *sql.Tx, where string, value ...any) *sql.Rows {
-	query := "SELECT products.id, name, price, per_unit, weight, repository, category_id, description, products.image_url  " +
+	query := "SELECT products.id, name, price, per_unit, weight, category, category_id, description, products.image_url  " +
 		"FROM products " +
-		"JOIN repository ON products.category_id = repository.id " +
+		"JOIN category ON products.category_id = category.id " +
 		"WHERE " + where
 	rows, err := tx.QueryContext(context, query, value...)
 	helpers.LogIfError(err)

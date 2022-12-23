@@ -21,7 +21,7 @@ func NewDbConnection() (*sql.DB, error) {
 	for _, arg := range args {
 		split := strings.Split(arg, "=")
 		switch split[0] {
-		case "DB_USER":
+		case "DB_USERNAME":
 			dbUsr = split[1]
 			break
 		case "DB_PASS":
