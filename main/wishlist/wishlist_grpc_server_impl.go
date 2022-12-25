@@ -33,6 +33,13 @@ func (server WishlistServiceServerImpl) Save(ctx context.Context, wishlist *Wish
 		status, message := utils.ResponseForModifying(false)
 		return &response.Response{Status: status, Message: message}, nil
 	}
+
+	check := server.Repository.FindByUserAndProductId(ctx, tx, wishlist.UserId, productModel.Id)
+	if check != nil {
+		status, message := utils.ResponseForModifying(true)
+		return &response.Response{Status: status, Message: message}, nil
+	}
+
 	wishlistModel := model.WishlistModel{
 		ImageUrl:  productModel.ImageUrl,
 		Name:      productModel.Name,
