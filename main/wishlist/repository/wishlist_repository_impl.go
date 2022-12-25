@@ -25,11 +25,17 @@ func (w WishlistRepositoryImpl) FindByUserAndProductId(context context.Context, 
 	rows := tx.QueryRowContext(context, query, userId, productId)
 
 	wishlist := model.WishlistModel{}
+	var imageUrl sql.NullString
 	err := rows.Scan(&wishlist.Id, &wishlist.Name, &wishlist.Price, &wishlist.Weight, &wishlist.Category,
-		&wishlist.PerUnit, &wishlist.ImageUrl)
+		&wishlist.PerUnit, &imageUrl)
+
 	if err != nil {
 		log.Println(err.Error())
 		return nil
+	}
+
+	if imageUrl.Valid {
+		wishlist.ImageUrl = imageUrl.String
 	}
 	return &wishlist
 }

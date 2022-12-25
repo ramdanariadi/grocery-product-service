@@ -29,7 +29,7 @@ func (server WishlistServiceServerImpl) Save(ctx context.Context, wishlist *Wish
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 	productModel := server.ProductRepository.FindById(ctx, tx, wishlist.ProductId)
-	if productModel != nil {
+	if productModel == nil {
 		status, message := utils.ResponseForModifying(false)
 		return &response.Response{Status: status, Message: message}, nil
 	}
@@ -72,6 +72,30 @@ func (server WishlistServiceServerImpl) FindByUserId(ctx context.Context, id *Wi
 		Message: message,
 		Data:    wishlist,
 	}, nil
+}
+func (server WishlistServiceServerImpl) FindWishlistByProductId(ctx context.Context, id *UserAndProductId) (*WishlistResponse, error) {
+	tx, err := server.Repository.DB.Begin()
+	helpers.PanicIfError(err)
+	defer helpers.CommitOrRollback(tx)
+
+	wishlistModel := server.Repository.FindByUserAndProductId(ctx, tx, id.UserId, id.ProductId)
+	status, message := utils.ResponseForQuerying(wishlistModel != nil)
+
+	if wishlistModel == nil {
+		return &WishlistResponse{Message: message, Status: status, Data: nil}, nil
+	}
+
+	return &WishlistResponse{Message: message, Status: status, Data: &WishlistDetail{
+		Id:        wishlistModel.Id,
+		Name:      wishlistModel.Name,
+		Weight:    wishlistModel.Weight,
+		ProductId: wishlistModel.ProductId,
+		Price:     wishlistModel.Price,
+		Category:  wishlistModel.Category,
+		ImageUrl:  wishlistModel.ImageUrl,
+		UserId:    wishlistModel.UserId,
+		PerUnit:   wishlistModel.PerUnit,
+	}}, nil
 }
 
 func fetchWishlist(rows *sql.Rows) []*WishlistDetail {

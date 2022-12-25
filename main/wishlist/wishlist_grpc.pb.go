@@ -26,6 +26,7 @@ type WishlistServiceClient interface {
 	Save(ctx context.Context, in *Wishlist, opts ...grpc.CallOption) (*response.Response, error)
 	Delete(ctx context.Context, in *UserAndWishlistId, opts ...grpc.CallOption) (*response.Response, error)
 	FindByUserId(ctx context.Context, in *WishlistUserId, opts ...grpc.CallOption) (*MultipleWishlistResponse, error)
+	FindWishlistByProductId(ctx context.Context, in *UserAndProductId, opts ...grpc.CallOption) (*WishlistResponse, error)
 }
 
 type wishlistServiceClient struct {
@@ -63,6 +64,15 @@ func (c *wishlistServiceClient) FindByUserId(ctx context.Context, in *WishlistUs
 	return out, nil
 }
 
+func (c *wishlistServiceClient) FindWishlistByProductId(ctx context.Context, in *UserAndProductId, opts ...grpc.CallOption) (*WishlistResponse, error) {
+	out := new(WishlistResponse)
+	err := c.cc.Invoke(ctx, "/proto.WishlistService/FindWishlistByProductId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // WishlistServiceServer is the server API for WishlistService service.
 // All implementations must embed UnimplementedWishlistServiceServer
 // for forward compatibility
@@ -70,6 +80,7 @@ type WishlistServiceServer interface {
 	Save(context.Context, *Wishlist) (*response.Response, error)
 	Delete(context.Context, *UserAndWishlistId) (*response.Response, error)
 	FindByUserId(context.Context, *WishlistUserId) (*MultipleWishlistResponse, error)
+	FindWishlistByProductId(context.Context, *UserAndProductId) (*WishlistResponse, error)
 	mustEmbedUnimplementedWishlistServiceServer()
 }
 
@@ -85,6 +96,9 @@ func (UnimplementedWishlistServiceServer) Delete(context.Context, *UserAndWishli
 }
 func (UnimplementedWishlistServiceServer) FindByUserId(context.Context, *WishlistUserId) (*MultipleWishlistResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindByUserId not implemented")
+}
+func (UnimplementedWishlistServiceServer) FindWishlistByProductId(context.Context, *UserAndProductId) (*WishlistResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindWishlistByProductId not implemented")
 }
 func (UnimplementedWishlistServiceServer) mustEmbedUnimplementedWishlistServiceServer() {}
 
@@ -153,6 +167,24 @@ func _WishlistService_FindByUserId_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _WishlistService_FindWishlistByProductId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserAndProductId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WishlistServiceServer).FindWishlistByProductId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.WishlistService/FindWishlistByProductId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WishlistServiceServer).FindWishlistByProductId(ctx, req.(*UserAndProductId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // WishlistService_ServiceDesc is the grpc.ServiceDesc for WishlistService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -171,6 +203,10 @@ var WishlistService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FindByUserId",
 			Handler:    _WishlistService_FindByUserId_Handler,
+		},
+		{
+			MethodName: "FindWishlistByProductId",
+			Handler:    _WishlistService_FindWishlistByProductId_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

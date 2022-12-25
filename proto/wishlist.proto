@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package proto;
-option go_package = "/service/wishlist";
+option go_package = "/main/wishlist";
 
 option java_multiple_files = true;
 option java_package = "id.grocery.tunas.proto";
@@ -31,8 +31,19 @@ message UserAndWishlistId{
   string user_id = 2;
 }
 
+message UserAndProductId{
+  string product_id = 1;
+  string user_id = 2;
+}
+
 message WishlistUserId{
   string id = 1;
+}
+
+message WishlistResponse{
+  string status = 1;
+  string message = 2;
+  WishlistDetail data = 3;
 }
 
 message MultipleWishlistResponse{
@@ -45,4 +56,5 @@ service WishlistService{
   rpc Save(Wishlist) returns(Response);
   rpc Delete(UserAndWishlistId) returns(Response);
   rpc FindByUserId(WishlistUserId) returns(MultipleWishlistResponse);
+  rpc FindWishlistByProductId(UserAndProductId) returns(WishlistResponse);
 }
