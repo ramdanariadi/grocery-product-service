@@ -28,6 +28,14 @@ func (server CartServiceServerImpl) Save(ctx context.Context, cart *Cart) (*resp
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 	productModel := server.ProductRepository.FindById(ctx, tx, cart.ProductId)
+	if productModel == nil {
+		status, message := utils.ResponseForQuerying(false)
+		return &response.Response{
+			Message: message,
+			Status:  status,
+		}, nil
+	}
+
 	cartModel := model.CartModel{
 		ImageUrl:  productModel.ImageUrl,
 		ProductId: productModel.Id,
@@ -39,6 +47,25 @@ func (server CartServiceServerImpl) Save(ctx context.Context, cart *Cart) (*resp
 		UserId:    cart.UserId,
 		Total:     cart.Total,
 	}
+
+	existingCartRow := server.Repository.FindByUserAndProductId(ctx, tx, cart.UserId, cart.ProductId)
+
+	existingCart := CartDetail{}
+	err = existingCartRow.Scan(&existingCart.Id, &existingCart.Name, &existingCart.Price, &existingCart.Weight,
+		&existingCart.Category, &existingCart.Total, &existingCart.PerUnit, &existingCart.ImageUrl, &existingCart.ProductId)
+	helpers.LogIfError(err)
+
+	if err == nil {
+		cartModel.Id = existingCart.Id
+		cartModel.Total = cart.Total + existingCart.Total
+		err = server.Repository.Update(ctx, tx, &cartModel)
+		status, message := utils.ResponseForModifying(err == nil)
+		return &response.Response{
+			Message: message,
+			Status:  status,
+		}, nil
+	}
+
 	err = server.Repository.Save(ctx, tx, &cartModel)
 	status, message := utils.ResponseForModifying(err == nil)
 	return &response.Response{
@@ -70,7 +97,10 @@ func fetchWishlist(rows *sql.Rows) []*CartDetail {
 	var carts []*CartDetail
 	for rows.Next() {
 		cart := CartDetail{}
-		rows.Scan(&cart.Id, &cart.Name, &cart.Price, &cart.Weight, &cart.Category, &cart.Total, &cart.PerUnit, &cart.ImageUrl)
+		err := rows.Scan(&cart.Id, &cart.Name, &cart.Price, &cart.Weight, &cart.Category, &cart.Total, &cart.PerUnit, &cart.ImageUrl, &cart.ProductId)
+		if err != nil {
+			continue
+		}
 		carts = append(carts, &cart)
 	}
 	helpers.LogIfError(rows.Close())

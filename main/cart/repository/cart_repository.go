@@ -9,6 +9,7 @@ import (
 type CartRepository interface {
 	FindByUserId(context context.Context, tx *sql.Tx, userId string) *sql.Rows
 	FindByUserAndProductId(context context.Context, tx *sql.Tx, userId string, productId string) *sql.Row
+	Update(context context.Context, tx *sql.Tx, product *model.CartModel) error
 	Save(context context.Context, tx *sql.Tx, product *model.CartModel) error
 	Delete(context context.Context, tx *sql.Tx, userId string, productId string) error
 }
