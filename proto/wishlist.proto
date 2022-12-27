@@ -54,7 +54,7 @@ message MultipleWishlistResponse{
 
 service WishlistService{
   rpc Save(Wishlist) returns(Response);
-  rpc Delete(UserAndWishlistId) returns(Response);
+  rpc Delete(UserAndProductId) returns(Response);
   rpc FindByUserId(WishlistUserId) returns(MultipleWishlistResponse);
   rpc FindWishlistByProductId(UserAndProductId) returns(WishlistResponse);
 }

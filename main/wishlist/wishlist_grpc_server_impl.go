@@ -55,11 +55,11 @@ func (server WishlistServiceServerImpl) Save(ctx context.Context, wishlist *Wish
 	return &response.Response{Status: status, Message: message}, nil
 }
 
-func (server WishlistServiceServerImpl) Delete(ctx context.Context, id *UserAndWishlistId) (*response.Response, error) {
+func (server WishlistServiceServerImpl) Delete(ctx context.Context, id *UserAndProductId) (*response.Response, error) {
 	tx, err := server.Repository.DB.Begin()
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
-	err = server.Repository.Delete(ctx, tx, id.UserId, id.WishlistId)
+	err = server.Repository.Delete(ctx, tx, id.UserId, id.ProductId)
 	status, message := utils.ResponseForModifying(err == nil)
 	return &response.Response{
 		Status:  status,
@@ -110,7 +110,7 @@ func fetchWishlist(rows *sql.Rows) []*WishlistDetail {
 	for rows.Next() {
 		wishlist := WishlistDetail{}
 		var imageUrl sql.NullString
-		err := rows.Scan(&wishlist.Id, &wishlist.Name, &wishlist.Price, &wishlist.Weight, &wishlist.Category, &wishlist.PerUnit, &imageUrl)
+		err := rows.Scan(&wishlist.Id, &wishlist.Name, &wishlist.Price, &wishlist.Weight, &wishlist.Category, &wishlist.PerUnit, &imageUrl, &wishlist.ProductId)
 		if err != nil {
 			log.Println("scan error : " + err.Error())
 			continue
