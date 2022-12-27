@@ -44,6 +44,13 @@ func (server ProductServiceServerImpl) FindById(ctx context.Context, id *Product
 		helpers.LogIfError(err)
 	} else {
 		productModel = server.Repository.FindById(ctx, tx, id.Id)
+		if productModel == nil {
+			return &ProductResponse{
+				Message: "EMPTY",
+				Status:  "FAILED",
+				Data:    nil,
+			}, nil
+		}
 		bytes, err := json.Marshal(productModel)
 		helpers.LogIfError(err)
 		err = server.RedisClient.Set(ctx, id.GetId(), bytes, 1*time.Hour).Err()
