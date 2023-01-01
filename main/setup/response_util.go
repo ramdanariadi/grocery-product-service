@@ -1,4 +1,4 @@
-package utils
+package setup
 
 // Negative status(es)
 const Failed = "FAILED"

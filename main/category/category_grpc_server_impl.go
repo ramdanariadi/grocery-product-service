@@ -8,7 +8,7 @@ import (
 	"github.com/ramdanariadi/grocery-product-service/main/category/repository"
 	"github.com/ramdanariadi/grocery-product-service/main/helpers"
 	"github.com/ramdanariadi/grocery-product-service/main/response"
-	"github.com/ramdanariadi/grocery-product-service/main/utils"
+	"github.com/ramdanariadi/grocery-product-service/main/setup"
 	"golang.org/x/net/context"
 )
 
@@ -18,7 +18,7 @@ type CategoryServiceServerImpl struct {
 }
 
 func NewCategoryServiceServerImpl(db *sql.DB) *CategoryServiceServerImpl {
-	return &CategoryServiceServerImpl{Repository: repository.CategoryRepositoryImpl{DB: db}, RedisClient: utils.NewRedisClient()}
+	return &CategoryServiceServerImpl{Repository: repository.CategoryRepositoryImpl{DB: db}, RedisClient: setup.NewRedisClient()}
 }
 
 func (server *CategoryServiceServerImpl) FindById(context context.Context, categoryId *CategoryId) (*CategoryResponse, error) {
@@ -26,7 +26,7 @@ func (server *CategoryServiceServerImpl) FindById(context context.Context, categ
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 	categoryById := server.Repository.FindById(context, tx, categoryId.Id)
-	status, message := utils.ResponseForQuerying(categoryById != nil)
+	status, message := setup.ResponseForQuerying(categoryById != nil)
 	grpcCategory := Category{
 		Category: categoryById.Category,
 		Id:       categoryById.Id,
@@ -44,7 +44,7 @@ func (server *CategoryServiceServerImpl) FindAll(context context.Context, _ *Emp
 	defer helpers.CommitOrRollback(tx)
 	rows := server.Repository.FindAll(context, tx)
 	categories := fetchCategories(rows)
-	status, message := utils.ResponseForQuerying(true)
+	status, message := setup.ResponseForQuerying(true)
 	return &MultipleCategoryResponse{
 		Status:  status,
 		Message: message,
@@ -84,7 +84,7 @@ func (server *CategoryServiceServerImpl) Save(context context.Context, category 
 	}
 
 	err = server.Repository.Save(context, tx, &categoryModel)
-	sts, message := utils.ResponseForQuerying(err == nil)
+	sts, message := setup.ResponseForQuerying(err == nil)
 	return &response.Response{
 		Status:  sts,
 		Message: message,
@@ -101,7 +101,7 @@ func (server *CategoryServiceServerImpl) Update(context context.Context, categor
 	}
 
 	err = server.Repository.Update(context, tx, &categoryModel, category.Id)
-	sts, message := utils.ResponseForQuerying(err == nil)
+	sts, message := setup.ResponseForQuerying(err == nil)
 	return &response.Response{
 		Status:  sts,
 		Message: message,
@@ -113,7 +113,7 @@ func (server *CategoryServiceServerImpl) Delete(context context.Context, categor
 	defer helpers.CommitOrRollback(tx)
 
 	err = server.Repository.Delete(context, tx, categoryId.Id)
-	sts, message := utils.ResponseForModifying(err == nil)
+	sts, message := setup.ResponseForModifying(err == nil)
 	return &response.Response{Status: sts, Message: message}, nil
 }
 func (server *CategoryServiceServerImpl) mustEmbedUnimplementedCategoryServiceServer() {}

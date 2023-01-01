@@ -8,7 +8,7 @@ import (
 	"github.com/ramdanariadi/grocery-product-service/main/helpers"
 	"github.com/ramdanariadi/grocery-product-service/main/product/repository"
 	"github.com/ramdanariadi/grocery-product-service/main/response"
-	"github.com/ramdanariadi/grocery-product-service/main/utils"
+	"github.com/ramdanariadi/grocery-product-service/main/setup"
 )
 
 type CartServiceServerImpl struct {
@@ -29,7 +29,7 @@ func (server CartServiceServerImpl) Save(ctx context.Context, cart *Cart) (*resp
 	defer helpers.CommitOrRollback(tx)
 	productModel := server.ProductRepository.FindById(ctx, tx, cart.ProductId)
 	if productModel == nil {
-		status, message := utils.ResponseForQuerying(false)
+		status, message := setup.ResponseForQuerying(false)
 		return &response.Response{
 			Message: message,
 			Status:  status,
@@ -59,7 +59,7 @@ func (server CartServiceServerImpl) Save(ctx context.Context, cart *Cart) (*resp
 		cartModel.Id = existingCart.Id
 		cartModel.Total = cart.Total + existingCart.Total
 		err = server.Repository.Update(ctx, tx, &cartModel)
-		status, message := utils.ResponseForModifying(err == nil)
+		status, message := setup.ResponseForModifying(err == nil)
 		return &response.Response{
 			Message: message,
 			Status:  status,
@@ -67,7 +67,7 @@ func (server CartServiceServerImpl) Save(ctx context.Context, cart *Cart) (*resp
 	}
 
 	err = server.Repository.Save(ctx, tx, &cartModel)
-	status, message := utils.ResponseForModifying(err == nil)
+	status, message := setup.ResponseForModifying(err == nil)
 	return &response.Response{
 		Message: message,
 		Status:  status,
@@ -79,7 +79,7 @@ func (server CartServiceServerImpl) Delete(ctx context.Context, id *CartAndUserI
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 	err = server.Repository.Delete(ctx, tx, id.UserId, id.Id)
-	status, message := utils.ResponseForModifying(err == nil)
+	status, message := setup.ResponseForModifying(err == nil)
 	return &response.Response{Message: message, Status: status}, nil
 }
 
@@ -89,7 +89,7 @@ func (server CartServiceServerImpl) FindByUserId(ctx context.Context, id *CartUs
 	defer helpers.CommitOrRollback(tx)
 	rows := server.Repository.FindByUserId(ctx, tx, id.Id)
 	wishlist := fetchWishlist(rows)
-	status, message := utils.ResponseForQuerying(true)
+	status, message := setup.ResponseForQuerying(true)
 	return &MultipleCartResponse{Status: status, Message: message, Data: wishlist}, nil
 }
 

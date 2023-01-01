@@ -6,8 +6,8 @@ import (
 	category2 "github.com/ramdanariadi/grocery-product-service/main/category"
 	"github.com/ramdanariadi/grocery-product-service/main/helpers"
 	product2 "github.com/ramdanariadi/grocery-product-service/main/product"
+	"github.com/ramdanariadi/grocery-product-service/main/setup"
 	transaction2 "github.com/ramdanariadi/grocery-product-service/main/transaction"
-	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	wishlist2 "github.com/ramdanariadi/grocery-product-service/main/wishlist"
 	"google.golang.org/grpc"
 	"log"
@@ -15,7 +15,7 @@ import (
 )
 
 func main() {
-	db, err := utils.NewDbConnection()
+	db, err := setup.NewDbConnection()
 
 	listen, err := net.Listen("tcp", ":50051")
 	helpers.PanicIfError(err)

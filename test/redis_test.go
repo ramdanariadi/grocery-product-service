@@ -3,7 +3,7 @@ package test
 import (
 	"fmt"
 	"github.com/ramdanariadi/grocery-product-service/main/helpers"
-	"github.com/ramdanariadi/grocery-product-service/main/utils"
+	"github.com/ramdanariadi/grocery-product-service/main/setup"
 	"golang.org/x/net/context"
 	"testing"
 	"time"
@@ -13,7 +13,7 @@ func Test_write_redis(t *testing.T) {
 }
 
 func Test_read_redis(t *testing.T) {
-	redistClient := utils.NewRedisClient()
+	redistClient := setup.NewRedisClient()
 	ctx := context.Background()
 	since := time.Now()
 	result, err := redistClient.Get(ctx, "s8s978").Result()

@@ -7,9 +7,9 @@ import (
 	"github.com/ramdanariadi/grocery-product-service/main/helpers"
 	repository2 "github.com/ramdanariadi/grocery-product-service/main/product/repository"
 	"github.com/ramdanariadi/grocery-product-service/main/response"
+	"github.com/ramdanariadi/grocery-product-service/main/setup"
 	"github.com/ramdanariadi/grocery-product-service/main/transaction/model"
 	"github.com/ramdanariadi/grocery-product-service/main/transaction/repository"
-	"github.com/ramdanariadi/grocery-product-service/main/utils"
 )
 
 type TransactionServiceServerImpl struct {
@@ -38,7 +38,7 @@ func (transaction TransactionServiceServerImpl) FindByTransactionId(ctx context.
 		attachTransactionDetail(&transactionData, transactionModel.DetailTransaction)
 	}
 
-	status, message := utils.ResponseForQuerying(transactionModel != nil)
+	status, message := setup.ResponseForQuerying(transactionModel != nil)
 	return &TransactionResponse{Status: status, Message: message, Data: &transactionData}, nil
 }
 
@@ -67,7 +67,7 @@ func (transaction TransactionServiceServerImpl) FindByUserId(ctx context.Context
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 	transactionModels := transaction.Repository.FindByUserId(ctx, tx, id.Id)
-	status, message := utils.ResponseForQuerying(true)
+	status, message := setup.ResponseForQuerying(true)
 	result := MultipleTransactionResponse{
 		Status:  status,
 		Message: message,
@@ -110,7 +110,7 @@ func (transaction TransactionServiceServerImpl) Save(ctx context.Context, body *
 	transactionModel.DetailTransaction = detailTransaction
 	transactionModel.TotalPrice = totalPrice
 	err = transaction.Repository.Save(ctx, tx, &transactionModel)
-	status, message := utils.ResponseForQuerying(err == nil)
+	status, message := setup.ResponseForQuerying(err == nil)
 	return &response.Response{Status: status, Message: message}, nil
 }
 
@@ -128,7 +128,7 @@ func (transaction TransactionServiceServerImpl) Delete(ctx context.Context, id *
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 	err = transaction.Repository.Delete(ctx, tx, id.Id)
-	status, message := utils.ResponseForModifying(err == nil)
+	status, message := setup.ResponseForModifying(err == nil)
 	return &response.Response{Status: status, Message: message}, nil
 }
 

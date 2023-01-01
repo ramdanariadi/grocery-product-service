@@ -5,7 +5,7 @@ import (
 	"github.com/ramdanariadi/grocery-product-service/main/helpers"
 	repository2 "github.com/ramdanariadi/grocery-product-service/main/product/repository"
 	"github.com/ramdanariadi/grocery-product-service/main/response"
-	"github.com/ramdanariadi/grocery-product-service/main/utils"
+	"github.com/ramdanariadi/grocery-product-service/main/setup"
 	"github.com/ramdanariadi/grocery-product-service/main/wishlist/model"
 	"github.com/ramdanariadi/grocery-product-service/main/wishlist/repository"
 	"golang.org/x/net/context"
@@ -30,13 +30,13 @@ func (server WishlistServiceServerImpl) Save(ctx context.Context, wishlist *Wish
 	defer helpers.CommitOrRollback(tx)
 	productModel := server.ProductRepository.FindById(ctx, tx, wishlist.ProductId)
 	if productModel == nil {
-		status, message := utils.ResponseForModifying(false)
+		status, message := setup.ResponseForModifying(false)
 		return &response.Response{Status: status, Message: message}, nil
 	}
 
 	check := server.Repository.FindByUserAndProductId(ctx, tx, wishlist.UserId, productModel.Id)
 	if check != nil {
-		status, message := utils.ResponseForModifying(true)
+		status, message := setup.ResponseForModifying(true)
 		return &response.Response{Status: status, Message: message}, nil
 	}
 
@@ -51,7 +51,7 @@ func (server WishlistServiceServerImpl) Save(ctx context.Context, wishlist *Wish
 		ProductId: productModel.Id,
 	}
 	err = server.Repository.Save(ctx, tx, &wishlistModel)
-	status, message := utils.ResponseForModifying(err == nil)
+	status, message := setup.ResponseForModifying(err == nil)
 	return &response.Response{Status: status, Message: message}, nil
 }
 
@@ -60,7 +60,7 @@ func (server WishlistServiceServerImpl) Delete(ctx context.Context, id *UserAndP
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 	err = server.Repository.Delete(ctx, tx, id.UserId, id.ProductId)
-	status, message := utils.ResponseForModifying(err == nil)
+	status, message := setup.ResponseForModifying(err == nil)
 	return &response.Response{
 		Status:  status,
 		Message: message,
@@ -73,7 +73,7 @@ func (server WishlistServiceServerImpl) FindByUserId(ctx context.Context, id *Wi
 	defer helpers.CommitOrRollback(tx)
 	wishlistModels := server.Repository.FindByUserId(ctx, tx, id.Id)
 	wishlist := fetchWishlist(wishlistModels)
-	status, message := utils.ResponseForQuerying(len(wishlist) > 0)
+	status, message := setup.ResponseForQuerying(len(wishlist) > 0)
 	return &MultipleWishlistResponse{
 		Status:  status,
 		Message: message,
@@ -86,7 +86,7 @@ func (server WishlistServiceServerImpl) FindWishlistByProductId(ctx context.Cont
 	defer helpers.CommitOrRollback(tx)
 
 	wishlistModel := server.Repository.FindByUserAndProductId(ctx, tx, id.UserId, id.ProductId)
-	status, message := utils.ResponseForQuerying(wishlistModel != nil)
+	status, message := setup.ResponseForQuerying(wishlistModel != nil)
 
 	if wishlistModel == nil {
 		return &WishlistResponse{Message: message, Status: status, Data: nil}, nil

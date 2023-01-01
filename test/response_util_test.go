@@ -2,7 +2,7 @@ package test
 
 import (
 	"fmt"
-	"github.com/ramdanariadi/grocery-product-service/main/utils"
+	"github.com/ramdanariadi/grocery-product-service/main/setup"
 	"testing"
 )
 
@@ -15,7 +15,7 @@ func TestResponseUtil(t *testing.T) {
 	foos = append(foos, foo{
 		a: "a",
 	})
-	status, message := utils.ResponseForQuerying(len(foos) > 0)
+	status, message := setup.ResponseForQuerying(len(foos) > 0)
 	fmt.Println(status)
 	fmt.Println(message)
 }
