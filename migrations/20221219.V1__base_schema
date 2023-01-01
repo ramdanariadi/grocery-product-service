@@ -1,7 +1,8 @@
-create table category
+create table categories
 (
     id         uuid not null
-        primary key,
+        constraint category_pkey
+            primary key,
     created_at timestamp,
     deleted_at timestamp,
     updated_at timestamp,
@@ -9,7 +10,7 @@ create table category
     image_url  varchar(255)
 );
 
-alter table category
+alter table categories
     owner to postgres;
 
 create table products
@@ -29,16 +30,23 @@ create table products
     weight         integer,
     category_id    uuid
         constraint fk1cf90etcu98x1e6n9aks3tel3
-            references category
+            references categories
 );
 
 alter table products
     owner to postgres;
 
-create table cart
+create index idx_product_name
+    on products (name);
+
+create index idx_product_category
+    on products (category_id);
+
+create table carts
 (
     id         uuid         not null
-        primary key,
+        constraint cart_pkey
+            primary key,
     created_at timestamp,
     deleted_at timestamp,
     updated_at timestamp,
@@ -55,13 +63,14 @@ create table cart
     user_id    varchar(255) not null
 );
 
-alter table cart
+alter table carts
     owner to postgres;
 
-create table liked
+create table likes
 (
     id         uuid         not null
-        primary key,
+        constraint liked_pkey
+            primary key,
     created_at timestamp,
     deleted_at timestamp,
     updated_at timestamp,
@@ -77,19 +86,14 @@ create table liked
     user_id    varchar(255) not null
 );
 
-alter table liked
+alter table likes
     owner to postgres;
 
-create index idx_product_name
-    on products (name);
-
-create index idx_product_category
-    on products (category_id);
-
-create table transaction
+create table transactions
 (
     id          uuid not null
-        primary key,
+        constraint transaction_pkey
+            primary key,
     created_at  timestamp,
     deleted_at  timestamp,
     updated_at  timestamp,
@@ -97,13 +101,14 @@ create table transaction
     user_id     varchar(255)
 );
 
-alter table transaction
+alter table transactions
     owner to postgres;
 
-create table detail_transaction
+create table transaction_details
 (
     id             uuid not null
-        primary key,
+        constraint detail_transaction_pkey
+            primary key,
     created_at     timestamp,
     deleted_at     timestamp,
     updated_at     timestamp,
@@ -118,16 +123,17 @@ create table detail_transaction
             references products,
     transaction_id uuid
         constraint fkd6mv4qpm8jsp3lviwupuodmm4
-            references transaction
+            references transactions
 );
 
-alter table detail_transaction
+alter table transaction_details
     owner to postgres;
 
-create table wishlist
+create table wishlists
 (
     id         uuid         not null
-        primary key,
+        constraint wishlist_pkey
+            primary key,
     created_at timestamp,
     deleted_at timestamp,
     updated_at timestamp,
@@ -143,6 +149,6 @@ create table wishlist
     user_id    varchar(255) not null
 );
 
-alter table wishlist
+alter table wishlists
     owner to postgres;
 
