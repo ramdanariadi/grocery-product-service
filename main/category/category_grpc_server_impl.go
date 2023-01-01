@@ -6,9 +6,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/ramdanariadi/grocery-product-service/main/category/model"
 	"github.com/ramdanariadi/grocery-product-service/main/category/repository"
-	"github.com/ramdanariadi/grocery-product-service/main/helpers"
 	"github.com/ramdanariadi/grocery-product-service/main/response"
 	"github.com/ramdanariadi/grocery-product-service/main/setup"
+	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"golang.org/x/net/context"
 )
 
@@ -23,8 +23,8 @@ func NewCategoryServiceServerImpl(db *sql.DB) *CategoryServiceServerImpl {
 
 func (server *CategoryServiceServerImpl) FindById(context context.Context, categoryId *CategoryId) (*CategoryResponse, error) {
 	tx, err := server.Repository.DB.Begin()
-	helpers.PanicIfError(err)
-	defer helpers.CommitOrRollback(tx)
+	utils.PanicIfError(err)
+	defer utils.CommitOrRollback(tx)
 	categoryById := server.Repository.FindById(context, tx, categoryId.Id)
 	status, message := setup.ResponseForQuerying(categoryById != nil)
 	grpcCategory := Category{
@@ -40,8 +40,8 @@ func (server *CategoryServiceServerImpl) FindById(context context.Context, categ
 }
 func (server *CategoryServiceServerImpl) FindAll(context context.Context, _ *EmptyCategory) (*MultipleCategoryResponse, error) {
 	tx, err := server.Repository.DB.Begin()
-	helpers.PanicIfError(err)
-	defer helpers.CommitOrRollback(tx)
+	utils.PanicIfError(err)
+	defer utils.CommitOrRollback(tx)
 	rows := server.Repository.FindAll(context, tx)
 	categories := fetchCategories(rows)
 	status, message := setup.ResponseForQuerying(true)
@@ -67,14 +67,14 @@ func fetchCategories(rows *sql.Rows) []*Category {
 		categoriesModel = append(categoriesModel, &cm)
 
 	}
-	helpers.LogIfError(rows.Close())
+	utils.LogIfError(rows.Close())
 	return categoriesModel
 }
 
 func (server *CategoryServiceServerImpl) Save(context context.Context, category *Category) (*response.Response, error) {
 	tx, err := server.Repository.DB.Begin()
-	helpers.PanicIfError(err)
-	defer helpers.CommitOrRollback(tx)
+	utils.PanicIfError(err)
+	defer utils.CommitOrRollback(tx)
 
 	id, _ := uuid.NewUUID()
 	categoryModel := model.CategoryModel{
@@ -92,8 +92,8 @@ func (server *CategoryServiceServerImpl) Save(context context.Context, category 
 }
 func (server *CategoryServiceServerImpl) Update(context context.Context, category *Category) (*response.Response, error) {
 	tx, err := server.Repository.DB.Begin()
-	helpers.PanicIfError(err)
-	defer helpers.CommitOrRollback(tx)
+	utils.PanicIfError(err)
+	defer utils.CommitOrRollback(tx)
 
 	categoryModel := model.CategoryModel{
 		Category: category.Category,
@@ -109,8 +109,8 @@ func (server *CategoryServiceServerImpl) Update(context context.Context, categor
 }
 func (server *CategoryServiceServerImpl) Delete(context context.Context, categoryId *CategoryId) (*response.Response, error) {
 	tx, err := server.Repository.DB.Begin()
-	helpers.PanicIfError(err)
-	defer helpers.CommitOrRollback(tx)
+	utils.PanicIfError(err)
+	defer utils.CommitOrRollback(tx)
 
 	err = server.Repository.Delete(context, tx, categoryId.Id)
 	sts, message := setup.ResponseForModifying(err == nil)

@@ -2,10 +2,10 @@ package wishlist
 
 import (
 	"database/sql"
-	"github.com/ramdanariadi/grocery-product-service/main/helpers"
 	repository2 "github.com/ramdanariadi/grocery-product-service/main/product/repository"
 	"github.com/ramdanariadi/grocery-product-service/main/response"
 	"github.com/ramdanariadi/grocery-product-service/main/setup"
+	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"github.com/ramdanariadi/grocery-product-service/main/wishlist/model"
 	"github.com/ramdanariadi/grocery-product-service/main/wishlist/repository"
 	"golang.org/x/net/context"
@@ -26,8 +26,8 @@ func NewWishlistServer(db *sql.DB) *WishlistServiceServerImpl {
 
 func (server WishlistServiceServerImpl) Save(ctx context.Context, wishlist *Wishlist) (*response.Response, error) {
 	tx, err := server.Repository.DB.Begin()
-	helpers.PanicIfError(err)
-	defer helpers.CommitOrRollback(tx)
+	utils.PanicIfError(err)
+	defer utils.CommitOrRollback(tx)
 	productModel := server.ProductRepository.FindById(ctx, tx, wishlist.ProductId)
 	if productModel == nil {
 		status, message := setup.ResponseForModifying(false)
@@ -57,8 +57,8 @@ func (server WishlistServiceServerImpl) Save(ctx context.Context, wishlist *Wish
 
 func (server WishlistServiceServerImpl) Delete(ctx context.Context, id *UserAndProductId) (*response.Response, error) {
 	tx, err := server.Repository.DB.Begin()
-	helpers.PanicIfError(err)
-	defer helpers.CommitOrRollback(tx)
+	utils.PanicIfError(err)
+	defer utils.CommitOrRollback(tx)
 	err = server.Repository.Delete(ctx, tx, id.UserId, id.ProductId)
 	status, message := setup.ResponseForModifying(err == nil)
 	return &response.Response{
@@ -69,8 +69,8 @@ func (server WishlistServiceServerImpl) Delete(ctx context.Context, id *UserAndP
 
 func (server WishlistServiceServerImpl) FindByUserId(ctx context.Context, id *WishlistUserId) (*MultipleWishlistResponse, error) {
 	tx, err := server.Repository.DB.Begin()
-	helpers.PanicIfError(err)
-	defer helpers.CommitOrRollback(tx)
+	utils.PanicIfError(err)
+	defer utils.CommitOrRollback(tx)
 	wishlistModels := server.Repository.FindByUserId(ctx, tx, id.Id)
 	wishlist := fetchWishlist(wishlistModels)
 	status, message := setup.ResponseForQuerying(len(wishlist) > 0)
@@ -82,8 +82,8 @@ func (server WishlistServiceServerImpl) FindByUserId(ctx context.Context, id *Wi
 }
 func (server WishlistServiceServerImpl) FindWishlistByProductId(ctx context.Context, id *UserAndProductId) (*WishlistResponse, error) {
 	tx, err := server.Repository.DB.Begin()
-	helpers.PanicIfError(err)
-	defer helpers.CommitOrRollback(tx)
+	utils.PanicIfError(err)
+	defer utils.CommitOrRollback(tx)
 
 	wishlistModel := server.Repository.FindByUserAndProductId(ctx, tx, id.UserId, id.ProductId)
 	status, message := setup.ResponseForQuerying(wishlistModel != nil)
@@ -122,7 +122,7 @@ func fetchWishlist(rows *sql.Rows) []*WishlistDetail {
 
 		wishlists = append(wishlists, &wishlist)
 	}
-	helpers.LogIfError(rows.Close())
+	utils.LogIfError(rows.Close())
 	return wishlists
 }
 

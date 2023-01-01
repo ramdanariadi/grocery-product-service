@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"github.com/lib/pq"
-	"github.com/ramdanariadi/grocery-product-service/main/helpers"
 	"github.com/ramdanariadi/grocery-product-service/main/product/model"
+	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"log"
 )
 
@@ -42,7 +42,7 @@ func (repository ProductRepositoryImpl) FindByIds(context context.Context, tx *s
 		"JOIN category ON products.category_id = category.id " +
 		"WHERE products.id = ANY($1) AND products.deleted_at IS NULL"
 	rows, err := tx.QueryContext(context, query, pq.Array(ids))
-	helpers.LogIfError(err)
+	utils.LogIfError(err)
 	var products []*model.ProductModel
 
 	for rows.Next() {
@@ -71,7 +71,7 @@ func (repository ProductRepositoryImpl) FindAll(context context.Context, tx *sql
 		"WHERE products.deleted_at IS NULL"
 
 	rows, err := tx.QueryContext(context, query)
-	helpers.LogIfError(err)
+	utils.LogIfError(err)
 	return rows
 }
 
@@ -81,7 +81,7 @@ func (repository ProductRepositoryImpl) FindByCategory(context context.Context, 
 		"JOIN category ON products.category_id = category.id " +
 		"WHERE products.category_id = $1 AND products.deleted_at IS NULL"
 	rows, err := tx.QueryContext(context, query, id)
-	helpers.LogIfError(err)
+	utils.LogIfError(err)
 	return rows
 }
 
@@ -91,7 +91,7 @@ func (repository ProductRepositoryImpl) FindWhere(context context.Context, tx *s
 		"JOIN category ON products.category_id = category.id " +
 		"WHERE " + where
 	rows, err := tx.QueryContext(context, query, value...)
-	helpers.LogIfError(err)
+	utils.LogIfError(err)
 	return rows
 }
 
@@ -100,7 +100,7 @@ func (repository ProductRepositoryImpl) Save(context context.Context, tx *sql.Tx
 		"VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,NOW())"
 	_, err := tx.ExecContext(context, sql, product.Id, product.Name, product.Weight, product.Price,
 		product.PerUnit, product.CategoryId, product.Description, product.ImageUrl, false, false)
-	helpers.LogIfError(err)
+	utils.LogIfError(err)
 	return err
 }
 
@@ -111,13 +111,13 @@ func (repository ProductRepositoryImpl) Update(context context.Context, tx *sql.
 	_, err := tx.ExecContext(context, sql, product.Name, product.Price, product.Weight,
 		product.CategoryId, product.PerUnit, product.Description, product.ImageUrl, product.IsTop,
 		product.IsRecommended, product.Id)
-	helpers.LogIfError(err)
+	utils.LogIfError(err)
 	return err
 }
 
 func (repository ProductRepositoryImpl) Delete(context context.Context, tx *sql.Tx, id string) error {
 	sql := "UPDATE products set deleted_at = NOW() WHERE id = $1"
 	_, err := tx.ExecContext(context, sql, id)
-	helpers.LogIfError(err)
+	utils.LogIfError(err)
 	return err
 }

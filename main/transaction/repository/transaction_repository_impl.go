@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/google/uuid"
-	"github.com/ramdanariadi/grocery-product-service/main/helpers"
 	"github.com/ramdanariadi/grocery-product-service/main/transaction/model"
+	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"log"
 	"strings"
 	"time"
@@ -32,7 +32,7 @@ func (repository TransactionRepositoryImpl) FindByTransactionId(context context.
 		"FROM detail_transaction " +
 		"WHERE transaction_id = $1 AND deleted_at IS NULL"
 	dtRows, err := tx.QueryContext(context, queryDetailTransaction, id)
-	helpers.LogIfError(err)
+	utils.LogIfError(err)
 
 	var detailTransactions []*model.DetailTransactionProductModel
 	for dtRows.Next() {
@@ -49,7 +49,7 @@ func (repository TransactionRepositoryImpl) FindByTransactionId(context context.
 		}
 		detailTransactions = append(detailTransactions, &detailTransaction)
 	}
-	helpers.LogIfError(dtRows.Close())
+	utils.LogIfError(dtRows.Close())
 	attachDetailTransaction(&transactionModel, detailTransactions)
 	return &transactionModel
 }
@@ -68,7 +68,7 @@ func (repository TransactionRepositoryImpl) FindByUserId(context context.Context
 		"JOIN transaction t ON t.id = dt.transaction_id " +
 		"WHERE t.user_id = $1 AND dt.deleted_at IS NULL"
 	detailTransactionRows, err := tx.QueryContext(context, sqlDetailTransaction, userId)
-	helpers.PanicIfError(err)
+	utils.PanicIfError(err)
 	var detailTransactions []*model.DetailTransactionProductModel
 	for detailTransactionRows.Next() {
 		detailTransaction := model.DetailTransactionProductModel{}
@@ -84,12 +84,12 @@ func (repository TransactionRepositoryImpl) FindByUserId(context context.Context
 		}
 		detailTransactions = append(detailTransactions, &detailTransaction)
 	}
-	helpers.LogIfError(detailTransactionRows.Close())
+	utils.LogIfError(detailTransactionRows.Close())
 
 	sqlTransaction := "SELECT id, total_price, created_at " +
 		"FROM transaction WHERE user_id = $1 AND deleted_at IS NULL"
 	transactionRows, err := tx.QueryContext(context, sqlTransaction, userId)
-	helpers.PanicIfError(err)
+	utils.PanicIfError(err)
 
 	var transactions []*model.TransactionModel
 	for transactionRows.Next() {
@@ -101,7 +101,7 @@ func (repository TransactionRepositoryImpl) FindByUserId(context context.Context
 		attachDetailTransaction(&transactionModel, detailTransactions)
 		transactions = append(transactions, &transactionModel)
 	}
-	helpers.LogIfError(transactionRows.Close())
+	utils.LogIfError(transactionRows.Close())
 	return transactions
 }
 
@@ -130,7 +130,7 @@ func (repository TransactionRepositoryImpl) Save(context context.Context, tx *sq
 			index*9+10))
 
 		id, err := uuid.NewUUID()
-		helpers.PanicIfError(err)
+		utils.PanicIfError(err)
 		now := time.Now()
 		values = append(values, transactionId, dt.ProductId, id, dt.PerUnit, dt.Price, dt.Total, dt.Weight, dt.ImageUrl, dt.Name, now.Format("2006-01-02 15:04:05"))
 	}
@@ -139,7 +139,7 @@ func (repository TransactionRepositoryImpl) Save(context context.Context, tx *sq
 		"VALUES %s", strings.Join(statement, ","))
 
 	_, err = tx.ExecContext(context, sqlDetailTransaction, values...)
-	helpers.LogIfError(err)
+	utils.LogIfError(err)
 	return err
 }
 
@@ -153,6 +153,6 @@ func (repository TransactionRepositoryImpl) Delete(context context.Context, tx *
 
 	sqlTransaction := "UPDATE transaction SET deleted_at = NOW() WHERE id = $1"
 	_, err = tx.ExecContext(context, sqlTransaction, id)
-	helpers.LogIfError(err)
+	utils.LogIfError(err)
 	return err
 }

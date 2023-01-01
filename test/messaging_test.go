@@ -2,17 +2,17 @@ package test
 
 import (
 	"fmt"
-	"github.com/ramdanariadi/grocery-product-service/main/helpers"
+	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"github.com/streadway/amqp"
 	"testing"
 )
 
 func Test_open_rmq_connection(t *testing.T) {
 	connection, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
-	helpers.PanicIfError(err)
+	utils.PanicIfError(err)
 
 	channel, err := connection.Channel()
-	helpers.PanicIfError(err)
+	utils.PanicIfError(err)
 
 	queue, err := channel.QueueDeclare(
 		"hello2",
@@ -21,7 +21,7 @@ func Test_open_rmq_connection(t *testing.T) {
 		false,
 		false,
 		nil)
-	helpers.PanicIfError(err)
+	utils.PanicIfError(err)
 
 	body := "hello world"
 	err = channel.Publish(
@@ -34,7 +34,7 @@ func Test_open_rmq_connection(t *testing.T) {
 			Body:        []byte(body),
 		},
 	)
-	helpers.PanicIfError(err)
+	utils.PanicIfError(err)
 
 	defer channel.Close()
 	defer connection.Close()
@@ -42,10 +42,10 @@ func Test_open_rmq_connection(t *testing.T) {
 
 func Test_consume_message(t *testing.T) {
 	connection, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
-	helpers.PanicIfError(err)
+	utils.PanicIfError(err)
 
 	channel, err := connection.Channel()
-	helpers.PanicIfError(err)
+	utils.PanicIfError(err)
 
 	queue, err := channel.QueueDeclare(
 		"hello",
@@ -54,7 +54,7 @@ func Test_consume_message(t *testing.T) {
 		false,
 		false,
 		nil)
-	helpers.PanicIfError(err)
+	utils.PanicIfError(err)
 
 	msgs, err := channel.Consume(
 		queue.Name,
@@ -65,7 +65,7 @@ func Test_consume_message(t *testing.T) {
 		false,
 		nil,
 	)
-	helpers.PanicIfError(err)
+	utils.PanicIfError(err)
 
 	go func() {
 		for msg := range msgs {

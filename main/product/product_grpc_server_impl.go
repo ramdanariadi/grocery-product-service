@@ -7,11 +7,11 @@ import (
 	"github.com/google/uuid"
 	"github.com/ramdanariadi/grocery-product-service/main/category"
 	repository2 "github.com/ramdanariadi/grocery-product-service/main/category/repository"
-	"github.com/ramdanariadi/grocery-product-service/main/helpers"
 	"github.com/ramdanariadi/grocery-product-service/main/product/model"
 	"github.com/ramdanariadi/grocery-product-service/main/product/repository"
 	"github.com/ramdanariadi/grocery-product-service/main/response"
 	"github.com/ramdanariadi/grocery-product-service/main/setup"
+	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"golang.org/x/net/context"
 	"time"
 )
@@ -32,16 +32,16 @@ func NewProductServiceServerImpl(db *sql.DB) *ProductServiceServerImpl {
 
 func (server ProductServiceServerImpl) FindById(ctx context.Context, id *ProductId) (*ProductResponse, error) {
 	tx, err := server.Repository.DB.Begin()
-	helpers.PanicIfError(err)
-	defer helpers.CommitOrRollback(tx)
+	utils.PanicIfError(err)
+	defer utils.CommitOrRollback(tx)
 
 	var productModel *model.ProductModel
 	cache, err := server.RedisClient.Get(ctx, id.GetId()).Result()
-	helpers.LogIfError(err)
+	utils.LogIfError(err)
 
 	if cache != "" {
 		err := json.Unmarshal([]byte(cache), productModel)
-		helpers.LogIfError(err)
+		utils.LogIfError(err)
 	} else {
 		productModel = server.Repository.FindById(ctx, tx, id.Id)
 		if productModel == nil {
@@ -52,9 +52,9 @@ func (server ProductServiceServerImpl) FindById(ctx context.Context, id *Product
 			}, nil
 		}
 		bytes, err := json.Marshal(productModel)
-		helpers.LogIfError(err)
+		utils.LogIfError(err)
 		err = server.RedisClient.Set(ctx, id.GetId(), bytes, 1*time.Hour).Err()
-		helpers.LogIfError(err)
+		utils.LogIfError(err)
 	}
 
 	grpcProductModel := Product{
@@ -77,8 +77,8 @@ func (server ProductServiceServerImpl) FindById(ctx context.Context, id *Product
 
 func (server ProductServiceServerImpl) FindProductsByCategory(ctx context.Context, id *category.CategoryId) (*MultipleProductResponse, error) {
 	tx, err := server.Repository.DB.Begin()
-	helpers.PanicIfError(err)
-	defer helpers.CommitOrRollback(tx)
+	utils.PanicIfError(err)
+	defer utils.CommitOrRollback(tx)
 
 	rows := server.Repository.FindByCategory(ctx, tx, id.Id)
 	products := fetchProducts(rows)
@@ -92,8 +92,8 @@ func (server ProductServiceServerImpl) FindProductsByCategory(ctx context.Contex
 
 func (server ProductServiceServerImpl) FindRecommendedProduct(ctx context.Context, _ *ProductEmpty) (*MultipleProductResponse, error) {
 	tx, err := server.Repository.DB.Begin()
-	helpers.PanicIfError(err)
-	defer helpers.CommitOrRollback(tx)
+	utils.PanicIfError(err)
+	defer utils.CommitOrRollback(tx)
 
 	rows := server.Repository.FindWhere(ctx, tx, "products.is_recommended = $1", true)
 	products := fetchProducts(rows)
@@ -107,8 +107,8 @@ func (server ProductServiceServerImpl) FindRecommendedProduct(ctx context.Contex
 
 func (server ProductServiceServerImpl) FindTopProducts(ctx context.Context, _ *ProductEmpty) (*MultipleProductResponse, error) {
 	tx, err := server.Repository.DB.Begin()
-	helpers.PanicIfError(err)
-	defer helpers.CommitOrRollback(tx)
+	utils.PanicIfError(err)
+	defer utils.CommitOrRollback(tx)
 
 	rows := server.Repository.FindWhere(ctx, tx, "products.is_top = $1", true)
 	products := fetchProducts(rows)
@@ -122,8 +122,8 @@ func (server ProductServiceServerImpl) FindTopProducts(ctx context.Context, _ *P
 
 func (server ProductServiceServerImpl) FindAll(ctx context.Context, _ *ProductEmpty) (*MultipleProductResponse, error) {
 	tx, err := server.Repository.DB.Begin()
-	helpers.PanicIfError(err)
-	defer helpers.CommitOrRollback(tx)
+	utils.PanicIfError(err)
+	defer utils.CommitOrRollback(tx)
 
 	rows := server.Repository.FindAll(ctx, tx)
 	products := fetchProducts(rows)
@@ -143,7 +143,7 @@ func fetchProducts(rows *sql.Rows) []*Product {
 		err := rows.Scan(&productTmp.Id, &productTmp.Name, &productTmp.Price, &productTmp.PerUnit,
 			&productTmp.Weight, &productTmp.Category, &productTmp.CategoryId,
 			&productTmp.Description, &imageUrl)
-		helpers.PanicIfError(err)
+		utils.PanicIfError(err)
 
 		if imageUrl.Valid {
 			productTmp.ImageUrl = imageUrl.String
@@ -151,14 +151,14 @@ func fetchProducts(rows *sql.Rows) []*Product {
 
 		products = append(products, &productTmp)
 	}
-	helpers.LogIfError(rows.Close())
+	utils.LogIfError(rows.Close())
 	return products
 }
 
 func (server ProductServiceServerImpl) Save(ctx context.Context, product *Product) (*response.Response, error) {
 	tx, err := server.Repository.DB.Begin()
-	helpers.PanicIfError(err)
-	defer helpers.CommitOrRollback(tx)
+	utils.PanicIfError(err)
+	defer utils.CommitOrRollback(tx)
 
 	categoryRepository := repository2.NewCategoryRepository(server.Repository.DB)
 	categoryModel := categoryRepository.FindById(ctx, tx, product.CategoryId)
@@ -189,8 +189,8 @@ func (server ProductServiceServerImpl) Save(ctx context.Context, product *Produc
 
 func (server ProductServiceServerImpl) Update(ctx context.Context, product *Product) (*response.Response, error) {
 	tx, err := server.Repository.DB.Begin()
-	helpers.PanicIfError(err)
-	defer helpers.CommitOrRollback(tx)
+	utils.PanicIfError(err)
+	defer utils.CommitOrRollback(tx)
 
 	categoryRepository := repository2.NewCategoryRepository(server.Repository.DB)
 	categoryModel := categoryRepository.FindById(ctx, tx, product.CategoryId)
@@ -220,8 +220,8 @@ func (server ProductServiceServerImpl) Update(ctx context.Context, product *Prod
 
 func (server ProductServiceServerImpl) Delete(ctx context.Context, id *ProductId) (*response.Response, error) {
 	tx, err := server.Repository.DB.Begin()
-	helpers.PanicIfError(err)
-	defer helpers.CommitOrRollback(tx)
+	utils.PanicIfError(err)
+	defer utils.CommitOrRollback(tx)
 	err = server.Repository.Delete(ctx, tx, id.Id)
 	status, message := setup.ResponseForModifying(err == nil)
 	return &response.Response{Status: status, Message: message}, nil

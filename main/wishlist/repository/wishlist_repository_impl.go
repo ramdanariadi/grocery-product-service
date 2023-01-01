@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"github.com/google/uuid"
-	"github.com/ramdanariadi/grocery-product-service/main/helpers"
+	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"github.com/ramdanariadi/grocery-product-service/main/wishlist/model"
 	"log"
 )
@@ -16,7 +16,7 @@ type WishlistRepositoryImpl struct {
 func (w WishlistRepositoryImpl) FindByUserId(context context.Context, tx *sql.Tx, userId string) *sql.Rows {
 	query := "SELECT id, name, price, weight, category, per_unit, image_url, product_id FROM liked WHERE user_id = $1 AND deleted_at IS NULL"
 	rows, err := tx.QueryContext(context, query, userId)
-	helpers.LogIfError(err)
+	utils.LogIfError(err)
 	return rows
 }
 
@@ -46,13 +46,13 @@ func (w WishlistRepositoryImpl) Save(context context.Context, tx *sql.Tx, produc
 	id, _ := uuid.NewUUID()
 	_, err := tx.ExecContext(context, sql, id, product.Name, product.Category, product.ImageUrl, product.PerUnit,
 		product.Price, product.Weight, product.ProductId, product.UserId)
-	helpers.LogIfError(err)
+	utils.LogIfError(err)
 	return err
 }
 
 func (w WishlistRepositoryImpl) Delete(context context.Context, tx *sql.Tx, userId string, wishlistId string) error {
 	sql := "UPDATE liked SET deleted_at = NOW() WHERE user_id = $1 AND product_id = $2"
 	_, err := tx.ExecContext(context, sql, userId, wishlistId)
-	helpers.LogIfError(err)
+	utils.LogIfError(err)
 	return err
 }

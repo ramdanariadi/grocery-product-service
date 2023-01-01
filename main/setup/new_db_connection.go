@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/lib/pq"
-	"github.com/ramdanariadi/grocery-product-service/main/helpers"
+	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"os"
 	"strings"
 	"time"
@@ -36,7 +36,7 @@ func NewDbConnection() (*sql.DB, error) {
 
 	connStr := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", dbUsr, dbPass, dbHost, dbName)
 	db, err := sql.Open("postgres", connStr)
-	helpers.PanicIfError(err)
+	utils.PanicIfError(err)
 
 	db.SetMaxOpenConns(100)
 	db.SetMaxIdleConns(10)

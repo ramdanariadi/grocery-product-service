@@ -4,12 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"github.com/ramdanariadi/grocery-product-service/main/helpers"
 	repository2 "github.com/ramdanariadi/grocery-product-service/main/product/repository"
 	"github.com/ramdanariadi/grocery-product-service/main/response"
 	"github.com/ramdanariadi/grocery-product-service/main/setup"
 	"github.com/ramdanariadi/grocery-product-service/main/transaction/model"
 	"github.com/ramdanariadi/grocery-product-service/main/transaction/repository"
+	"github.com/ramdanariadi/grocery-product-service/main/utils"
 )
 
 type TransactionServiceServerImpl struct {
@@ -26,8 +26,8 @@ func NewTransactionServiceServer(db *sql.DB) *TransactionServiceServerImpl {
 
 func (transaction TransactionServiceServerImpl) FindByTransactionId(ctx context.Context, id *TransactionId) (*TransactionResponse, error) {
 	tx, err := transaction.Repository.DB.Begin()
-	helpers.PanicIfError(err)
-	defer helpers.CommitOrRollback(tx)
+	utils.PanicIfError(err)
+	defer utils.CommitOrRollback(tx)
 	transactionModel := transaction.Repository.FindByTransactionId(ctx, tx, id.Id)
 	var transactionData Transaction
 	if transactionModel != nil {
@@ -64,8 +64,8 @@ func attachTransactionDetail(transaction *Transaction, detailTransaction []*mode
 
 func (transaction TransactionServiceServerImpl) FindByUserId(ctx context.Context, id *TransactionUserId) (*MultipleTransactionResponse, error) {
 	tx, err := transaction.Repository.DB.Begin()
-	helpers.PanicIfError(err)
-	defer helpers.CommitOrRollback(tx)
+	utils.PanicIfError(err)
+	defer utils.CommitOrRollback(tx)
 	transactionModels := transaction.Repository.FindByUserId(ctx, tx, id.Id)
 	status, message := setup.ResponseForQuerying(true)
 	result := MultipleTransactionResponse{
@@ -86,8 +86,8 @@ func (transaction TransactionServiceServerImpl) FindByUserId(ctx context.Context
 
 func (transaction TransactionServiceServerImpl) Save(ctx context.Context, body *TransactionBody) (*response.Response, error) {
 	tx, err := transaction.Repository.DB.Begin()
-	helpers.PanicIfError(err)
-	defer helpers.CommitOrRollback(tx)
+	utils.PanicIfError(err)
+	defer utils.CommitOrRollback(tx)
 	var ids []string
 	for _, d := range body.Products {
 		ids = append(ids, d.ProductId)
@@ -125,8 +125,8 @@ func findProductTotal(products []*TransactionProduct, id string) (uint32, error)
 
 func (transaction TransactionServiceServerImpl) Delete(ctx context.Context, id *TransactionId) (*response.Response, error) {
 	tx, err := transaction.Repository.DB.Begin()
-	helpers.PanicIfError(err)
-	defer helpers.CommitOrRollback(tx)
+	utils.PanicIfError(err)
+	defer utils.CommitOrRollback(tx)
 	err = transaction.Repository.Delete(ctx, tx, id.Id)
 	status, message := setup.ResponseForModifying(err == nil)
 	return &response.Response{Status: status, Message: message}, nil

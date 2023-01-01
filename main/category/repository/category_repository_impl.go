@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"github.com/google/uuid"
 	"github.com/ramdanariadi/grocery-product-service/main/category/model"
-	"github.com/ramdanariadi/grocery-product-service/main/helpers"
+	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"log"
 )
 
@@ -39,7 +39,7 @@ func (repository CategoryRepositoryImpl) FindById(context context.Context, tx *s
 func (repository CategoryRepositoryImpl) FindAll(context context.Context, tx *sql.Tx) *sql.Rows {
 	query := "SELECT id, category, image_url FROM category WHERE deleted_at IS NULL"
 	result, err := tx.QueryContext(context, query)
-	helpers.LogIfError(err)
+	utils.LogIfError(err)
 	return result
 }
 
@@ -47,20 +47,20 @@ func (repository CategoryRepositoryImpl) Save(context context.Context, tx *sql.T
 	id, _ := uuid.NewUUID()
 	sqlInsert := "INSERT INTO category (id, category, image_url, created_at) VALUES($1,$2,$3,NOW())"
 	_, err := tx.ExecContext(context, sqlInsert, id, requestBody.Category, requestBody.ImageUrl)
-	helpers.LogIfError(err)
+	utils.LogIfError(err)
 	return err
 }
 
 func (repository CategoryRepositoryImpl) Update(context context.Context, tx *sql.Tx, request *model.CategoryModel, id string) error {
 	sql := "UPDATE category SET category = $1, image_url = $2, updated_at = NOW() WHERE id = $3"
 	_, err := tx.ExecContext(context, sql, request.Category, request.ImageUrl, id)
-	helpers.LogIfError(err)
+	utils.LogIfError(err)
 	return err
 }
 
 func (repository CategoryRepositoryImpl) Delete(context context.Context, tx *sql.Tx, id string) error {
 	sql := "UPDATE category SET deleted_at = NOW() WHERE id = $1"
 	_, err := tx.ExecContext(context, sql, id)
-	helpers.LogIfError(err)
+	utils.LogIfError(err)
 	return err
 }

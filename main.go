@@ -4,10 +4,10 @@ import (
 	_ "github.com/lib/pq"
 	cart2 "github.com/ramdanariadi/grocery-product-service/main/cart"
 	category2 "github.com/ramdanariadi/grocery-product-service/main/category"
-	"github.com/ramdanariadi/grocery-product-service/main/helpers"
 	product2 "github.com/ramdanariadi/grocery-product-service/main/product"
 	"github.com/ramdanariadi/grocery-product-service/main/setup"
 	transaction2 "github.com/ramdanariadi/grocery-product-service/main/transaction"
+	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	wishlist2 "github.com/ramdanariadi/grocery-product-service/main/wishlist"
 	"google.golang.org/grpc"
 	"log"
@@ -18,7 +18,7 @@ func main() {
 	db, err := setup.NewDbConnection()
 
 	listen, err := net.Listen("tcp", ":50051")
-	helpers.PanicIfError(err)
+	utils.PanicIfError(err)
 
 	grpcServer := grpc.NewServer()
 
@@ -40,5 +40,5 @@ func main() {
 	log.Println("gRPC server running on port 50051")
 
 	err = grpcServer.Serve(listen)
-	helpers.PanicIfError(err)
+	utils.PanicIfError(err)
 }

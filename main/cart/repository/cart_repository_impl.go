@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"github.com/google/uuid"
 	"github.com/ramdanariadi/grocery-product-service/main/cart/model"
-	"github.com/ramdanariadi/grocery-product-service/main/helpers"
+	"github.com/ramdanariadi/grocery-product-service/main/utils"
 )
 
 type CartRepositoryImpl struct {
@@ -15,7 +15,7 @@ type CartRepositoryImpl struct {
 func (repository CartRepositoryImpl) FindByUserId(context context.Context, tx *sql.Tx, userId string) *sql.Rows {
 	query := "SELECT id, name, price, weight, category, total, per_unit, image_url, product_id FROM cart WHERE user_id = $1 AND deleted_at IS NULL"
 	rows, err := tx.QueryContext(context, query, userId)
-	helpers.LogIfError(err)
+	utils.LogIfError(err)
 	return rows
 }
 
@@ -31,7 +31,7 @@ func (repository CartRepositoryImpl) Save(context context.Context, tx *sql.Tx, p
 	id, _ := uuid.NewUUID()
 	_, err := tx.ExecContext(context, sql, id, product.Name, product.Category, product.Total,
 		product.ImageUrl, product.PerUnit, product.Price, product.Weight, product.ProductId, product.UserId)
-	helpers.LogIfError(err)
+	utils.LogIfError(err)
 	return err
 }
 
@@ -41,13 +41,13 @@ func (repository CartRepositoryImpl) Update(context context.Context, tx *sql.Tx,
 		"WHERE id=$1"
 	_, err := tx.ExecContext(context, sql, cart.Id, cart.Name, cart.Category, cart.Total,
 		cart.ImageUrl, cart.PerUnit, cart.Price, cart.Weight, cart.ProductId, cart.UserId)
-	helpers.LogIfError(err)
+	utils.LogIfError(err)
 	return err
 }
 
 func (repository CartRepositoryImpl) Delete(context context.Context, tx *sql.Tx, userId string, productId string) error {
 	sql := "UPDATE cart SET deleted_at = NOW() WHERE user_id = $1 AND product_id = $2"
 	_, err := tx.ExecContext(context, sql, userId, productId)
-	helpers.LogIfError(err)
+	utils.LogIfError(err)
 	return err
 }
