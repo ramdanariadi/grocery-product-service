@@ -35,36 +35,6 @@ create table products
 alter table products
     owner to postgres;
 
-create index idx_product_name
-    on products (name);
-
-create index idx_product_category
-    on products (category_id);
-
-create table roles
-(
-    id   uuid not null
-        primary key,
-    name varchar(255)
-);
-
-alter table roles
-    owner to postgres;
-
-create table users
-(
-    id       varchar(255) not null
-        primary key,
-    name     varchar(255),
-    password varchar(255),
-    username varchar(255)
-        constraint uk_r43af9ap4edm43mmtq01oddj6
-            unique
-);
-
-alter table users
-    owner to postgres;
-
 create table cart
 (
     id         uuid         not null
@@ -83,8 +53,6 @@ create table cart
         constraint fkpu4bcbluhsxagirmbdn7dilm5
             references products,
     user_id    varchar(255) not null
-        constraint fkg5uhi8vpsuy0lgloxk2h4w5o6
-            references users
 );
 
 alter table cart
@@ -107,12 +75,16 @@ create table liked
         constraint fk4tgscg55hv7our1fju6yu7o2q
             references products,
     user_id    varchar(255) not null
-        constraint fkcc0jrw2vianbjig6suh66syiw
-            references users
 );
 
 alter table liked
     owner to postgres;
+
+create index idx_product_name
+    on products (name);
+
+create index idx_product_category
+    on products (category_id);
 
 create table transaction
 (
@@ -123,8 +95,6 @@ create table transaction
     updated_at  timestamp,
     total_price bigint,
     user_id     varchar(255)
-        constraint fkanjpo5tiapru7an6cw4cu37y4
-            references users
 );
 
 alter table transaction
@@ -154,19 +124,6 @@ create table detail_transaction
 alter table detail_transaction
     owner to postgres;
 
-create table users_roles
-(
-    user_id  varchar(255) not null
-        constraint fk2o0jvgh89lemvvo17cbqvdxaa
-            references users,
-    roles_id uuid         not null
-        constraint fka62j07k5mhgifpp955h37ponj
-            references roles
-);
-
-alter table users_roles
-    owner to postgres;
-
 create table wishlist
 (
     id         uuid         not null
@@ -184,11 +141,8 @@ create table wishlist
         constraint fk6p7qhvy1bfkri13u29x6pu8au
             references products,
     user_id    varchar(255) not null
-        constraint fktrd6335blsefl2gxpb8lr0gr7
-            references users
 );
 
 alter table wishlist
     owner to postgres;
-
 
