@@ -1,6 +1,7 @@
 package wishlist
 
 import (
+	"github.com/google/uuid"
 	productModel "github.com/ramdanariadi/grocery-product-service/main/product/model"
 	"github.com/ramdanariadi/grocery-product-service/main/response"
 	"github.com/ramdanariadi/grocery-product-service/main/utils"
@@ -22,7 +23,7 @@ func NewWishlistServer(db *gorm.DB) *WishlistServiceServerImpl {
 func (server WishlistServiceServerImpl) Save(_ context.Context, wishlist *Wishlist) (*response.Response, error) {
 	var productRef productModel.Product
 	first := server.DB.First(&productRef, "id = ?", wishlist.ProductId)
-	if first.Error != nil {
+	if first.RowsAffected == 0 {
 		status, message := utils.QueryResponse(false)
 		return &response.Response{
 			Message: message,
@@ -33,12 +34,14 @@ func (server WishlistServiceServerImpl) Save(_ context.Context, wishlist *Wishli
 	var wishlistModel model.Wishlist
 	tx := server.DB.First(&wishlistModel, "product_id = ? and user_id = ?", wishlist.ProductId, wishlist.UserId)
 
-	if tx.Error == nil {
+	if tx.RowsAffected > 0 {
 		status, message := utils.ModifyingResponse(true)
 		return &response.Response{Status: status, Message: message}, nil
 	}
 
+	id, _ := uuid.NewUUID()
 	wishlistModel = model.Wishlist{
+		ID:        id.String(),
 		ImageUrl:  productRef.ImageUrl,
 		Name:      productRef.Name,
 		Weight:    uint32(productRef.Weight),
@@ -54,16 +57,7 @@ func (server WishlistServiceServerImpl) Save(_ context.Context, wishlist *Wishli
 }
 
 func (server WishlistServiceServerImpl) Delete(_ context.Context, userAndProductId *UserAndProductId) (*response.Response, error) {
-	var wishlistRef model.Wishlist
-	first := server.DB.First(&wishlistRef, "user_id = ? and product_id = ?", userAndProductId.UserId, userAndProductId.ProductId)
-	if first.Error != nil {
-		status, message := utils.ModifyingResponse(false)
-		return &response.Response{
-			Message: message,
-			Status:  status,
-		}, nil
-	}
-	tx := server.DB.Delete(&wishlistRef)
+	tx := server.DB.Delete(&model.Wishlist{UserId: userAndProductId.UserId, ProductId: userAndProductId.ProductId})
 	status, message := utils.ModifyingResponse(tx.Error == nil)
 	return &response.Response{
 		Status:  status,
@@ -76,7 +70,7 @@ func (server WishlistServiceServerImpl) FindByUserId(_ context.Context, id *Wish
 	tx := server.DB.Find(&wishlistModels, "user_id = ?", id.Id)
 	utils.LogIfError(tx.Error)
 	wishlist := fetchWishlist(wishlistModels)
-	status, message := utils.QueryResponse(len(wishlist) > 0)
+	status, message := utils.QueryResponse(true)
 	return &MultipleWishlistResponse{
 		Status:  status,
 		Message: message,
@@ -87,9 +81,8 @@ func (server WishlistServiceServerImpl) FindByUserId(_ context.Context, id *Wish
 func (server WishlistServiceServerImpl) FindWishlistByProductId(_ context.Context, id *UserAndProductId) (*WishlistResponse, error) {
 	var wishlist model.Wishlist
 	tx := server.DB.Find(&wishlist, "user_id = ? and product_id = ?", id.UserId, id.ProductId)
-
-	status, message := utils.QueryResponse(tx.Error != nil)
-	if tx.Error != nil {
+	status, message := utils.QueryResponse(tx.RowsAffected > 0)
+	if tx.RowsAffected == 0 {
 		return &WishlistResponse{
 			Message: message,
 			Status:  status,
@@ -122,6 +115,7 @@ func fetchWishlist(wishlistModels []*model.Wishlist) []*WishlistDetail {
 		wishlist.PerUnit = w.PerUnit
 		wishlist.ImageUrl = w.ImageUrl
 		wishlist.ProductId = w.ProductId
+		wishlist.UserId = w.UserId
 		wishlists = append(wishlists, &wishlist)
 	}
 	return wishlists

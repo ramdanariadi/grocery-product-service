@@ -9,6 +9,7 @@ import (
 	"github.com/ramdanariadi/grocery-product-service/main/transaction/model"
 	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"gorm.io/gorm"
+	"log"
 )
 
 type TransactionServiceServerImpl struct {
@@ -23,15 +24,17 @@ func NewTransactionServiceServer(db *gorm.DB) *TransactionServiceServerImpl {
 
 func (server TransactionServiceServerImpl) FindByTransactionId(_ context.Context, id *TransactionId) (*TransactionResponse, error) {
 	var transaction model.Transaction
-	tx := server.DB.Find(&transaction, "id = ?", id.Id)
-	if tx.Error != nil {
+	tx := server.DB.Preload("TransactionDetails").Find(&transaction, "id = ?", id.Id)
+	if tx.RowsAffected == 0 {
 		status, message := utils.QueryResponse(false)
 		return &TransactionResponse{Status: status, Message: message, Data: nil}, nil
 	}
 
 	transactionData := Transaction{
-		Id:         transaction.ID,
-		TotalPrice: transaction.TotalPrice,
+		Id:              transaction.ID,
+		TotalPrice:      transaction.TotalPrice,
+		TransactionDate: transaction.CreatedAt.UnixMilli(),
+		UserId:          transaction.UserId,
 	}
 	attachTransactionDetail(&transactionData, transaction.TransactionDetails)
 	status, message := utils.QueryResponse(true)
@@ -60,7 +63,7 @@ func attachTransactionDetail(transaction *Transaction, detailTransaction []*mode
 
 func (server TransactionServiceServerImpl) FindByUserId(_ context.Context, transactionUserId *TransactionUserId) (*MultipleTransactionResponse, error) {
 	var transactionModels []*model.Transaction
-	server.DB.Find(&transactionModels, "user_id = ?", transactionUserId.Id)
+	server.DB.Preload("TransactionDetails").Find(&transactionModels, "user_id = ?", transactionUserId.Id)
 	status, message := utils.QueryResponse(true)
 	result := MultipleTransactionResponse{
 		Status:  status,
@@ -69,8 +72,10 @@ func (server TransactionServiceServerImpl) FindByUserId(_ context.Context, trans
 
 	for _, t := range transactionModels {
 		tTemp := Transaction{
-			Id:         t.ID,
-			TotalPrice: t.TotalPrice,
+			Id:              t.ID,
+			TotalPrice:      t.TotalPrice,
+			TransactionDate: t.CreatedAt.UnixMilli(),
+			UserId:          t.UserId,
 		}
 		attachTransactionDetail(&tTemp, t.TransactionDetails)
 		result.Data = append(result.Data, &tTemp)
@@ -78,7 +83,7 @@ func (server TransactionServiceServerImpl) FindByUserId(_ context.Context, trans
 	return &result, nil
 }
 
-func (server TransactionServiceServerImpl) Save(ctx context.Context, body *TransactionBody) (*response.Response, error) {
+func (server TransactionServiceServerImpl) Save(_ context.Context, body *TransactionBody) (*response.Response, error) {
 	var ids []string
 	for _, d := range body.Products {
 		ids = append(ids, d.ProductId)
@@ -86,7 +91,11 @@ func (server TransactionServiceServerImpl) Save(ctx context.Context, body *Trans
 
 	var productModels []*productModel.Product
 	server.DB.Find(&productModels, "id in ?", ids)
-
+	log.Printf("product len : %d", len(productModels))
+	if len(productModels) == 0 {
+		status, message := utils.ModifyingResponse(false)
+		return &response.Response{Status: status, Message: message}, nil
+	}
 	transactionId, _ := uuid.NewUUID()
 	transactionModel := model.Transaction{ID: transactionId.String(), UserId: body.UserId}
 	var detailTransaction []*model.TransactionDetail
@@ -97,19 +106,28 @@ func (server TransactionServiceServerImpl) Save(ctx context.Context, body *Trans
 			continue
 		}
 		totalPrice += uint64(pm.Weight/pm.PerUnit) * pm.Price * uint64(total)
+		transactionDetailId, _ := uuid.NewUUID()
 		detailTransactionProductModel := model.TransactionDetail{
-			ProductId: pm.ID, Name: pm.Name, ImageUrl: pm.ImageUrl, Price: pm.Price,
+			ID: transactionDetailId.String(), ProductId: pm.ID, Name: pm.Name, ImageUrl: pm.ImageUrl, Price: pm.Price,
 			PerUnit: pm.PerUnit, Weight: pm.Weight, Category: pm.Category, Description: pm.Description,
-			Total: uint(total), TransactionId: transactionId.String(),
+			CategoryId: pm.CategoryId, Total: uint(total), TransactionId: transactionId.String(),
 		}
 		detailTransaction = append(detailTransaction, &detailTransactionProductModel)
 	}
-	transactionModel.TransactionDetails = detailTransaction
 	transactionModel.TotalPrice = totalPrice
-	tx := server.DB.Save(&transactionModel)
-	utils.LogIfError(tx.Error)
-
-	status, message := utils.QueryResponse(tx.Error == nil)
+	err := server.DB.Transaction(func(tx *gorm.DB) error {
+		if err := server.DB.Save(&transactionModel).Error; err != nil {
+			utils.LogIfError(err)
+			return err
+		}
+		if err := server.DB.Save(&detailTransaction).Error; err != nil {
+			utils.LogIfError(err)
+			return err
+		}
+		return nil
+	})
+	utils.LogIfError(err)
+	status, message := utils.ModifyingResponse(err == nil)
 	return &response.Response{Status: status, Message: message}, nil
 }
 
@@ -125,13 +143,14 @@ func findProductTotal(products []*TransactionProduct, id string) (uint32, error)
 func (server TransactionServiceServerImpl) Delete(ctx context.Context, id *TransactionId) (*response.Response, error) {
 	err := server.DB.Transaction(func(tx *gorm.DB) error {
 
+		if error := tx.Delete(&model.TransactionDetail{}, "transaction_id = ?", id.Id).Error; error != nil {
+			return error
+		}
+
 		if error := tx.Delete(&model.Transaction{}, "id = ? ", id.Id).Error; error != nil {
 			return error
 		}
 
-		if error := tx.Delete(&model.TransactionDetail{}, "transaction_id = ?", id.Id).Error; error != nil {
-			return error
-		}
 		return nil
 	})
 	status, message := utils.ModifyingResponse(err == nil)

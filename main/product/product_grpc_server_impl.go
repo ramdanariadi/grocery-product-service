@@ -12,6 +12,7 @@ import (
 	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"golang.org/x/net/context"
 	"gorm.io/gorm"
+	"log"
 	"time"
 )
 
@@ -33,11 +34,12 @@ func (server ProductServiceServerImpl) FindById(ctx context.Context, id *Product
 	utils.LogIfError(err)
 
 	if cache != "" {
-		err := json.Unmarshal([]byte(cache), productModel)
+		err := json.Unmarshal([]byte(cache), &productModel)
 		utils.LogIfError(err)
 	} else {
 		tx := server.DB.Find(&productModel, "id = ?", id.Id)
-		if tx.Error != nil {
+		log.Printf("find rows affected : %d", tx.RowsAffected)
+		if tx.RowsAffected == 0 {
 			status, message := utils.QueryResponse(false)
 			return &ProductResponse{
 				Message: message,
@@ -62,9 +64,10 @@ func (server ProductServiceServerImpl) FindById(ctx context.Context, id *Product
 		PerUnit:     uint64(productModel.PerUnit),
 		Description: productModel.Description,
 	}
+	status, message := utils.QueryResponse(true)
 	return &ProductResponse{
-		Message: "OK",
-		Status:  "Success",
+		Message: message,
+		Status:  status,
 		Data:    &grpcProductModel,
 	}, nil
 }
@@ -114,7 +117,7 @@ func (server ProductServiceServerImpl) FindAll(_ context.Context, _ *ProductEmpt
 	tx := server.DB.Find(&recommendationProducts)
 	utils.PanicIfError(tx.Error)
 	products := fetchProducts(recommendationProducts)
-	status, message := utils.QueryResponse(len(products) > 0)
+	status, message := utils.QueryResponse(true)
 	return &MultipleProductResponse{
 		Status:  status,
 		Data:    products,
@@ -146,7 +149,7 @@ func fetchProducts(productsModel []*model.Product) []*Product {
 func (server ProductServiceServerImpl) Save(_ context.Context, product *Product) (*response.Response, error) {
 	categoryReff := categoryModel.Category{ID: product.CategoryId}
 	tx := server.DB.First(&categoryReff)
-	if tx.Error != nil {
+	if tx.RowsAffected == 0 {
 		status, _ := utils.QueryResponse(false)
 		return &response.Response{Status: status, Message: "INVALID_CATEGORY"}, nil
 	}
@@ -175,14 +178,14 @@ func (server ProductServiceServerImpl) Update(ctx context.Context, product *Prod
 	server.RedisClient.Del(ctx, product.Id)
 	var productModel model.Product
 	find := server.DB.Find(&productModel, "id = ?", product.Id)
-	if find.Error != nil {
+	if find.RowsAffected == 0 {
 		status, _ := utils.QueryResponse(false)
 		return &response.Response{Status: status, Message: "INVALID_PRODUCT"}, nil
 	}
 
 	categoryReff := categoryModel.Category{ID: product.CategoryId}
 	tx := server.DB.First(&categoryReff)
-	if tx.Error != nil {
+	if tx.RowsAffected == 0 {
 		status, _ := utils.QueryResponse(false)
 		return &response.Response{Status: status, Message: "INVALID_CATEGORY"}, nil
 	}
@@ -206,14 +209,8 @@ func (server ProductServiceServerImpl) Update(ctx context.Context, product *Prod
 }
 
 func (server ProductServiceServerImpl) Delete(ctx context.Context, id *ProductId) (*response.Response, error) {
-	var productModel model.Product
-	find := server.DB.Find(&productModel, "id = ?", id.Id)
-	if find.Error != nil {
-		status, _ := utils.QueryResponse(false)
-		return &response.Response{Status: status, Message: "INVALID_PRODUCT"}, nil
-	}
 	server.RedisClient.Del(ctx, id.Id)
-	tx := server.DB.Delete(productModel)
+	tx := server.DB.Delete(&model.Product{ID: id.Id})
 	status, message := utils.ModifyingResponse(tx.Error == nil)
 	return &response.Response{Status: status, Message: message}, nil
 }

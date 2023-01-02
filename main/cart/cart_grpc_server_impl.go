@@ -2,6 +2,7 @@ package cart
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"github.com/ramdanariadi/grocery-product-service/main/cart/model"
 	productModel "github.com/ramdanariadi/grocery-product-service/main/product/model"
 	"github.com/ramdanariadi/grocery-product-service/main/response"
@@ -22,7 +23,7 @@ func NewCartServiceImpl(db *gorm.DB) *CartServiceServerImpl {
 func (server CartServiceServerImpl) Save(_ context.Context, cart *Cart) (*response.Response, error) {
 	var productRef productModel.Product
 	first := server.DB.First(&productRef, "id = ?", cart.ProductId)
-	if first.Error != nil {
+	if first.RowsAffected == 0 {
 		status, message := utils.QueryResponse(false)
 		return &response.Response{
 			Message: message,
@@ -30,12 +31,14 @@ func (server CartServiceServerImpl) Save(_ context.Context, cart *Cart) (*respon
 		}, nil
 	}
 
-	var cartModel model.CartModel
+	var cartModel model.Cart
 	tx := server.DB.First(&cartModel, "product_id = ? and user_id = ?", cart.ProductId, cart.UserId)
-	if tx.Error == nil {
+	if tx.RowsAffected > 0 {
 		cartModel.Total = cartModel.Total + cart.Total
 	} else {
-		cartModel = model.CartModel{
+		id, _ := uuid.NewUUID()
+		cartModel = model.Cart{
+			ID:        id.String(),
 			ImageUrl:  productRef.ImageUrl,
 			ProductId: productRef.ID,
 			Name:      productRef.Name,
@@ -56,21 +59,21 @@ func (server CartServiceServerImpl) Save(_ context.Context, cart *Cart) (*respon
 }
 
 func (server CartServiceServerImpl) Delete(_ context.Context, id *CartAndUserId) (*response.Response, error) {
-	tx := server.DB.Delete(&model.CartModel{ID: id.Id, UserId: id.UserId})
+	tx := server.DB.Delete(&model.Cart{ID: id.Id, UserId: id.UserId})
 	status, message := utils.ModifyingResponse(tx.Error == nil)
 	return &response.Response{Message: message, Status: status}, nil
 }
 
 func (server CartServiceServerImpl) FindByUserId(_ context.Context, userId *CartUserId) (*MultipleCartResponse, error) {
-	var carts []*model.CartModel
+	var carts []*model.Cart
 	tx := server.DB.Find(&carts, "user_id = ?", userId.Id)
 	utils.LogIfError(tx.Error)
-	wishlist := fetchWishlist(carts)
+	wishlist := fetchCarts(carts)
 	status, message := utils.QueryResponse(true)
 	return &MultipleCartResponse{Status: status, Message: message, Data: wishlist}, nil
 }
 
-func fetchWishlist(carts []*model.CartModel) []*CartDetail {
+func fetchCarts(carts []*model.Cart) []*CartDetail {
 	var cartDetails []*CartDetail
 	for _, cart := range carts {
 		cartDetail := CartDetail{
@@ -83,6 +86,7 @@ func fetchWishlist(carts []*model.CartModel) []*CartDetail {
 			PerUnit:   uint32(cart.PerUnit),
 			ImageUrl:  cart.ImageUrl,
 			ProductId: cart.ProductId,
+			UserId:    cart.UserId,
 		}
 		cartDetails = append(cartDetails, &cartDetail)
 	}

@@ -3,12 +3,17 @@ package main
 import (
 	_ "github.com/lib/pq"
 	"github.com/ramdanariadi/grocery-product-service/main/cart"
+	cartModel "github.com/ramdanariadi/grocery-product-service/main/cart/model"
 	"github.com/ramdanariadi/grocery-product-service/main/category"
+	categoryModel "github.com/ramdanariadi/grocery-product-service/main/category/model"
 	"github.com/ramdanariadi/grocery-product-service/main/product"
+	"github.com/ramdanariadi/grocery-product-service/main/product/model"
 	"github.com/ramdanariadi/grocery-product-service/main/setup"
 	"github.com/ramdanariadi/grocery-product-service/main/transaction"
+	transactionModel "github.com/ramdanariadi/grocery-product-service/main/transaction/model"
 	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"github.com/ramdanariadi/grocery-product-service/main/wishlist"
+	wishlistModel "github.com/ramdanariadi/grocery-product-service/main/wishlist/model"
 	"google.golang.org/grpc"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -19,7 +24,9 @@ import (
 func main() {
 	connection, err := setup.NewDbConnection()
 	db, err := gorm.Open(postgres.New(postgres.Config{Conn: connection}))
-
+	utils.PanicIfError(err)
+	err = db.AutoMigrate(&categoryModel.Category{}, &model.Product{}, &wishlistModel.Wishlist{}, &cartModel.Cart{}, &transactionModel.Transaction{}, &transactionModel.TransactionDetail{})
+	utils.LogIfError(err)
 	listen, err := net.Listen("tcp", ":50051")
 	utils.PanicIfError(err)
 

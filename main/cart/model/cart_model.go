@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type CartModel struct {
+type Cart struct {
 	ID        string `gorm:"primaryKey"`
 	Name      string
 	Price     uint64

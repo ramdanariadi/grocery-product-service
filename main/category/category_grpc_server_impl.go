@@ -33,7 +33,7 @@ func (server *CategoryServiceServerImpl) FindById(ctx context.Context, categoryI
 	} else {
 		tx := server.DB.First(categoryModel, "id = ?", categoryId.Id)
 		utils.LogIfError(tx.Error)
-		if tx.Error != nil {
+		if tx.RowsAffected == 0 {
 			status, message := utils.QueryResponse(false)
 			return &CategoryResponse{
 				Data:    nil,
@@ -90,7 +90,7 @@ func (server *CategoryServiceServerImpl) Update(ctx context.Context, category *C
 	categoryModel := model.Category{ID: category.Id}
 	tx := server.DB.First(&categoryModel)
 
-	if tx.Error != nil {
+	if tx.RowsAffected == 0 {
 		sts, message := utils.QueryResponse(false)
 		return &response.Response{
 			Status:  sts,
