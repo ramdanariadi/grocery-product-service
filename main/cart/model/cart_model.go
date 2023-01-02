@@ -1,14 +1,22 @@
 package model
 
+import (
+	"gorm.io/gorm"
+	"time"
+)
+
 type CartModel struct {
-	Id        string
+	ID        string `gorm:"primaryKey"`
 	Name      string
 	Price     uint64
 	Weight    uint32
 	Category  string
 	PerUnit   uint64
 	Total     uint32
-	ImageUrl  interface{}
+	ImageUrl  string
 	ProductId string
 	UserId    string
+	CreatedAt time.Time      `json:"_"`
+	UpdatedAt time.Time      `json:"_"`
+	DeletedAt gorm.DeletedAt `json:"_" gorm:"index"`
 }

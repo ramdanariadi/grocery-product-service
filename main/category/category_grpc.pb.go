@@ -83,7 +83,7 @@ func (c *categoryServiceClient) Delete(ctx context.Context, in *CategoryId, opts
 	return out, nil
 }
 
-// CategoryServiceServer is the server API for CategoryService service.
+// CategoryServiceServerImpl is the server API for CategoryService service.
 // All implementations must embed UnimplementedCategoryServiceServer
 // for forward compatibility
 type CategoryServiceServer interface {
@@ -117,7 +117,7 @@ func (UnimplementedCategoryServiceServer) Delete(context.Context, *CategoryId) (
 func (UnimplementedCategoryServiceServer) mustEmbedUnimplementedCategoryServiceServer() {}
 
 // UnsafeCategoryServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to CategoryServiceServer will
+// Use of this interface is not recommended, as added methods to CategoryServiceServerImpl will
 // result in compilation errors.
 type UnsafeCategoryServiceServer interface {
 	mustEmbedUnimplementedCategoryServiceServer()

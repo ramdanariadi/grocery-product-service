@@ -1,128 +1,129 @@
 package wishlist
 
 import (
-	"database/sql"
-	repository2 "github.com/ramdanariadi/grocery-product-service/main/product/repository"
+	productModel "github.com/ramdanariadi/grocery-product-service/main/product/model"
 	"github.com/ramdanariadi/grocery-product-service/main/response"
-	"github.com/ramdanariadi/grocery-product-service/main/setup"
 	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"github.com/ramdanariadi/grocery-product-service/main/wishlist/model"
-	"github.com/ramdanariadi/grocery-product-service/main/wishlist/repository"
 	"golang.org/x/net/context"
-	"log"
+	"gorm.io/gorm"
 )
 
 type WishlistServiceServerImpl struct {
-	Repository        repository.WishlistRepositoryImpl
-	ProductRepository repository2.ProductRepositoryImpl
+	DB *gorm.DB
 }
 
-func NewWishlistServer(db *sql.DB) *WishlistServiceServerImpl {
+func NewWishlistServer(db *gorm.DB) *WishlistServiceServerImpl {
 	return &WishlistServiceServerImpl{
-		Repository:        repository.WishlistRepositoryImpl{DB: db},
-		ProductRepository: repository2.ProductRepositoryImpl{DB: db},
+		DB: db,
 	}
 }
 
-func (server WishlistServiceServerImpl) Save(ctx context.Context, wishlist *Wishlist) (*response.Response, error) {
-	tx, err := server.Repository.DB.Begin()
-	utils.PanicIfError(err)
-	defer utils.CommitOrRollback(tx)
-	productModel := server.ProductRepository.FindById(ctx, tx, wishlist.ProductId)
-	if productModel == nil {
-		status, message := setup.ResponseForModifying(false)
+func (server WishlistServiceServerImpl) Save(_ context.Context, wishlist *Wishlist) (*response.Response, error) {
+	var productRef productModel.Product
+	first := server.DB.First(&productRef, "id = ?", wishlist.ProductId)
+	if first.Error != nil {
+		status, message := utils.QueryResponse(false)
+		return &response.Response{
+			Message: message,
+			Status:  status,
+		}, nil
+	}
+
+	var wishlistModel model.Wishlist
+	tx := server.DB.First(&wishlistModel, "product_id = ? and user_id = ?", wishlist.ProductId, wishlist.UserId)
+
+	if tx.Error == nil {
+		status, message := utils.ModifyingResponse(true)
 		return &response.Response{Status: status, Message: message}, nil
 	}
 
-	check := server.Repository.FindByUserAndProductId(ctx, tx, wishlist.UserId, productModel.Id)
-	if check != nil {
-		status, message := setup.ResponseForModifying(true)
-		return &response.Response{Status: status, Message: message}, nil
-	}
-
-	wishlistModel := model.WishlistModel{
-		ImageUrl:  productModel.ImageUrl,
-		Name:      productModel.Name,
-		Weight:    uint32(productModel.Weight),
-		Category:  productModel.Category,
-		Price:     productModel.Price,
-		PerUnit:   uint64(productModel.PerUnit),
+	wishlistModel = model.Wishlist{
+		ImageUrl:  productRef.ImageUrl,
+		Name:      productRef.Name,
+		Weight:    uint32(productRef.Weight),
+		Category:  productRef.Category,
+		Price:     productRef.Price,
+		PerUnit:   uint64(productRef.PerUnit),
 		UserId:    wishlist.UserId,
-		ProductId: productModel.Id,
+		ProductId: productRef.ID,
 	}
-	err = server.Repository.Save(ctx, tx, &wishlistModel)
-	status, message := setup.ResponseForModifying(err == nil)
+	save := server.DB.Save(&wishlistModel)
+	status, message := utils.ModifyingResponse(save.Error == nil)
 	return &response.Response{Status: status, Message: message}, nil
 }
 
-func (server WishlistServiceServerImpl) Delete(ctx context.Context, id *UserAndProductId) (*response.Response, error) {
-	tx, err := server.Repository.DB.Begin()
-	utils.PanicIfError(err)
-	defer utils.CommitOrRollback(tx)
-	err = server.Repository.Delete(ctx, tx, id.UserId, id.ProductId)
-	status, message := setup.ResponseForModifying(err == nil)
+func (server WishlistServiceServerImpl) Delete(_ context.Context, userAndProductId *UserAndProductId) (*response.Response, error) {
+	var wishlistRef model.Wishlist
+	first := server.DB.First(&wishlistRef, "user_id = ? and product_id = ?", userAndProductId.UserId, userAndProductId.ProductId)
+	if first.Error != nil {
+		status, message := utils.ModifyingResponse(false)
+		return &response.Response{
+			Message: message,
+			Status:  status,
+		}, nil
+	}
+	tx := server.DB.Delete(&wishlistRef)
+	status, message := utils.ModifyingResponse(tx.Error == nil)
 	return &response.Response{
 		Status:  status,
 		Message: message,
 	}, nil
 }
 
-func (server WishlistServiceServerImpl) FindByUserId(ctx context.Context, id *WishlistUserId) (*MultipleWishlistResponse, error) {
-	tx, err := server.Repository.DB.Begin()
-	utils.PanicIfError(err)
-	defer utils.CommitOrRollback(tx)
-	wishlistModels := server.Repository.FindByUserId(ctx, tx, id.Id)
+func (server WishlistServiceServerImpl) FindByUserId(_ context.Context, id *WishlistUserId) (*MultipleWishlistResponse, error) {
+	var wishlistModels []*model.Wishlist
+	tx := server.DB.Find(&wishlistModels, "user_id = ?", id.Id)
+	utils.LogIfError(tx.Error)
 	wishlist := fetchWishlist(wishlistModels)
-	status, message := setup.ResponseForQuerying(len(wishlist) > 0)
+	status, message := utils.QueryResponse(len(wishlist) > 0)
 	return &MultipleWishlistResponse{
 		Status:  status,
 		Message: message,
 		Data:    wishlist,
 	}, nil
 }
-func (server WishlistServiceServerImpl) FindWishlistByProductId(ctx context.Context, id *UserAndProductId) (*WishlistResponse, error) {
-	tx, err := server.Repository.DB.Begin()
-	utils.PanicIfError(err)
-	defer utils.CommitOrRollback(tx)
 
-	wishlistModel := server.Repository.FindByUserAndProductId(ctx, tx, id.UserId, id.ProductId)
-	status, message := setup.ResponseForQuerying(wishlistModel != nil)
+func (server WishlistServiceServerImpl) FindWishlistByProductId(_ context.Context, id *UserAndProductId) (*WishlistResponse, error) {
+	var wishlist model.Wishlist
+	tx := server.DB.Find(&wishlist, "user_id = ? and product_id = ?", id.UserId, id.ProductId)
 
-	if wishlistModel == nil {
-		return &WishlistResponse{Message: message, Status: status, Data: nil}, nil
+	status, message := utils.QueryResponse(tx.Error != nil)
+	if tx.Error != nil {
+		return &WishlistResponse{
+			Message: message,
+			Status:  status,
+			Data:    nil,
+		}, nil
 	}
 
 	return &WishlistResponse{Message: message, Status: status, Data: &WishlistDetail{
-		Id:        wishlistModel.Id,
-		Name:      wishlistModel.Name,
-		Weight:    wishlistModel.Weight,
-		ProductId: wishlistModel.ProductId,
-		Price:     wishlistModel.Price,
-		Category:  wishlistModel.Category,
-		ImageUrl:  wishlistModel.ImageUrl,
-		UserId:    wishlistModel.UserId,
-		PerUnit:   wishlistModel.PerUnit,
+		Id:        wishlist.ID,
+		Name:      wishlist.Name,
+		Weight:    wishlist.Weight,
+		ProductId: wishlist.ProductId,
+		Price:     wishlist.Price,
+		Category:  wishlist.Category,
+		ImageUrl:  wishlist.ImageUrl,
+		UserId:    wishlist.UserId,
+		PerUnit:   wishlist.PerUnit,
 	}}, nil
 }
 
-func fetchWishlist(rows *sql.Rows) []*WishlistDetail {
+func fetchWishlist(wishlistModels []*model.Wishlist) []*WishlistDetail {
 	var wishlists []*WishlistDetail
-	for rows.Next() {
+	for _, w := range wishlistModels {
 		wishlist := WishlistDetail{}
-		var imageUrl sql.NullString
-		err := rows.Scan(&wishlist.Id, &wishlist.Name, &wishlist.Price, &wishlist.Weight, &wishlist.Category, &wishlist.PerUnit, &imageUrl, &wishlist.ProductId)
-		if err != nil {
-			log.Println("scan error : " + err.Error())
-			continue
-		}
-
-		if imageUrl.Valid {
-			wishlist.ImageUrl = imageUrl.String
-		}
-
+		wishlist.Id = w.ID
+		wishlist.Name = w.Name
+		wishlist.Price = w.Price
+		wishlist.Weight = w.Weight
+		wishlist.Category = w.Category
+		wishlist.PerUnit = w.PerUnit
+		wishlist.ImageUrl = w.ImageUrl
+		wishlist.ProductId = w.ProductId
 		wishlists = append(wishlists, &wishlist)
 	}
-	utils.LogIfError(rows.Close())
 	return wishlists
 }
 

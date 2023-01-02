@@ -1,7 +1,12 @@
 package model
 
-type WishlistModel struct {
-	Id        string
+import (
+	"gorm.io/gorm"
+	"time"
+)
+
+type Wishlist struct {
+	ID        string `gorm:"primaryKey"`
 	Name      string
 	Price     uint64
 	Weight    uint32
@@ -10,4 +15,7 @@ type WishlistModel struct {
 	ImageUrl  string
 	ProductId string
 	UserId    string
+	CreatedAt time.Time      `json:"_"`
+	UpdatedAt time.Time      `json:"_"`
+	DeletedAt gorm.DeletedAt `json:"_" gorm:"index"`
 }

@@ -1,36 +1,53 @@
 package category
 
 import (
-	"database/sql"
+	"encoding/json"
 	"github.com/go-redis/redis/v8"
 	"github.com/google/uuid"
 	"github.com/ramdanariadi/grocery-product-service/main/category/model"
-	"github.com/ramdanariadi/grocery-product-service/main/category/repository"
 	"github.com/ramdanariadi/grocery-product-service/main/response"
 	"github.com/ramdanariadi/grocery-product-service/main/setup"
 	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"golang.org/x/net/context"
+	"gorm.io/gorm"
 )
 
 type CategoryServiceServerImpl struct {
-	Repository  repository.CategoryRepositoryImpl
+	DB          *gorm.DB
 	RedisClient *redis.Client
 }
 
-func NewCategoryServiceServerImpl(db *sql.DB) *CategoryServiceServerImpl {
-	return &CategoryServiceServerImpl{Repository: repository.CategoryRepositoryImpl{DB: db}, RedisClient: setup.NewRedisClient()}
+func NewCategoryServiceServerImpl(db *gorm.DB) *CategoryServiceServerImpl {
+	return &CategoryServiceServerImpl{DB: db, RedisClient: setup.NewRedisClient()}
 }
 
-func (server *CategoryServiceServerImpl) FindById(context context.Context, categoryId *CategoryId) (*CategoryResponse, error) {
-	tx, err := server.Repository.DB.Begin()
-	utils.PanicIfError(err)
-	defer utils.CommitOrRollback(tx)
-	categoryById := server.Repository.FindById(context, tx, categoryId.Id)
-	status, message := setup.ResponseForQuerying(categoryById != nil)
+func (server *CategoryServiceServerImpl) FindById(ctx context.Context, categoryId *CategoryId) (*CategoryResponse, error) {
+	var categoryModel *model.Category
+
+	result, err := server.RedisClient.Get(ctx, categoryId.Id).Result()
+	utils.LogIfError(err)
+
+	if err == nil {
+		err := json.Unmarshal([]byte(result), categoryModel)
+		utils.LogIfError(err)
+	} else {
+		tx := server.DB.First(categoryModel, "id = ?", categoryId.Id)
+		utils.LogIfError(tx.Error)
+		if tx.Error != nil {
+			status, message := utils.QueryResponse(false)
+			return &CategoryResponse{
+				Data:    nil,
+				Status:  status,
+				Message: message,
+			}, nil
+		}
+	}
+
+	status, message := utils.QueryResponse(true)
 	grpcCategory := Category{
-		Category: categoryById.Category,
-		Id:       categoryById.Id,
-		ImageUrl: categoryById.ImageUrl,
+		Category: categoryModel.Category,
+		Id:       categoryModel.ID,
+		ImageUrl: categoryModel.ImageUrl,
 	}
 	return &CategoryResponse{
 		Data:    &grpcCategory,
@@ -38,13 +55,12 @@ func (server *CategoryServiceServerImpl) FindById(context context.Context, categ
 		Message: message,
 	}, nil
 }
-func (server *CategoryServiceServerImpl) FindAll(context context.Context, _ *EmptyCategory) (*MultipleCategoryResponse, error) {
-	tx, err := server.Repository.DB.Begin()
-	utils.PanicIfError(err)
-	defer utils.CommitOrRollback(tx)
-	rows := server.Repository.FindAll(context, tx)
-	categories := fetchCategories(rows)
-	status, message := setup.ResponseForQuerying(true)
+
+func (server *CategoryServiceServerImpl) FindAll(_ context.Context, _ *EmptyCategory) (*MultipleCategoryResponse, error) {
+	var categoriesModel []*model.Category
+	server.DB.Find(&categoriesModel)
+	categories := fetchCategories(categoriesModel)
+	status, message := utils.QueryResponse(true)
 	return &MultipleCategoryResponse{
 		Status:  status,
 		Message: message,
@@ -52,68 +68,52 @@ func (server *CategoryServiceServerImpl) FindAll(context context.Context, _ *Emp
 	}, nil
 }
 
-func fetchCategories(rows *sql.Rows) []*Category {
-	var categoriesModel []*Category
-	for rows.Next() {
-		cm := Category{}
-		var imageUrl sql.NullString
-		err := rows.Scan(&cm.Id, &cm.Category, &imageUrl)
-		if err != nil {
-			panic("scan error")
-		}
-		if imageUrl.Valid {
-			cm.ImageUrl = imageUrl.String
-		}
-		categoriesModel = append(categoriesModel, &cm)
-
+func fetchCategories(categoriesModel []*model.Category) []*Category {
+	var categories []*Category
+	for _, c := range categoriesModel {
+		categories = append(categories, &Category{Id: c.ID, Category: c.Category, ImageUrl: c.ImageUrl})
 	}
-	utils.LogIfError(rows.Close())
-	return categoriesModel
+	return categories
 }
 
-func (server *CategoryServiceServerImpl) Save(context context.Context, category *Category) (*response.Response, error) {
-	tx, err := server.Repository.DB.Begin()
-	utils.PanicIfError(err)
-	defer utils.CommitOrRollback(tx)
-
+func (server *CategoryServiceServerImpl) Save(_ context.Context, category *Category) (*response.Response, error) {
 	id, _ := uuid.NewUUID()
-	categoryModel := model.CategoryModel{
-		Category: category.Category,
-		Id:       id.String(),
-		Deleted:  false,
-	}
-
-	err = server.Repository.Save(context, tx, &categoryModel)
-	sts, message := setup.ResponseForQuerying(err == nil)
+	save := server.DB.Save(&model.Category{ID: id.String(), Category: category.Category, ImageUrl: category.ImageUrl})
+	sts, message := utils.QueryResponse(save.Error == nil)
 	return &response.Response{
 		Status:  sts,
 		Message: message,
 	}, nil
 }
-func (server *CategoryServiceServerImpl) Update(context context.Context, category *Category) (*response.Response, error) {
-	tx, err := server.Repository.DB.Begin()
-	utils.PanicIfError(err)
-	defer utils.CommitOrRollback(tx)
 
-	categoryModel := model.CategoryModel{
-		Category: category.Category,
-		ImageUrl: category.ImageUrl,
+func (server *CategoryServiceServerImpl) Update(ctx context.Context, category *Category) (*response.Response, error) {
+	categoryModel := model.Category{ID: category.Id}
+	tx := server.DB.First(&categoryModel)
+
+	if tx.Error != nil {
+		sts, message := utils.QueryResponse(false)
+		return &response.Response{
+			Status:  sts,
+			Message: message,
+		}, nil
 	}
 
-	err = server.Repository.Update(context, tx, &categoryModel, category.Id)
-	sts, message := setup.ResponseForQuerying(err == nil)
+	server.RedisClient.Del(ctx, category.Id)
+	categoryModel.Category = category.Category
+	categoryModel.ImageUrl = category.ImageUrl
+	save := server.DB.Save(&categoryModel)
+	sts, message := utils.QueryResponse(save.Error == nil)
 	return &response.Response{
 		Status:  sts,
 		Message: message,
 	}, nil
 }
-func (server *CategoryServiceServerImpl) Delete(context context.Context, categoryId *CategoryId) (*response.Response, error) {
-	tx, err := server.Repository.DB.Begin()
-	utils.PanicIfError(err)
-	defer utils.CommitOrRollback(tx)
 
-	err = server.Repository.Delete(context, tx, categoryId.Id)
-	sts, message := setup.ResponseForModifying(err == nil)
+func (server *CategoryServiceServerImpl) Delete(ctx context.Context, categoryId *CategoryId) (*response.Response, error) {
+	server.RedisClient.Del(ctx, categoryId.Id)
+	server.DB.Delete(&model.Category{ID: categoryId.Id})
+	sts, message := utils.ModifyingResponse(true)
 	return &response.Response{Status: sts, Message: message}, nil
 }
+
 func (server *CategoryServiceServerImpl) mustEmbedUnimplementedCategoryServiceServer() {}

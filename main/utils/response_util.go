@@ -13,7 +13,7 @@ const Success = "SUCCESS"
 // Positive message(s)
 const Ok = "OK"
 
-func ResponseForQuerying(status bool, message ...string) (string, string) {
+func QueryResponse(status bool, message ...string) (string, string) {
 	if status {
 		if len(message) > 0 {
 			return Success, message[0]
@@ -23,7 +23,7 @@ func ResponseForQuerying(status bool, message ...string) (string, string) {
 	return Failed, Empty
 }
 
-func ResponseForModifying(status bool) (string, string) {
+func ModifyingResponse(status bool) (string, string) {
 	if status {
 		return Success, Ok
 	}

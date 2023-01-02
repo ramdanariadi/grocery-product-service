@@ -2,109 +2,91 @@ package cart
 
 import (
 	"context"
-	"database/sql"
 	"github.com/ramdanariadi/grocery-product-service/main/cart/model"
-	repository2 "github.com/ramdanariadi/grocery-product-service/main/cart/repository"
-	"github.com/ramdanariadi/grocery-product-service/main/product/repository"
+	productModel "github.com/ramdanariadi/grocery-product-service/main/product/model"
 	"github.com/ramdanariadi/grocery-product-service/main/response"
-	"github.com/ramdanariadi/grocery-product-service/main/setup"
 	"github.com/ramdanariadi/grocery-product-service/main/utils"
+	"gorm.io/gorm"
 )
 
 type CartServiceServerImpl struct {
-	Repository        repository2.CartRepositoryImpl
-	ProductRepository repository.ProductRepositoryImpl
+	DB *gorm.DB
 }
 
-func NewCartServiceImpl(db *sql.DB) *CartServiceServerImpl {
+func NewCartServiceImpl(db *gorm.DB) *CartServiceServerImpl {
 	return &CartServiceServerImpl{
-		Repository:        repository2.CartRepositoryImpl{DB: db},
-		ProductRepository: repository.ProductRepositoryImpl{DB: db},
+		DB: db,
 	}
 }
 
-func (server CartServiceServerImpl) Save(ctx context.Context, cart *Cart) (*response.Response, error) {
-	tx, err := server.ProductRepository.DB.Begin()
-	utils.PanicIfError(err)
-	defer utils.CommitOrRollback(tx)
-	productModel := server.ProductRepository.FindById(ctx, tx, cart.ProductId)
-	if productModel == nil {
-		status, message := setup.ResponseForQuerying(false)
+func (server CartServiceServerImpl) Save(_ context.Context, cart *Cart) (*response.Response, error) {
+	var productRef productModel.Product
+	first := server.DB.First(&productRef, "id = ?", cart.ProductId)
+	if first.Error != nil {
+		status, message := utils.QueryResponse(false)
 		return &response.Response{
 			Message: message,
 			Status:  status,
 		}, nil
 	}
 
-	cartModel := model.CartModel{
-		ImageUrl:  productModel.ImageUrl,
-		ProductId: productModel.Id,
-		Name:      productModel.Name,
-		Weight:    uint32(productModel.Weight),
-		Category:  productModel.Category,
-		Price:     productModel.Price,
-		PerUnit:   uint64(productModel.PerUnit),
-		UserId:    cart.UserId,
-		Total:     cart.Total,
+	var cartModel model.CartModel
+	tx := server.DB.First(&cartModel, "product_id = ? and user_id = ?", cart.ProductId, cart.UserId)
+	if tx.Error == nil {
+		cartModel.Total = cartModel.Total + cart.Total
+	} else {
+		cartModel = model.CartModel{
+			ImageUrl:  productRef.ImageUrl,
+			ProductId: productRef.ID,
+			Name:      productRef.Name,
+			Weight:    uint32(productRef.Weight),
+			Category:  productRef.Category,
+			Price:     productRef.Price,
+			PerUnit:   uint64(productRef.PerUnit),
+			UserId:    cart.UserId,
+			Total:     cart.Total,
+		}
 	}
-
-	existingCartRow := server.Repository.FindByUserAndProductId(ctx, tx, cart.UserId, cart.ProductId)
-
-	existingCart := CartDetail{}
-	err = existingCartRow.Scan(&existingCart.Id, &existingCart.Name, &existingCart.Price, &existingCart.Weight,
-		&existingCart.Category, &existingCart.Total, &existingCart.PerUnit, &existingCart.ImageUrl, &existingCart.ProductId)
-	utils.LogIfError(err)
-
-	if err == nil {
-		cartModel.Id = existingCart.Id
-		cartModel.Total = cart.Total + existingCart.Total
-		err = server.Repository.Update(ctx, tx, &cartModel)
-		status, message := setup.ResponseForModifying(err == nil)
-		return &response.Response{
-			Message: message,
-			Status:  status,
-		}, nil
-	}
-
-	err = server.Repository.Save(ctx, tx, &cartModel)
-	status, message := setup.ResponseForModifying(err == nil)
+	save := server.DB.Save(&cartModel)
+	status, message := utils.ModifyingResponse(save.Error == nil)
 	return &response.Response{
 		Message: message,
 		Status:  status,
 	}, nil
 }
 
-func (server CartServiceServerImpl) Delete(ctx context.Context, id *CartAndUserId) (*response.Response, error) {
-	tx, err := server.Repository.DB.Begin()
-	utils.PanicIfError(err)
-	defer utils.CommitOrRollback(tx)
-	err = server.Repository.Delete(ctx, tx, id.UserId, id.Id)
-	status, message := setup.ResponseForModifying(err == nil)
+func (server CartServiceServerImpl) Delete(_ context.Context, id *CartAndUserId) (*response.Response, error) {
+	tx := server.DB.Delete(&model.CartModel{ID: id.Id, UserId: id.UserId})
+	status, message := utils.ModifyingResponse(tx.Error == nil)
 	return &response.Response{Message: message, Status: status}, nil
 }
 
-func (server CartServiceServerImpl) FindByUserId(ctx context.Context, id *CartUserId) (*MultipleCartResponse, error) {
-	tx, err := server.Repository.DB.Begin()
-	utils.PanicIfError(err)
-	defer utils.CommitOrRollback(tx)
-	rows := server.Repository.FindByUserId(ctx, tx, id.Id)
-	wishlist := fetchWishlist(rows)
-	status, message := setup.ResponseForQuerying(true)
+func (server CartServiceServerImpl) FindByUserId(_ context.Context, userId *CartUserId) (*MultipleCartResponse, error) {
+	var carts []*model.CartModel
+	tx := server.DB.Find(&carts, "user_id = ?", userId.Id)
+	utils.LogIfError(tx.Error)
+	wishlist := fetchWishlist(carts)
+	status, message := utils.QueryResponse(true)
 	return &MultipleCartResponse{Status: status, Message: message, Data: wishlist}, nil
 }
 
-func fetchWishlist(rows *sql.Rows) []*CartDetail {
-	var carts []*CartDetail
-	for rows.Next() {
-		cart := CartDetail{}
-		err := rows.Scan(&cart.Id, &cart.Name, &cart.Price, &cart.Weight, &cart.Category, &cart.Total, &cart.PerUnit, &cart.ImageUrl, &cart.ProductId)
-		if err != nil {
-			continue
+func fetchWishlist(carts []*model.CartModel) []*CartDetail {
+	var cartDetails []*CartDetail
+	for _, cart := range carts {
+		cartDetail := CartDetail{
+			Id:        cart.ID,
+			Name:      cart.Name,
+			Price:     cart.Price,
+			Weight:    cart.Weight,
+			Category:  cart.Category,
+			Total:     cart.Total,
+			PerUnit:   uint32(cart.PerUnit),
+			ImageUrl:  cart.ImageUrl,
+			ProductId: cart.ProductId,
 		}
-		carts = append(carts, &cart)
+		cartDetails = append(cartDetails, &cartDetail)
 	}
-	utils.LogIfError(rows.Close())
-	return carts
+	return cartDetails
 }
 
 func (server CartServiceServerImpl) mustEmbedUnimplementedCartServiceServer() {
