@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package proto;
-option go_package = "/service/transaction";
+option go_package = "/main/transaction";
 
 option java_multiple_files = true;
 option java_package = "id.grocery.tunas.grpc";
@@ -42,9 +42,10 @@ message TransactionProductDetail{
 
 message Transaction{
    string id = 1;
-   uint64 total_price = 2;
-   int64 transaction_date = 3;
-   repeated TransactionProductDetail products = 4;
+   string user_id = 2;
+   uint64 total_price = 3;
+   int64 transaction_date = 4;
+   repeated TransactionProductDetail products = 5;
 }
 
 message TransactionResponse{
