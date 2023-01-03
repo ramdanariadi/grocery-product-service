@@ -29,6 +29,7 @@ func NewDbConnection() (*sql.DB, error) {
 			break
 		case "DB_NAME":
 			dbName = split[1]
+			break
 		case "DB_HOST":
 			dbHost = split[1]
 		}
