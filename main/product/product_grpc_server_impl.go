@@ -13,25 +13,26 @@ import (
 	"github.com/ramdanariadi/grocery-product-service/main/setup"
 	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"golang.org/x/net/context"
+	"log"
 	"time"
 )
 
 type ProductServiceServerImpl struct {
-	Repository  repository.ProductRepositoryImpl
+	Repository  repository.ProductRepository
 	RedisClient *redis.Client
+	DB          *sql.DB
 }
 
 func NewProductServiceServerImpl(db *sql.DB) *ProductServiceServerImpl {
 	return &ProductServiceServerImpl{
-		Repository: repository.ProductRepositoryImpl{
-			DB: db,
-		},
+		Repository:  repository.ProductRepositoryImpl{},
 		RedisClient: setup.NewRedisClient(),
+		DB:          db,
 	}
 }
 
 func (server ProductServiceServerImpl) FindById(ctx context.Context, id *ProductId) (*ProductResponse, error) {
-	tx, err := server.Repository.DB.Begin()
+	tx, err := server.DB.Begin()
 	utils.PanicIfError(err)
 	defer utils.CommitOrRollback(tx)
 
@@ -40,7 +41,8 @@ func (server ProductServiceServerImpl) FindById(ctx context.Context, id *Product
 	utils.LogIfError(err)
 
 	if cache != "" {
-		err := json.Unmarshal([]byte(cache), productModel)
+		log.Printf("found in redis")
+		err := json.Unmarshal([]byte(cache), &productModel)
 		utils.LogIfError(err)
 	} else {
 		productModel = server.Repository.FindById(ctx, tx, id.Id)
@@ -76,7 +78,7 @@ func (server ProductServiceServerImpl) FindById(ctx context.Context, id *Product
 }
 
 func (server ProductServiceServerImpl) FindProductsByCategory(ctx context.Context, id *category.CategoryId) (*MultipleProductResponse, error) {
-	tx, err := server.Repository.DB.Begin()
+	tx, err := server.DB.Begin()
 	utils.PanicIfError(err)
 	defer utils.CommitOrRollback(tx)
 
@@ -91,7 +93,7 @@ func (server ProductServiceServerImpl) FindProductsByCategory(ctx context.Contex
 }
 
 func (server ProductServiceServerImpl) FindRecommendedProduct(ctx context.Context, _ *ProductEmpty) (*MultipleProductResponse, error) {
-	tx, err := server.Repository.DB.Begin()
+	tx, err := server.DB.Begin()
 	utils.PanicIfError(err)
 	defer utils.CommitOrRollback(tx)
 
@@ -106,7 +108,7 @@ func (server ProductServiceServerImpl) FindRecommendedProduct(ctx context.Contex
 }
 
 func (server ProductServiceServerImpl) FindTopProducts(ctx context.Context, _ *ProductEmpty) (*MultipleProductResponse, error) {
-	tx, err := server.Repository.DB.Begin()
+	tx, err := server.DB.Begin()
 	utils.PanicIfError(err)
 	defer utils.CommitOrRollback(tx)
 
@@ -121,7 +123,7 @@ func (server ProductServiceServerImpl) FindTopProducts(ctx context.Context, _ *P
 }
 
 func (server ProductServiceServerImpl) FindAll(ctx context.Context, _ *ProductEmpty) (*MultipleProductResponse, error) {
-	tx, err := server.Repository.DB.Begin()
+	tx, err := server.DB.Begin()
 	utils.PanicIfError(err)
 	defer utils.CommitOrRollback(tx)
 
@@ -156,13 +158,13 @@ func fetchProducts(rows *sql.Rows) []*Product {
 }
 
 func (server ProductServiceServerImpl) Save(ctx context.Context, product *Product) (*response.Response, error) {
-	tx, err := server.Repository.DB.Begin()
+	tx, err := server.DB.Begin()
 	utils.PanicIfError(err)
 	defer utils.CommitOrRollback(tx)
 
-	categoryRepository := repository2.NewCategoryRepository(server.Repository.DB)
+	categoryRepository := repository2.NewCategoryRepository()
 	categoryModel := categoryRepository.FindById(ctx, tx, product.CategoryId)
-	if categoryModel != nil {
+	if categoryModel == nil {
 		status, _ := setup.ResponseForQuerying(false)
 		return &response.Response{Status: status, Message: "INVALID_CATEGORY"}, nil
 	}
@@ -188,13 +190,13 @@ func (server ProductServiceServerImpl) Save(ctx context.Context, product *Produc
 }
 
 func (server ProductServiceServerImpl) Update(ctx context.Context, product *Product) (*response.Response, error) {
-	tx, err := server.Repository.DB.Begin()
+	tx, err := server.DB.Begin()
 	utils.PanicIfError(err)
 	defer utils.CommitOrRollback(tx)
 
-	categoryRepository := repository2.NewCategoryRepository(server.Repository.DB)
+	categoryRepository := repository2.NewCategoryRepository()
 	categoryModel := categoryRepository.FindById(ctx, tx, product.CategoryId)
-	if categoryModel != nil {
+	if categoryModel == nil {
 		status, _ := setup.ResponseForQuerying(false)
 		return &response.Response{Status: status, Message: "INVALID_CATEGORY"}, nil
 	}
@@ -210,6 +212,8 @@ func (server ProductServiceServerImpl) Update(ctx context.Context, product *Prod
 		Description: product.Description,
 		ImageUrl:    product.ImageUrl,
 	}
+	err = server.RedisClient.Del(ctx, product.Id).Err()
+	utils.LogIfError(err)
 	err = server.Repository.Update(ctx, tx, &productModel)
 	status, message := setup.ResponseForModifying(err == nil)
 	return &response.Response{
@@ -219,9 +223,11 @@ func (server ProductServiceServerImpl) Update(ctx context.Context, product *Prod
 }
 
 func (server ProductServiceServerImpl) Delete(ctx context.Context, id *ProductId) (*response.Response, error) {
-	tx, err := server.Repository.DB.Begin()
+	tx, err := server.DB.Begin()
 	utils.PanicIfError(err)
 	defer utils.CommitOrRollback(tx)
+	err = server.RedisClient.Del(ctx, id.GetId()).Err()
+	utils.LogIfError(err)
 	err = server.Repository.Delete(ctx, tx, id.Id)
 	status, message := setup.ResponseForModifying(err == nil)
 	return &response.Response{Status: status, Message: message}, nil

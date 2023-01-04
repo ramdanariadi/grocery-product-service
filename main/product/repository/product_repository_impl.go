@@ -9,14 +9,12 @@ import (
 	"log"
 )
 
-type ProductRepositoryImpl struct {
-	DB *sql.DB
-}
+type ProductRepositoryImpl struct{}
 
 func (repository ProductRepositoryImpl) FindById(context context.Context, tx *sql.Tx, id string) *model.ProductModel {
-	query := "SELECT products.id, name, price, per_unit, weight, category, category_id, description, products.image_url  " +
+	query := "SELECT products.id, name, price, per_unit, weight, categories.category, category_id, description, products.image_url  " +
 		"FROM products " +
-		"JOIN category ON products.category_id = category.id " +
+		"JOIN categories ON products.category_id = categories.id " +
 		"WHERE products.id = $1 AND products.deleted_at IS NULL"
 	row := tx.QueryRowContext(context, query, id)
 	product := model.ProductModel{}
@@ -37,9 +35,9 @@ func (repository ProductRepositoryImpl) FindById(context context.Context, tx *sq
 }
 
 func (repository ProductRepositoryImpl) FindByIds(context context.Context, tx *sql.Tx, ids []string) []*model.ProductModel {
-	query := "SELECT products.id, name, price, per_unit, weight, category, category_id, description, products.image_url " +
+	query := "SELECT products.id, name, price, per_unit, weight, categories.category, category_id, description, products.image_url " +
 		"FROM products " +
-		"JOIN category ON products.category_id = category.id " +
+		"JOIN categories ON products.category_id = categories.id " +
 		"WHERE products.id = ANY($1) AND products.deleted_at IS NULL"
 	rows, err := tx.QueryContext(context, query, pq.Array(ids))
 	utils.LogIfError(err)
@@ -65,9 +63,9 @@ func (repository ProductRepositoryImpl) FindByIds(context context.Context, tx *s
 }
 
 func (repository ProductRepositoryImpl) FindAll(context context.Context, tx *sql.Tx) *sql.Rows {
-	query := "SELECT products.id, name, price, per_unit, weight, category, category_id, description, products.image_url  " +
+	query := "SELECT products.id, name, price, per_unit, weight, categories.category, category_id, description, products.image_url  " +
 		"FROM products " +
-		"JOIN category ON products.category_id = category.id " +
+		"JOIN categories ON products.category_id = categories.id " +
 		"WHERE products.deleted_at IS NULL"
 
 	rows, err := tx.QueryContext(context, query)
@@ -76,9 +74,9 @@ func (repository ProductRepositoryImpl) FindAll(context context.Context, tx *sql
 }
 
 func (repository ProductRepositoryImpl) FindByCategory(context context.Context, tx *sql.Tx, id string) *sql.Rows {
-	query := "SELECT products.id, name, price, per_unit, weight, category, category_id, description, products.image_url  " +
+	query := "SELECT products.id, name, price, per_unit, weight, categories.category, category_id, description, products.image_url  " +
 		"FROM products " +
-		"JOIN category ON products.category_id = category.id " +
+		"JOIN categories ON products.category_id = categories.id " +
 		"WHERE products.category_id = $1 AND products.deleted_at IS NULL"
 	rows, err := tx.QueryContext(context, query, id)
 	utils.LogIfError(err)
@@ -86,9 +84,9 @@ func (repository ProductRepositoryImpl) FindByCategory(context context.Context, 
 }
 
 func (repository ProductRepositoryImpl) FindWhere(context context.Context, tx *sql.Tx, where string, value ...any) *sql.Rows {
-	query := "SELECT products.id, name, price, per_unit, weight, category, category_id, description, products.image_url  " +
+	query := "SELECT products.id, name, price, per_unit, weight, categories.category, category_id, description, products.image_url  " +
 		"FROM products " +
-		"JOIN category ON products.category_id = category.id " +
+		"JOIN categories ON products.category_id = categories.id " +
 		"WHERE " + where
 	rows, err := tx.QueryContext(context, query, value...)
 	utils.LogIfError(err)
