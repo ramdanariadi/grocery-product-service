@@ -43,7 +43,7 @@ func (server CartServiceServerImpl) Save(_ context.Context, cart *Cart) (*respon
 			ProductId: productRef.ID,
 			Name:      productRef.Name,
 			Weight:    uint32(productRef.Weight),
-			Category:  productRef.Category,
+			Category:  productRef.Category.Category,
 			Price:     productRef.Price,
 			PerUnit:   uint64(productRef.PerUnit),
 			UserId:    cart.UserId,

@@ -57,7 +57,7 @@ func (server ProductServiceServerImpl) FindById(ctx context.Context, id *Product
 		Id:          productModel.ID,
 		Name:        productModel.Name,
 		Weight:      uint32(productModel.Weight),
-		Category:    productModel.Category,
+		Category:    productModel.Category.Category,
 		ImageUrl:    productModel.ImageUrl,
 		CategoryId:  productModel.CategoryId,
 		Price:       productModel.Price,
@@ -136,7 +136,7 @@ func fetchProducts(productsModel []*model.Product) []*Product {
 			Description:   p.Description,
 			ImageUrl:      p.ImageUrl,
 			PerUnit:       uint64(p.PerUnit),
-			Category:      p.Category,
+			Category:      p.Category.Category,
 			CategoryId:    p.CategoryId,
 			IsTop:         p.IsTop,
 			IsRecommended: p.IsRecommended,
@@ -159,7 +159,7 @@ func (server ProductServiceServerImpl) Save(_ context.Context, product *Product)
 		ID:          id.String(),
 		Name:        product.Name,
 		Weight:      uint(product.Weight),
-		Category:    categoryReff.Category,
+		Category:    categoryReff,
 		CategoryId:  categoryReff.ID,
 		Price:       product.Price,
 		PerUnit:     uint(product.PerUnit),
@@ -193,7 +193,7 @@ func (server ProductServiceServerImpl) Update(ctx context.Context, product *Prod
 	productModel.ID = product.Id
 	productModel.Name = product.Name
 	productModel.Weight = uint(product.Weight)
-	productModel.Category = categoryReff.Category
+	productModel.Category = categoryReff
 	productModel.CategoryId = categoryReff.ID
 	productModel.Price = product.Price
 	productModel.PerUnit = uint(product.PerUnit)

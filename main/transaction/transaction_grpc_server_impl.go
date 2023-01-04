@@ -109,7 +109,7 @@ func (server TransactionServiceServerImpl) Save(_ context.Context, body *Transac
 		transactionDetailId, _ := uuid.NewUUID()
 		detailTransactionProductModel := model.TransactionDetail{
 			ID: transactionDetailId.String(), ProductId: pm.ID, Name: pm.Name, ImageUrl: pm.ImageUrl, Price: pm.Price,
-			PerUnit: pm.PerUnit, Weight: pm.Weight, Category: pm.Category, Description: pm.Description,
+			PerUnit: pm.PerUnit, Weight: pm.Weight, Category: pm.Category.Category, Description: pm.Description,
 			CategoryId: pm.CategoryId, Total: uint(total), TransactionId: transactionId.String(),
 		}
 		detailTransaction = append(detailTransaction, &detailTransactionProductModel)

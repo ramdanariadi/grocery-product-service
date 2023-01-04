@@ -45,7 +45,7 @@ func (server WishlistServiceServerImpl) Save(_ context.Context, wishlist *Wishli
 		ImageUrl:  productRef.ImageUrl,
 		Name:      productRef.Name,
 		Weight:    uint32(productRef.Weight),
-		Category:  productRef.Category,
+		Category:  productRef.Category.Category,
 		Price:     productRef.Price,
 		PerUnit:   uint64(productRef.PerUnit),
 		UserId:    wishlist.UserId,
