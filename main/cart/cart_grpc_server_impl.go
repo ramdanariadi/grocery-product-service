@@ -12,19 +12,21 @@ import (
 )
 
 type CartServiceServerImpl struct {
-	Repository        repository2.CartRepositoryImpl
-	ProductRepository repository.ProductRepositoryImpl
+	Repository        repository2.CartRepository
+	ProductRepository repository.ProductRepository
+	DB                *sql.DB
 }
 
 func NewCartServiceImpl(db *sql.DB) *CartServiceServerImpl {
 	return &CartServiceServerImpl{
-		Repository:        repository2.CartRepositoryImpl{DB: db},
-		ProductRepository: repository.ProductRepositoryImpl{DB: db},
+		Repository:        repository2.CartRepositoryImpl{},
+		ProductRepository: repository.ProductRepositoryImpl{},
+		DB:                db,
 	}
 }
 
 func (server CartServiceServerImpl) Save(ctx context.Context, cart *Cart) (*response.Response, error) {
-	tx, err := server.ProductRepository.DB.Begin()
+	tx, err := server.DB.Begin()
 	utils.PanicIfError(err)
 	defer utils.CommitOrRollback(tx)
 	productModel := server.ProductRepository.FindById(ctx, tx, cart.ProductId)
@@ -75,7 +77,7 @@ func (server CartServiceServerImpl) Save(ctx context.Context, cart *Cart) (*resp
 }
 
 func (server CartServiceServerImpl) Delete(ctx context.Context, id *CartAndUserId) (*response.Response, error) {
-	tx, err := server.Repository.DB.Begin()
+	tx, err := server.DB.Begin()
 	utils.PanicIfError(err)
 	defer utils.CommitOrRollback(tx)
 	err = server.Repository.Delete(ctx, tx, id.UserId, id.Id)
@@ -84,7 +86,7 @@ func (server CartServiceServerImpl) Delete(ctx context.Context, id *CartAndUserI
 }
 
 func (server CartServiceServerImpl) FindByUserId(ctx context.Context, id *CartUserId) (*MultipleCartResponse, error) {
-	tx, err := server.Repository.DB.Begin()
+	tx, err := server.DB.Begin()
 	utils.PanicIfError(err)
 	defer utils.CommitOrRollback(tx)
 	rows := server.Repository.FindByUserId(ctx, tx, id.Id)
@@ -97,7 +99,7 @@ func fetchWishlist(rows *sql.Rows) []*CartDetail {
 	var carts []*CartDetail
 	for rows.Next() {
 		cart := CartDetail{}
-		err := rows.Scan(&cart.Id, &cart.Name, &cart.Price, &cart.Weight, &cart.Category, &cart.Total, &cart.PerUnit, &cart.ImageUrl, &cart.ProductId)
+		err := rows.Scan(&cart.Id, &cart.Name, &cart.Price, &cart.Weight, &cart.Category, &cart.Total, &cart.PerUnit, &cart.ImageUrl, &cart.ProductId, &cart.UserId)
 		if err != nil {
 			continue
 		}
