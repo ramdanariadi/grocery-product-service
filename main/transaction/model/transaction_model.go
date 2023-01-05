@@ -5,7 +5,7 @@ type TransactionModel struct {
 	UserId            string                           `json:"user_id"`
 	Name              string                           `json:"name"`
 	TotalPrice        uint64                           `json:"total_price"`
-	TransactionDate   string                           `json:"transaction_date"`
+	TransactionDate   int64                            `json:"transaction_date"`
 	DetailTransaction []*DetailTransactionProductModel `json:"detail_transaction"`
 }
 

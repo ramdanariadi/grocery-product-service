@@ -20,7 +20,7 @@ type TransactionServiceServerImpl struct {
 func NewTransactionServiceServer(db *sql.DB) *TransactionServiceServerImpl {
 	return &TransactionServiceServerImpl{
 		Repository:        repository.TransactionRepositoryImpl{DB: db},
-		ProductRepository: repository2.ProductRepositoryImpl{DB: db},
+		ProductRepository: repository2.ProductRepositoryImpl{},
 	}
 }
 
@@ -29,15 +29,18 @@ func (transaction TransactionServiceServerImpl) FindByTransactionId(ctx context.
 	utils.PanicIfError(err)
 	defer utils.CommitOrRollback(tx)
 	transactionModel := transaction.Repository.FindByTransactionId(ctx, tx, id.Id)
-	var transactionData Transaction
-	if transactionModel != nil {
-		transactionData = Transaction{
-			Id:         transactionModel.Id,
-			TotalPrice: transactionModel.TotalPrice,
-		}
-		attachTransactionDetail(&transactionData, transactionModel.DetailTransaction)
+
+	if transactionModel == nil {
+		status, message := setup.ResponseForQuerying(false)
+		return &TransactionResponse{Status: status, Message: message, Data: nil}, nil
 	}
 
+	transactionData := Transaction{
+		Id:              transactionModel.Id,
+		TotalPrice:      transactionModel.TotalPrice,
+		TransactionDate: transactionModel.TransactionDate,
+	}
+	attachTransactionDetail(&transactionData, transactionModel.DetailTransaction)
 	status, message := setup.ResponseForQuerying(transactionModel != nil)
 	return &TransactionResponse{Status: status, Message: message, Data: &transactionData}, nil
 }
