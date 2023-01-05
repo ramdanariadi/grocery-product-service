@@ -13,19 +13,21 @@ import (
 )
 
 type WishlistServiceServerImpl struct {
-	Repository        repository.WishlistRepositoryImpl
-	ProductRepository repository2.ProductRepositoryImpl
+	Repository        repository.WishlistRepository
+	ProductRepository repository2.ProductRepository
+	DB                *sql.DB
 }
 
 func NewWishlistServer(db *sql.DB) *WishlistServiceServerImpl {
 	return &WishlistServiceServerImpl{
-		Repository:        repository.WishlistRepositoryImpl{DB: db},
-		ProductRepository: repository2.ProductRepositoryImpl{DB: db},
+		Repository:        repository.WishlistRepositoryImpl{},
+		ProductRepository: repository2.ProductRepositoryImpl{},
+		DB:                db,
 	}
 }
 
 func (server WishlistServiceServerImpl) Save(ctx context.Context, wishlist *Wishlist) (*response.Response, error) {
-	tx, err := server.Repository.DB.Begin()
+	tx, err := server.DB.Begin()
 	utils.PanicIfError(err)
 	defer utils.CommitOrRollback(tx)
 	productModel := server.ProductRepository.FindById(ctx, tx, wishlist.ProductId)
@@ -56,7 +58,7 @@ func (server WishlistServiceServerImpl) Save(ctx context.Context, wishlist *Wish
 }
 
 func (server WishlistServiceServerImpl) Delete(ctx context.Context, id *UserAndProductId) (*response.Response, error) {
-	tx, err := server.Repository.DB.Begin()
+	tx, err := server.DB.Begin()
 	utils.PanicIfError(err)
 	defer utils.CommitOrRollback(tx)
 	err = server.Repository.Delete(ctx, tx, id.UserId, id.ProductId)
@@ -68,7 +70,7 @@ func (server WishlistServiceServerImpl) Delete(ctx context.Context, id *UserAndP
 }
 
 func (server WishlistServiceServerImpl) FindByUserId(ctx context.Context, id *WishlistUserId) (*MultipleWishlistResponse, error) {
-	tx, err := server.Repository.DB.Begin()
+	tx, err := server.DB.Begin()
 	utils.PanicIfError(err)
 	defer utils.CommitOrRollback(tx)
 	wishlistModels := server.Repository.FindByUserId(ctx, tx, id.Id)
@@ -81,7 +83,7 @@ func (server WishlistServiceServerImpl) FindByUserId(ctx context.Context, id *Wi
 	}, nil
 }
 func (server WishlistServiceServerImpl) FindWishlistByProductId(ctx context.Context, id *UserAndProductId) (*WishlistResponse, error) {
-	tx, err := server.Repository.DB.Begin()
+	tx, err := server.DB.Begin()
 	utils.PanicIfError(err)
 	defer utils.CommitOrRollback(tx)
 
@@ -110,7 +112,7 @@ func fetchWishlist(rows *sql.Rows) []*WishlistDetail {
 	for rows.Next() {
 		wishlist := WishlistDetail{}
 		var imageUrl sql.NullString
-		err := rows.Scan(&wishlist.Id, &wishlist.Name, &wishlist.Price, &wishlist.Weight, &wishlist.Category, &wishlist.PerUnit, &imageUrl, &wishlist.ProductId)
+		err := rows.Scan(&wishlist.Id, &wishlist.Name, &wishlist.Price, &wishlist.Weight, &wishlist.Category, &wishlist.PerUnit, &imageUrl, &wishlist.ProductId, &wishlist.UserId)
 		if err != nil {
 			log.Println("scan error : " + err.Error())
 			continue
