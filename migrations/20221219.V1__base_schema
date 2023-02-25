@@ -1,8 +1,24 @@
-create table categories
+create table public.users
+(
+    id         text not null
+        primary key,
+    username   text,
+    password   text,
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone,
+    deleted_at timestamp with time zone
+);
+
+alter table public.users
+    owner to postgres;
+
+create index idx_users_deleted_at
+    on public.users (deleted_at);
+
+create table public.categories
 (
     id         uuid not null
-        constraint category_pkey
-            primary key,
+        primary key,
     created_at timestamp,
     deleted_at timestamp,
     updated_at timestamp,
@@ -10,10 +26,10 @@ create table categories
     image_url  varchar(255)
 );
 
-alter table categories
+alter table public.categories
     owner to postgres;
 
-create table products
+create table public.products
 (
     id             uuid not null
         primary key,
@@ -30,23 +46,22 @@ create table products
     weight         integer,
     category_id    uuid
         constraint fk1cf90etcu98x1e6n9aks3tel3
-            references categories
+            references public.categories
 );
 
-alter table products
+alter table public.products
     owner to postgres;
 
 create index idx_product_name
-    on products (name);
+    on public.products (name);
 
 create index idx_product_category
-    on products (category_id);
+    on public.products (category_id);
 
-create table carts
+create table public.carts
 (
     id         uuid         not null
-        constraint cart_pkey
-            primary key,
+        primary key,
     created_at timestamp,
     deleted_at timestamp,
     updated_at timestamp,
@@ -59,18 +74,17 @@ create table carts
     weight     integer,
     product_id uuid
         constraint fkpu4bcbluhsxagirmbdn7dilm5
-            references products,
+            references public.products,
     user_id    varchar(255) not null
 );
 
-alter table carts
+alter table public.carts
     owner to postgres;
 
-create table likes
+create table public.likes
 (
     id         uuid         not null
-        constraint liked_pkey
-            primary key,
+        primary key,
     created_at timestamp,
     deleted_at timestamp,
     updated_at timestamp,
@@ -82,33 +96,32 @@ create table likes
     weight     integer,
     product_id uuid
         constraint fk4tgscg55hv7our1fju6yu7o2q
-            references products,
+            references public.products,
     user_id    varchar(255) not null
 );
 
-alter table likes
+alter table public.likes
     owner to postgres;
 
-create table transactions
+create table public.transactions
 (
     id          uuid not null
-        constraint transaction_pkey
-            primary key,
+        primary key,
     created_at  timestamp,
     deleted_at  timestamp,
     updated_at  timestamp,
     total_price bigint,
     user_id     varchar(255)
+        references public.users
 );
 
-alter table transactions
+alter table public.transactions
     owner to postgres;
 
-create table transaction_details
+create table public.detail_transactions
 (
     id             uuid not null
-        constraint detail_transaction_pkey
-            primary key,
+        primary key,
     created_at     timestamp,
     deleted_at     timestamp,
     updated_at     timestamp,
@@ -120,20 +133,19 @@ create table transaction_details
     weight         integer,
     product_id     uuid
         constraint fkf784xfktx9aaei9fyqxfrxdqj
-            references products,
+            references public.products,
     transaction_id uuid
         constraint fkd6mv4qpm8jsp3lviwupuodmm4
-            references transactions
+            references public.transactions
 );
 
-alter table transaction_details
+alter table public.detail_transaction
     owner to postgres;
 
-create table wishlists
+create table public.wishlists
 (
     id         uuid         not null
-        constraint wishlist_pkey
-            primary key,
+        primary key,
     created_at timestamp,
     deleted_at timestamp,
     updated_at timestamp,
@@ -145,10 +157,33 @@ create table wishlists
     weight     integer,
     product_id uuid
         constraint fk6p7qhvy1bfkri13u29x6pu8au
-            references products,
+            references public.products,
     user_id    varchar(255) not null
 );
 
-alter table wishlists
+alter table public.wishlists
+    owner to postgres;
+
+create table public.roles
+(
+    id   uuid not null
+        primary key,
+    name varchar(255)
+);
+
+alter table public.roles
+    owner to postgres;
+
+create table public.users_roles
+(
+    user_id  varchar(255) not null
+        constraint fk2o0jvgh89lemvvo17cbqvdxaa
+            references public.users,
+    roles_id uuid         not null
+        constraint fka62j07k5mhgifpp955h37ponj
+            references public.roles
+);
+
+alter table public.users_roles
     owner to postgres;
 

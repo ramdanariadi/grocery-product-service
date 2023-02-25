@@ -1,25 +1,25 @@
 version: '3'
 services:
-  product-service:
-    image: grocery-product-service
-    ports:
-      - "50051:50051"
-    environment:
-      DB_USERNAME: postgres
-      DB_PASS: secret
-      DB_NAME: grocery-product-service
-      DB_HOST: db
-    networks:
-      - tunas-network
-    links:
-      - db
-      - cache
+#  product-service:
+#    image: grocery-service
+#    ports:
+#      - "50051:50051"
+#    environment:
+#      DB_USERNAME: postgres
+#      DB_PASS: secret
+#      DB_NAME: grocery-product-service
+#      DB_HOST: db
+#    networks:
+#      - tunas-network
+#    links:
+#      - db
+#      - cache
   db:
     image: postgres:13
     environment:
       POSTGRES_PASSWORD: secret
       POSTGRES_USER: postgres
-      POSTGRES_DB: grocery-product-service
+      POSTGRES_DB: grocery
       PGDATA: /var/lib/postgresql/data/grocery
     ports:
       - "5432:5432"
