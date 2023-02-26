@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/ramdanariadi/grocery-product-service/main/category/model"
+	"github.com/ramdanariadi/grocery-product-service/main/category"
 	"gorm.io/gorm"
 	"time"
 )
@@ -11,7 +11,7 @@ type Product struct {
 	Price         uint64 `json:"price"`
 	Weight        uint   `json:"weight"`
 	CategoryId    string
-	Category      model.Category
+	Category      category.Category
 	PerUnit       uint           `json:"perUnit"`
 	Description   string         `json:"description"`
 	ImageUrl      string         `json:"imageUrl"`

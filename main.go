@@ -1,9 +1,10 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
 	cartModel "github.com/ramdanariadi/grocery-product-service/main/cart/model"
-	categoryModel "github.com/ramdanariadi/grocery-product-service/main/category/model"
+	categoryModel "github.com/ramdanariadi/grocery-product-service/main/category"
 	"github.com/ramdanariadi/grocery-product-service/main/product/model"
 	"github.com/ramdanariadi/grocery-product-service/main/setup"
 	transactionModel "github.com/ramdanariadi/grocery-product-service/main/transaction/model"
@@ -11,7 +12,6 @@ import (
 	wishlistModel "github.com/ramdanariadi/grocery-product-service/main/wishlist/model"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"log"
 )
 
 func main() {
@@ -20,5 +20,18 @@ func main() {
 	utils.PanicIfError(err)
 	err = db.AutoMigrate(&categoryModel.Category{}, &model.Product{}, &wishlistModel.Wishlist{}, &cartModel.Cart{}, &transactionModel.Transaction{}, &transactionModel.TransactionDetail{})
 	utils.LogIfError(err)
-	log.Println("hello world")
+
+	router := gin.Default()
+
+	categoryRoute := router.Group("api/v1/category")
+	{
+		categoryController := categoryModel.NewCategoryController(db)
+		categoryRoute.GET("/", categoryController.FindAll)
+		categoryRoute.GET("/:id", categoryController.FindById)
+		categoryRoute.POST("/", categoryController.Save)
+		categoryRoute.PUT("/:id", categoryController.Update)
+		categoryRoute.DELETE("/:id", categoryController.Delete)
+	}
+
+	router.Run()
 }
