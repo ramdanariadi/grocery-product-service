@@ -4,6 +4,7 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/google/uuid"
 	"github.com/ramdanariadi/grocery-product-service/main/category/dto"
+	"github.com/ramdanariadi/grocery-product-service/main/exception"
 	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"gorm.io/gorm"
 )
@@ -35,11 +36,12 @@ func (service CategoryServiceImpl) FindById(id string) *dto.CategoryDTO {
 	var category Category
 	var result dto.CategoryDTO
 	tx := service.DB.Find(&category).Where("id = ?", id)
-	if tx.RowsAffected > 0 {
-		result.Id = category.ID
-		result.Category = category.Category
-		result.ImageUrl = category.ImageUrl
+	if tx.RowsAffected < 1 {
+		panic(exception.ValidationException{Message: exception.BadRequest})
 	}
+	result.Id = category.ID
+	result.Category = category.Category
+	result.ImageUrl = category.ImageUrl
 	return &result
 }
 
@@ -53,7 +55,7 @@ func (service CategoryServiceImpl) Update(id string, body *dto.AddCategoryDTO) {
 	var category Category
 	tx := service.DB.Find(&category).Where("id = ?", id)
 	if tx.RowsAffected < 1 {
-		panic(INVALID_CATEGORY)
+		panic(exception.ValidationException{Message: exception.BadRequest})
 	}
 	category.Category = body.Category
 	category.ImageUrl = body.ImageUrl
@@ -64,10 +66,8 @@ func (service CategoryServiceImpl) Delete(id string) {
 	var category Category
 	tx := service.DB.Where("id = ?", id).Find(&category)
 	if tx.RowsAffected < 1 {
-		panic(INVALID_CATEGORY)
+		panic(exception.ValidationException{Message: exception.BadRequest})
 	}
 
 	service.DB.Delete(&category)
 }
-
-const INVALID_CATEGORY = "INVALID_CATEGORY"
