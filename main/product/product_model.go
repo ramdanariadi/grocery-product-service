@@ -1,4 +1,4 @@
-package model
+package product
 
 import (
 	"github.com/ramdanariadi/grocery-product-service/main/category"
