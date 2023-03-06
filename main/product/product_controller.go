@@ -9,7 +9,5 @@ type ProductController interface {
 	Update(ctx *gin.Context)
 	Delete(ctx *gin.Context)
 	SetTopProduct(ctx *gin.Context)
-	TopProduct(ctx *gin.Context)
 	SetRecommendationProduct(ctx *gin.Context)
-	RecommendationProduct(ctx *gin.Context)
 }

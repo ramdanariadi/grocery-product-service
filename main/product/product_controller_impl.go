@@ -31,6 +31,8 @@ func (controller ProductControllerImpl) FindById(ctx *gin.Context) {
 
 func (controller ProductControllerImpl) FindAll(ctx *gin.Context) {
 	var request dto.FindProductRequest
+	err := ctx.ShouldBindQuery(&request)
+	utils.PanicIfError(err)
 	response := controller.Service.FindAll(&request)
 	ctx.JSON(200, gin.H{"data": response})
 }
@@ -50,17 +52,13 @@ func (controller ProductControllerImpl) Delete(ctx *gin.Context) {
 }
 
 func (controller ProductControllerImpl) SetTopProduct(ctx *gin.Context) {
-
-}
-
-func (controller ProductControllerImpl) TopProduct(ctx *gin.Context) {
-
+	id := ctx.Param("id")
+	controller.Service.SetTop(id)
+	ctx.JSON(200, gin.H{})
 }
 
 func (controller ProductControllerImpl) SetRecommendationProduct(ctx *gin.Context) {
-
-}
-
-func (controller ProductControllerImpl) RecommendationProduct(ctx *gin.Context) {
-
+	id := ctx.Param("id")
+	controller.Service.SetRecommendation(id)
+	ctx.JSON(200, gin.H{})
 }

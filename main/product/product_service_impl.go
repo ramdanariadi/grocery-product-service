@@ -2,11 +2,12 @@ package product
 
 import (
 	"github.com/google/uuid"
-	categoryModel "github.com/ramdanariadi/grocery-product-service/main/category"
+	"github.com/ramdanariadi/grocery-product-service/main/category"
 	"github.com/ramdanariadi/grocery-product-service/main/exception"
 	"github.com/ramdanariadi/grocery-product-service/main/product/dto"
 	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"gorm.io/gorm"
+	"strings"
 )
 
 type ProductServiceImpl struct {
@@ -14,7 +15,7 @@ type ProductServiceImpl struct {
 }
 
 func (service ProductServiceImpl) Save(requestBody *dto.AddProductDTO) {
-	var category categoryModel.Category
+	var category category.Category
 	tx := service.DB.Find(&category, "id = ?", requestBody.CategoryId)
 	if tx.RowsAffected < 1 {
 		panic(exception.ValidationException{Message: exception.BadRequest})
@@ -38,13 +39,24 @@ func (service ProductServiceImpl) Save(requestBody *dto.AddProductDTO) {
 
 func (service ProductServiceImpl) FindAll(param *dto.FindProductRequest) *dto.FindProductResponse {
 	var products []Product
-	tx := service.DB.Limit(param.PageSize).Offset(param.PageIndex * param.PageSize)
-	if param.Search != "" {
-		tx.Where("name like '%?%'", param.Search)
+	tx := service.DB.Model(&Product{})
+
+	if param.Search != nil {
+		tx.Where("LOWER(name) like ?", strings.ToLower("%"+*param.Search+"%"))
 	}
-	tx.Preload("Category").Find(&products)
+
+	if param.IsTop != nil {
+		tx.Where("is_top = ?", *param.IsTop)
+	}
+
+	if param.IsRecommendation != nil {
+		tx.Where("is_recommended = ?", param.IsRecommendation)
+	}
+
+	tx.Limit(param.PageSize).Offset(param.PageIndex * param.PageSize).Preload("Category").Find(&products)
 
 	var result dto.FindProductResponse
+	result.Data = make([]*dto.ProductDTO, 0)
 	for _, p := range products {
 		result.Data = append(result.Data, &dto.ProductDTO{
 			ID:          p.ID,
@@ -59,11 +71,7 @@ func (service ProductServiceImpl) FindAll(param *dto.FindProductRequest) *dto.Fi
 	}
 	result.RecordsFiltered = len(result.Data)
 	var count int64
-	db := service.DB.Model(&Product{})
-	if param.Search != "" {
-		db.Where("name like '%?%'", param.Search)
-	}
-	db.Count(&count)
+	tx.Count(&count)
 	result.RecordsTotal = count
 	return &result
 }
@@ -87,7 +95,7 @@ func (service ProductServiceImpl) FindById(id string) *dto.ProductDTO {
 }
 
 func (service ProductServiceImpl) Update(id string, requestBody *dto.AddProductDTO) {
-	var category categoryModel.Category
+	var category category.Category
 	txCategory := service.DB.Find(&category, "id = ?", requestBody.CategoryId)
 	if txCategory.RowsAffected < 1 {
 		panic(exception.ValidationException{Message: exception.BadRequest})

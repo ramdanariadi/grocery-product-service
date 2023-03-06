@@ -43,6 +43,8 @@ func main() {
 		productRoute.GET("/", productController.FindAll)
 		productRoute.PUT("/:id", productController.Update)
 		productRoute.DELETE("/:id", productController.Delete)
+		productRoute.PUT("/top/:id", productController.SetTopProduct)
+		productRoute.PUT("/recommendation/:id", productController.SetRecommendationProduct)
 	}
 	err = router.Run()
 	utils.LogIfError(err)
