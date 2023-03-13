@@ -6,4 +6,4 @@ go-run-dev:
 
 
 go-gin-run:
-	DB_USERNAME=postgres DB_PASS=secret DB_NAME=grocery DB_HOST=localhost:5432 REDIS_HOST=localhost REDIS_PORT=6379 gin --appPort 8081 --port 3000 --immediate
+	DB_USERNAME=postgres DB_PASS=secret DB_NAME=grocery DB_HOST=localhost:5432 REDIS_HOST=localhost REDIS_PORT=6379 gin --appPort 8081 --port 3000 --immediate --notifications

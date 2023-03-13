@@ -1,140 +1,144 @@
-### register
-POST http://localhost:8080/api/v1/user/register
+### REGISTER
+POST http://localhost:3000/api/v1/user/register
 Content-Type: application/json
 
 {
-  "username": "admin",
+  "email": "admin&tunas.id",
   "password": "rahasia"
 }
 
-### login
-POST http://localhost:8080/api/v1/login
+### LOGIN
+POST http://localhost:3000/api/v1/user/login
 Content-Type: application/json
 
 {
-  "username": "admin",
+  "email": "admin&tunas.id",
   "password": "rahasia"
 }
 
-###
-GET http://localhost:8080/api/v1/user/token
+### TOKEN
+POST http://localhost:3000/api/v1/user/token
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
-
-
-###
-POST http://localhost:8080/api/v1/category
-Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
 
 {
-  "category": "Vegetables",
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDE2MDAwMDAsInVzZXJJZCI6ImM2NTkzNGIyLWMwYzEtMTFlZC1hZTUwLWY0NWM4OWIxMWIxMyJ9.7labBIsy166v-m7cB1aMc8fHVibid9IkuUjE_HGiGwA",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDE2MDAwMDAsInVzZXJJZCI6ImM2NTkzNGIyLWMwYzEtMTFlZC1hZTUwLWY0NWM4OWIxMWIxMyJ9.7labBIsy166v-m7cB1aMc8fHVibid9IkuUjE_HGiGwA"
+}
+
+###
+GET http://localhost:3000/api/v1/user/token
+Content-Type: application/json
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
+
+################
+### CATEGORY ###
+################
+
+### STORE CATEGORY
+POST http://localhost:3000/api/v1/category
+Content-Type: application/json
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
+
+{
+  "category": "Bread Ulala",
   "imageUrl": "notfound.png"
 }
 
 ### GET CATEGORY BY ID
-GET http://localhost:8080/api/v1/category/8c2c184e-11d2-11ec-82a8-0242ac130003
+GET http://localhost:3000/api/v1/category/cbf969a8-b5a1-11ed-b28a-f45c89b11b13
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
 
 ### GET ALL CATEGORY
-GET http://localhost:8080/api/v1/category
+GET http://localhost:3000/api/v1/category?pageIndex=0&pageSize=10
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
 
 ### UPDATE CATEGORY
-PUT http://localhost:8080/api/v1/category
+PUT http://localhost:3000/api/v1/category/cbf969a8-b5a1-11ed-b28a-f45c89b11b13
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
-
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
 {
-  "id": "8c2c184e-11d2-11ec-82a8-0242ac130003",
-  "category": "Fast food",
-  "imageUrl": null
+  "category": "Vegetable",
+  "imageUrl": "notfound.png"
 }
 
 ### DESTROY CATEGORY
-DELETE http://localhost:8080/api/v1/category/25bf7094-7d45-11ed-9d53-f45c89b11b13
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+DELETE http://localhost:3000/api/v1/category/595841d0-b5dd-11ed-8e95-f45c89b11b13
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
 
-### PRODUCT
-POST http://localhost:8080/api/v1/product
+### ADD PRODUCT
+POST http://localhost:3000/api/v1/product
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
 
 {
-  "name": "Carrot",
+  "name": "Egg Plant",
   "price": 10,
   "weight": 1000,
   "perUnit": 100,
   "description": "Good for health",
-  "imageUrl" : null,
-  "categoryId": "8c2c184e-11d2-11ec-82a8-0242ac130003"
+  "imageUrl" : "notfound.png",
+  "categoryId": "cbf969a8-b5a1-11ed-b28a-f45c89b11b13"
 }
 
-###
-PUT http://localhost:8080/api/v1/product
+### UPDATE PRODUCT
+PUT http://localhost:3000/api/v1/product/7d0e2b56-b95e-11ed-abfe-f45c89b11b13
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
 {
-  "id": "a3c02e8c-11d2-11ec-82a8-0242ac130003",
-  "name": "BLACK",
+  "name": "Banana",
   "price": 10,
   "weight": 1000,
   "perUnit": 100,
   "description": "Good for health",
-  "imageUrl" : null,
-  "categoryId": "8c2c184e-11d2-11ec-82a8-0242ac130003"
+  "imageUrl" : "https://carrot.png",
+  "categoryId": "cbf969a8-b5a1-11ed-b28a-f45c89b11b13"
 }
 
 ### GET ALL PRODUCT
-GET http://localhost:8080/api/v1/product
+GET http://localhost:3000/api/v1/product?pageIndex=0&pageSize=10&isTop=false&search=bro
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
-
-### GET TOP PRODUCT
-GET http://localhost:8080/api/v1/product/top
-Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
-
-### GET RECOMMENDED PRODUCT
-GET http://localhost:8080/api/v1/product/recommended
-Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
 ### DELETE PRODUCT
-DELETE http://localhost:8080/api/v1/product/03d5d220-7d54-11ed-b6e2-f45c89b11b13
+DELETE http://localhost:3000/api/v1/product/03d5d220-7d54-11ed-b6e2-f45c89b11b13
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
 ### PRODUCT BY ID
-GET http://localhost:8080/api/v1/product/a3c02e8c-11d2-11ec-82a8-0242ac130003
+GET http://localhost:3000/api/v1/product/a2e50426-b95e-11ed-abfe-f45c89b11b13
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
 ### PRODUCT BY CATEGORY
-GET http://localhost:8080/api/v1/product/category/8c2c184e-11d2-11ec-82a8-0242ac130003
+GET http://localhost:3000/api/v1/product/category/8c2c184e-11d2-11ec-82a8-0242ac130003
 
 ### TOP PRODUCT
-POST http://localhost:8080/api/v1/product/top/a3c02e8c-11d2-11ec-82a8-0242ac130003
+POST http://localhost:3000/api/v1/product/top/a3c02e8c-11d2-11ec-82a8-0242ac130003
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
-###
-GET http://localhost:8080/api/v1/product/top
+### TOP RECOMMENDATION
+POST http://localhost:3000/api/v1/product/recommendation/a3c02e8c-11d2-11ec-82a8-0242ac130003
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
+
+
+###################
+### TRANSACTION ###
+###################
 
 ### MAKE TRANSACTION
-POST http://localhost:8080/api/v1/transaction
+POST http://localhost:3000/api/v1/transaction
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
 {
   "userId": "bf80843e-0dba-4b0c-bcb4-faeaec5e53fa",
@@ -147,91 +151,99 @@ Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVz
 }
 
 ### GET TRANSACTION BY ID
-GET http://localhost:8080/api/v1/transaction/de0f77d0-7dcb-11ed-b6b4-f45c89b11b13
+GET http://localhost:3000/api/v1/transaction/de0f77d0-7dcb-11ed-b6b4-f45c89b11b13
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
 ### GET TRANSACTION BY USER ID
-GET http://localhost:8080/api/v1/transaction/user/bf80843e-0dba-4b0c-bcb4-faeaec5e53fa
+GET http://localhost:3000/api/v1/transaction/user/bf80843e-0dba-4b0c-bcb4-faeaec5e53fa
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
 ### DESTROY TRANSACTION BY ID
-DELETE http://localhost:8080/api/v1/transaction/de0f77d0-7dcb-11ed-b6b4-f45c89b11b13
+DELETE http://localhost:3000/api/v1/transaction/de0f77d0-7dcb-11ed-b6b4-f45c89b11b13
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
-### USER
-GET http://localhost:8080/api/v1/user
-Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+#######################
+### CART & WISHLIST ###
+#######################
 
 ### STORE CART
-POST http://localhost:8080/api/v1/cart/bf80843e-0dba-4b0c-bcb4-faeaec5e53fa/a3c02e8c-11d2-11ec-82a8-0242ac130003/2
+POST http://localhost:3000/api/v1/cart/bf80843e-0dba-4b0c-bcb4-faeaec5e53fa/a3c02e8c-11d2-11ec-82a8-0242ac130003/2
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
 ### DESTROY CART
-DELETE http://localhost:8080/api/v1/cart/bf80843e-0dba-4b0c-bcb4-faeaec5e53fa/e46cd1f2-7d69-11ed-9bb1-f45c89b11b13
+DELETE http://localhost:3000/api/v1/cart/bf80843e-0dba-4b0c-bcb4-faeaec5e53fa/e46cd1f2-7d69-11ed-9bb1-f45c89b11b13
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
 ### GET USER CART
-GET http://localhost:8080/api/v1/cart/bf80843e-0dba-4b0c-bcb4-faeaec5e53fa
+GET http://localhost:3000/api/v1/cart/bf80843e-0dba-4b0c-bcb4-faeaec5e53fa
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
 ### ADD WISHLIST
-POST http://localhost:8080/api/v1/wishlist/bf80843e-0dba-4b0c-bcb4-faeaec5e53fa/a3c02e8c-11d2-11ec-82a8-0242ac130003
+POST http://localhost:3000/api/v1/wishlist/bf80843e-0dba-4b0c-bcb4-faeaec5e53fa/a3c02e8c-11d2-11ec-82a8-0242ac130003
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
 ### GET USER WISHLIST
-GET http://localhost:8080/api/v1/wishlist/bf80843e-0dba-4b0c-bcb4-faeaec5e53fa
+GET http://localhost:3000/api/v1/wishlist/bf80843e-0dba-4b0c-bcb4-faeaec5e53fa
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
 ### DESTROY USER WISHLIST
-DELETE http://localhost:8080/api/v1/wishlist/bf80843e-0dba-4b0c-bcb4-faeaec5e53fa/8c934506-7d64-11ed-8570-f45c89b11b13
+DELETE http://localhost:3000/api/v1/wishlist/bf80843e-0dba-4b0c-bcb4-faeaec5e53fa/8c934506-7d64-11ed-8570-f45c89b11b13
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
+###################
+### USER & ROLE ###
+###################
 
-### get all user
-GET http://localhost:8080/api/v1/user/all
+### GET ALL USER
+GET http://localhost:3000/api/v1/user/all
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
-### grant role to user
-POST http://localhost:8080/api/v1/user/role/fc81ccd7-98aa-11ec-ba07-b78370c9a109/5d3337d8-98ab-11ec-ba07-c940688411f4
+### GRANT ROLE TO USER
+POST http://localhost:3000/api/v1/user/role/fc81ccd7-98aa-11ec-ba07-b78370c9a109/5d3337d8-98ab-11ec-ba07-c940688411f4
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
-### revote role from user
-DELETE http://localhost:8080/api/v1/user/role/1/4
+### REVOTE ROLE FROM USER
+DELETE http://localhost:3000/api/v1/user/role/1/4
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
-### get all roles
-GET http://localhost:8080/api/v1/role/all
+### GET ALL ROLES
+GET http://localhost:3000/api/v1/role/all
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
-### save role
-POST http://localhost:8080/api/v1/role
+### SAVE ROLE
+POST http://localhost:3000/api/v1/role
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
 {
   "name" : "USER"
 }
 
-### get role by id
-GET http://localhost:8080/api/v1/role/4
+### GET ROLE BY ID
+GET http://localhost:3000/api/v1/role/4
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
 
 ###
-GET http://localhost:8080/api/v1/user/all
+GET http://localhost:3000/api/v1/user/all
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQ1OTI1M30.L-hAtl-E00uyqjfonVh-CButP57mWmWumrtXWvCUQFc
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
+
+
+### USER
+GET http://localhost:3000/api/v1/user
+Content-Type: application/json
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS92MS9sb2dpbiIsImV4cCI6MTY3NzQyMTA2Nn0.dM1-zWc8mlJZR14pJfGv0_bPW3Pqh1HQOeDQZCGahbs.3t1ciEWRQRBzJyOxT-Kan2V5lodfvSnqIB11AXjgYhI
