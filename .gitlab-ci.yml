@@ -36,5 +36,5 @@ deploy:
     - ssh-keyscan $SERVER_IP_ADDRESS >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
-    - ssh $SSH_USER_NAME@$SERVER_IP_ADDRESS "cd ~/app && docker-compose pull product-service && docker-compose up -d && exit"
+    - ssh $SSH_USER_NAME@$SERVER_IP_ADDRESS "cd ~/app && docker-compose pull product-service && docker-compose up -d && docker rmi $(docker images --filter "dangling=true" -q --no-trunc) && exit"
     - echo "========= deployed ==========="
