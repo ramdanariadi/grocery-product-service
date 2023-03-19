@@ -29,7 +29,7 @@ func (controller CategoryControllerImpl) FindAll(ctx *gin.Context) {
 func (controller CategoryControllerImpl) FindById(ctx *gin.Context) {
 	id := ctx.Param("id")
 	category := controller.Service.FindById(id)
-	ctx.JSON(200, gin.H{"datas": category})
+	ctx.JSON(200, gin.H{"data": category})
 }
 
 func (controller CategoryControllerImpl) Save(ctx *gin.Context) {
