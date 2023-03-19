@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/ramdanariadi/grocery-product-service/main/product/model"
+	"github.com/ramdanariadi/grocery-product-service/main/product"
 	"gorm.io/gorm"
 	"time"
 )
@@ -19,7 +19,7 @@ type Transaction struct {
 type TransactionDetail struct {
 	ID            string `json:"id" gorm:"primaryKey"`
 	ProductId     string `json:"productId"`
-	Product       model.Product
+	Product       product.Product
 	TransactionId string `json:"transactionId"`
 	Transaction   Transaction
 	Price         uint64         `json:"price"`
