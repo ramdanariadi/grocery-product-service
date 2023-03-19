@@ -49,7 +49,7 @@ func main() {
 		productController := product.NewProductController(db)
 		productRoute.POST("/", user.Middleware, productController.Save)
 		productRoute.GET("/:id", productController.FindById)
-		productRoute.GET("/", user.Middleware, productController.FindAll)
+		productRoute.GET("/", productController.FindAll)
 		productRoute.PUT("/:id", user.Middleware, productController.Update)
 		productRoute.DELETE("/:id", user.Middleware, productController.Delete)
 		productRoute.PUT("/top/:id", user.Middleware, productController.SetTopProduct)
