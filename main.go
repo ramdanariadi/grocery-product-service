@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
-	cart "github.com/ramdanariadi/grocery-product-service/main/cart/model"
+	"github.com/ramdanariadi/grocery-product-service/main/cart"
 	"github.com/ramdanariadi/grocery-product-service/main/category"
 	"github.com/ramdanariadi/grocery-product-service/main/exception"
 	"github.com/ramdanariadi/grocery-product-service/main/product"
@@ -55,6 +55,15 @@ func main() {
 		productRoute.PUT("/top/:id", user.Middleware, productController.SetTopProduct)
 		productRoute.PUT("/recommendation/:id", user.Middleware, productController.SetRecommendationProduct)
 	}
+
+	cartRoute := router.Group("api/v1/cart")
+	{
+		cartController := cart.NewController(db)
+		cartRoute.POST("/:productId/:total", user.Middleware, cartController.Store)
+		cartRoute.DELETE("/:id", user.Middleware, cartController.Destroy)
+		cartRoute.GET("/", user.Middleware, cartController.Find)
+	}
+
 	err = router.Run()
 	utils.LogIfError(err)
 }
