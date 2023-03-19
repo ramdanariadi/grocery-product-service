@@ -1,0 +1,26 @@
+stages:
+  - test
+  - build-and-push
+  - deploy
+
+test:
+  stage: test
+  image: golang:1.18.9-alpine
+  before_script:
+    - go version
+  script:
+    - echo "=========== run test ==========="
+
+build-and-push:
+  stage: build-and-push
+  image: docker:19.03.12
+  services:
+    - docker:19.03.12-dind
+  before_script:
+    - echo $DOCKER_LOGIN_PASSWORD | docker login -u $DOCKER_LOGIN_USER -p --password-stdin
+  script:
+    - docker build -t ramdanariadi/grocery:$CI_COMMIT_SHORT_SHA .
+    - docker tag ramdanariadi/grocery:$CI_COMMIT_SHORT_SHA ramdanariadi/grocery:latest
+    - docker push ramdanariadi/grocery:$CI_COMMIT_SHORT_SHA
+    - docker push ramdanariadi/grocery:latest
+    - echo "========== build and pushed ==============="

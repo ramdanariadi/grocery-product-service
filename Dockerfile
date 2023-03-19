@@ -6,5 +6,5 @@ COPY . .
 RUN go mod download
 RUN go build -o /app
 
-EXPOSE 50051
+EXPOSE 8080
 ENTRYPOINT [ "/app" ]
