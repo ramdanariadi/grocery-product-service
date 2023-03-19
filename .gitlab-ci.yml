@@ -17,7 +17,7 @@ build-and-push:
   services:
     - docker:19.03.12-dind
   before_script:
-    - echo $DOCKER_LOGIN_PASSWORD | docker login -u $DOCKER_LOGIN_USER -p --password-stdin
+    - echo $DOCKER_LOGIN_PASSWORD | docker login -u $DOCKER_LOGIN_USER --password-stdin
   script:
     - docker build -t ramdanariadi/grocery:$CI_COMMIT_SHORT_SHA .
     - docker tag ramdanariadi/grocery:$CI_COMMIT_SHORT_SHA ramdanariadi/grocery:latest
