@@ -1,4 +1,4 @@
-package model
+package wishlist
 
 import (
 	"github.com/ramdanariadi/grocery-product-service/main/product"

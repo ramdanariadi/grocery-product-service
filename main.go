@@ -11,7 +11,7 @@ import (
 	transaction "github.com/ramdanariadi/grocery-product-service/main/transaction/model"
 	"github.com/ramdanariadi/grocery-product-service/main/user"
 	"github.com/ramdanariadi/grocery-product-service/main/utils"
-	wishlist "github.com/ramdanariadi/grocery-product-service/main/wishlist/model"
+	wishlist "github.com/ramdanariadi/grocery-product-service/main/wishlist"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -62,6 +62,14 @@ func main() {
 		cartRoute.POST("/:productId/:total", user.Middleware, cartController.Store)
 		cartRoute.DELETE("/:id", user.Middleware, cartController.Destroy)
 		cartRoute.GET("/", user.Middleware, cartController.Find)
+	}
+
+	wishlistRoute := router.Group("api/v1/wishlist")
+	{
+		wishlistController := wishlist.NewWishlistController(db)
+		wishlistRoute.POST("/:productId", user.Middleware, wishlistController.Store)
+		wishlistRoute.DELETE("/:id", user.Middleware, wishlistController.Destroy)
+		wishlistRoute.GET("/", user.Middleware, wishlistController.Find)
 	}
 
 	err = router.Run()
