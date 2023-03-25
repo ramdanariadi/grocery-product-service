@@ -53,7 +53,7 @@ func (service ServiceImpl) Find(reqBody *dto.FindCartDTO) []*dto.Cart {
 	tx.Joins("LEFT JOIN categories c ON p.category_id = c.id")
 	tx.Preload("Product.Category")
 	if reqBody.Search != nil {
-		tx.Where("LOWER(p.name) LIKE ?", strings.ToLower("%garlic%"))
+		tx.Where("LOWER(p.name) LIKE ?", strings.ToLower("%"+*reqBody.Search+"%"))
 	}
 	tx.Limit(reqBody.PageSize).Offset(reqBody.PageIndex * reqBody.PageSize).Find(&carts)
 	utils.PanicIfError(tx.Error)
