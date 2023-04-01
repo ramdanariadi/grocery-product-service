@@ -8,7 +8,8 @@ import (
 	"github.com/ramdanariadi/grocery-product-service/main/exception"
 	"github.com/ramdanariadi/grocery-product-service/main/product"
 	"github.com/ramdanariadi/grocery-product-service/main/setup"
-	transaction "github.com/ramdanariadi/grocery-product-service/main/transaction/model"
+	"github.com/ramdanariadi/grocery-product-service/main/transaction"
+	"github.com/ramdanariadi/grocery-product-service/main/transaction/model"
 	"github.com/ramdanariadi/grocery-product-service/main/user"
 	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	wishlist "github.com/ramdanariadi/grocery-product-service/main/wishlist"
@@ -20,7 +21,7 @@ func main() {
 	connection, err := setup.NewDbConnection()
 	db, err := gorm.Open(postgres.New(postgres.Config{Conn: connection}))
 	utils.PanicIfError(err)
-	err = db.AutoMigrate(&category.Category{}, &product.Product{}, &wishlist.Wishlist{}, &cart.Cart{}, &transaction.Transaction{}, &transaction.TransactionDetail{}, &user.User{})
+	err = db.AutoMigrate(&category.Category{}, &product.Product{}, &wishlist.Wishlist{}, &cart.Cart{}, &model.Transaction{}, &model.TransactionDetail{}, &user.User{})
 	utils.LogIfError(err)
 
 	router := gin.Default()
@@ -70,6 +71,13 @@ func main() {
 		wishlistRoute.POST("/:productId", user.Middleware, wishlistController.Store)
 		wishlistRoute.DELETE("/:id", user.Middleware, wishlistController.Destroy)
 		wishlistRoute.GET("/", user.Middleware, wishlistController.Find)
+	}
+
+	transactionGroup := router.Group("api/v1/transaction")
+	{
+		transactionController := transaction.NewTransactionController(db)
+		transactionGroup.POST("/", user.Middleware, transactionController.Save)
+		transactionGroup.GET("/", user.Middleware, transactionController.Find)
 	}
 
 	err = router.Run()
