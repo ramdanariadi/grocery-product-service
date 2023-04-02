@@ -32,7 +32,7 @@ func (service ServiceImpl) Store(productId string, total uint, userId string) {
 		ProductId: productRef.ID,
 		Total:     total,
 	}
-	save := service.DB.Save(&saveCart)
+	save := service.DB.Create(&saveCart)
 	utils.PanicIfError(save.Error)
 }
 

@@ -63,7 +63,7 @@ func (service UserServiceImpl) Register(reqBody *dto.RegisterDTO) *dto.TokenDTO 
 		Email:    email,
 		Password: string(hashedPassword),
 	}
-	tx := service.DB.Save(&user)
+	tx := service.DB.Create(&user)
 	if tx.Error != nil {
 		panic(exception.ValidationException{Message: "REGISTRATION_FAILED"})
 	}

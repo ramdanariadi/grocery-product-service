@@ -26,7 +26,7 @@ func (service ServiceImpl) Store(productId string, userId string) {
 		Product: p,
 		UserId:  userId,
 	}
-	save := service.DB.Save(&wishlist)
+	save := service.DB.Create(&wishlist)
 	utils.PanicIfError(save.Error)
 }
 

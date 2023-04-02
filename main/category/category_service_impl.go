@@ -48,7 +48,7 @@ func (service CategoryServiceImpl) FindById(id string) *dto.CategoryDTO {
 func (service CategoryServiceImpl) Save(body *dto.AddCategoryDTO) {
 	id, err := uuid.NewUUID()
 	utils.LogIfError(err)
-	service.DB.Save(&Category{ID: id.String(), Category: body.Category, ImageUrl: body.ImageUrl})
+	service.DB.Create(&Category{ID: id.String(), Category: body.Category, ImageUrl: body.ImageUrl})
 }
 
 func (service CategoryServiceImpl) Update(id string, body *dto.AddCategoryDTO) {
