@@ -34,7 +34,7 @@ func (controller ProductControllerImpl) FindAll(ctx *gin.Context) {
 	err := ctx.ShouldBindQuery(&request)
 	utils.PanicIfError(err)
 	response := controller.Service.FindAll(&request)
-	ctx.JSON(200, gin.H{"data": response})
+	ctx.JSON(200, response)
 }
 
 func (controller ProductControllerImpl) Update(ctx *gin.Context) {
