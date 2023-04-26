@@ -7,6 +7,7 @@ import (
 	"github.com/ramdanariadi/grocery-product-service/main/exception"
 	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"gorm.io/gorm"
+	"log"
 )
 
 type CategoryServiceImpl struct {
@@ -53,13 +54,17 @@ func (service CategoryServiceImpl) Save(body *dto.AddCategoryDTO) {
 
 func (service CategoryServiceImpl) Update(id string, body *dto.AddCategoryDTO) {
 	var category Category
-	tx := service.DB.Find(&category).Where("id = ?", id)
-	if tx.RowsAffected < 1 {
+	tx := service.DB.Where("id = ?", id).Find(&category)
+	if tx.Error != nil {
 		panic(exception.ValidationException{Message: exception.BadRequest})
 	}
 	category.Category = body.Category
 	category.ImageUrl = body.ImageUrl
-	service.DB.Save(&category)
+	log.Printf("Id %s", id)
+	save := service.DB.Save(&category)
+	if save.Error != nil {
+		panic(exception.InternalServerError)
+	}
 }
 
 func (service CategoryServiceImpl) Delete(id string) {
