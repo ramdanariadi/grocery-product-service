@@ -37,6 +37,7 @@ func (controller CategoryControllerImpl) Save(ctx *gin.Context) {
 	err := ctx.Bind(&request)
 	utils.PanicIfError(err)
 	controller.Service.Save(&request)
+	ctx.JSON(200, gin.H{})
 }
 
 func (controller CategoryControllerImpl) Update(ctx *gin.Context) {
@@ -44,9 +45,11 @@ func (controller CategoryControllerImpl) Update(ctx *gin.Context) {
 	var request dto.AddCategoryDTO
 	ctx.Bind(&request)
 	controller.Service.Update(id, &request)
+	ctx.JSON(200, gin.H{})
 }
 
 func (controller CategoryControllerImpl) Delete(ctx *gin.Context) {
 	id := ctx.Param("id")
 	controller.Service.Delete(id)
+	ctx.JSON(200, gin.H{})
 }

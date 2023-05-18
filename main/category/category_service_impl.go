@@ -17,7 +17,7 @@ type CategoryServiceImpl struct {
 
 func (service CategoryServiceImpl) FindAll(pageIndex int, pageSize int) *dto.AllCategories {
 	var categories []*Category
-	service.DB.Limit(pageSize).Offset(pageSize * pageIndex).Where("deleted_at IS NULL").Find(&categories)
+	service.DB.Limit(pageSize).Offset(pageSize * pageIndex).Find(&categories)
 	var count int64
 	service.DB.Model(&Category{}).Where("deleted_at IS NULL").Count(&count)
 
@@ -36,7 +36,7 @@ func (service CategoryServiceImpl) FindAll(pageIndex int, pageSize int) *dto.All
 func (service CategoryServiceImpl) FindById(id string) *dto.CategoryDTO {
 	var category Category
 	var result dto.CategoryDTO
-	tx := service.DB.Find(&category).Where("id = ?", id)
+	tx := service.DB.Where("id = ? AND deleted_at IS NULL", id).Find(&category)
 	if tx.RowsAffected < 1 {
 		panic(exception.ValidationException{Message: exception.BadRequest})
 	}
