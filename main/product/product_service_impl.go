@@ -33,7 +33,7 @@ func (service ProductServiceImpl) Save(requestBody *dto.AddProductDTO) {
 	product.IsRecommended = requestBody.IsRecommended
 	product.IsTop = requestBody.IsTop
 	product.Description = requestBody.Description
-	save := service.DB.Save(&product)
+	save := service.DB.Create(&product)
 	utils.LogIfError(save.Error)
 }
 

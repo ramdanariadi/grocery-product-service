@@ -12,7 +12,7 @@ import (
 	"github.com/ramdanariadi/grocery-product-service/main/transaction/model"
 	"github.com/ramdanariadi/grocery-product-service/main/user"
 	"github.com/ramdanariadi/grocery-product-service/main/utils"
-	wishlist "github.com/ramdanariadi/grocery-product-service/main/wishlist"
+	"github.com/ramdanariadi/grocery-product-service/main/wishlist"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

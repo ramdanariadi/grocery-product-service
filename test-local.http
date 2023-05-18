@@ -143,7 +143,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODAzNzA5N
 {
   "data": [
     {
-      "productId": "64dddb64-d0b3-11ed-ba83-8c859078c9ecs",
+      "productId": "64dddb64-d0b3-11ed-ba83-8c859078c9ec",
       "total": 2
     }
   ]
@@ -154,8 +154,8 @@ GET http://localhost:3000/api/v1/transaction/de0f77d0-7dcb-11ed-b6b4-f45c89b11b1
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODAzNzA5NjEyMDA0NTMwMDAsInVzZXJJZCI6IjczZjExZWU2LWQwNWQtMTFlZC04OGI4LThjODU5MDc4YzllYyJ9.-URCFKz-l8nitKdHyK7iNsWdin4DQLvOeYGk4bZeF9A
 
-### GET TRANSACTION BY USER ID
-GET http://localhost:3000/api/v1/transaction/user/bf80843e-0dba-4b0c-bcb4-faeaec5e53fa
+### GET USER TRANSACTION
+GET http://localhost:3000/api/v1/transaction?pageIndex=0&pageSize=2&search=garlic
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODAzNzA5NjEyMDA0NTMwMDAsInVzZXJJZCI6IjczZjExZWU2LWQwNWQtMTFlZC04OGI4LThjODU5MDc4YzllYyJ9.-URCFKz-l8nitKdHyK7iNsWdin4DQLvOeYGk4bZeF9A
 

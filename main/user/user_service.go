@@ -53,8 +53,6 @@ func (service UserServiceImpl) Register(reqBody *dto.RegisterDTO) *dto.TokenDTO 
 	log.Printf("Salted password %s", password)
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	utils.LogIfError(err)
-	log.Printf("Hashed password %s", hashedPassword)
-	log.Printf("Salt %s", salt)
 
 	id, err := uuid.NewUUID()
 	utils.PanicIfError(err)
@@ -63,7 +61,7 @@ func (service UserServiceImpl) Register(reqBody *dto.RegisterDTO) *dto.TokenDTO 
 		Email:    email,
 		Password: string(hashedPassword),
 	}
-	tx := service.DB.Save(&user)
+	tx := service.DB.Create(&user)
 	if tx.Error != nil {
 		panic(exception.ValidationException{Message: "REGISTRATION_FAILED"})
 	}
@@ -86,14 +84,14 @@ func (service UserServiceImpl) Token(reqBody dto.TokenDTO) *dto.TokenDTO {
 }
 
 func VerifyToken(tokenStr string) *jwt.Token {
-	token, _ := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
 		if token.Method != jwt.SigningMethodHS256 {
 			return nil, fmt.Errorf("INVALID_ALGORITHM")
 		}
 		return []byte(secret), nil
 	})
 
-	if !token.Valid {
+	if err != nil || !token.Valid {
 		panic(exception.AuthenticationException{Message: "UNAUTHORIZED"})
 	}
 	return token

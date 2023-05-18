@@ -10,8 +10,7 @@ import (
 func Middleware(ctx *gin.Context) {
 	header := ctx.GetHeader("Authorization")
 	split := strings.Split(header, " ")
-
-	if len(split) < 1 {
+	if len(split) < 2 {
 		panic(exception.AuthenticationException{Message: "UNAUTHORIZED"})
 	}
 
