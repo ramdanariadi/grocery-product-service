@@ -69,7 +69,7 @@ func main() {
 	{
 		wishlistController := wishlist.NewWishlistController(db)
 		wishlistRoute.POST("/:productId", user.Middleware, wishlistController.Store)
-		wishlistRoute.DELETE("/:id", user.Middleware, wishlistController.Destroy)
+		wishlistRoute.DELETE("/:productId", user.Middleware, wishlistController.Destroy)
 		wishlistRoute.GET("/", user.Middleware, wishlistController.Find)
 	}
 
