@@ -30,8 +30,8 @@ func (service ServiceImpl) Store(productId string, userId string) {
 	utils.PanicIfError(save.Error)
 }
 
-func (service ServiceImpl) Destroy(id string, userId string) {
-	wishlist := Wishlist{ID: id}
+func (service ServiceImpl) Destroy(productId string, userId string) {
+	wishlist := Wishlist{ProductId: productId, UserId: userId}
 	find := service.DB.Find(&wishlist)
 	if find.Error != nil {
 		panic(exception.ValidationException{"INVALID_WISHLIST"})
