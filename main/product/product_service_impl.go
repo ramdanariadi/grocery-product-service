@@ -53,6 +53,10 @@ func (service ProductServiceImpl) FindAll(param *dto.FindProductRequest) *dto.Fi
 		tx.Where("is_recommended = ?", param.IsRecommendation)
 	}
 
+	if param.CategoryId != nil {
+		tx.Where("category_id = ?", param.CategoryId)
+	}
+
 	tx.Limit(param.PageSize).Offset(param.PageIndex * param.PageSize).Preload("Category").Find(&products)
 
 	var result dto.FindProductResponse
