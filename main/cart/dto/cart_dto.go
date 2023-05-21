@@ -2,6 +2,7 @@ package dto
 
 type Cart struct {
 	ID          string `json:"id"`
+	ProductId   string `json:"productId"`
 	Price       uint64 `json:"price"`
 	Weight      uint   `json:"weight"`
 	Category    string `json:"category"`

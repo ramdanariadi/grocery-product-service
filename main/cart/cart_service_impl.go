@@ -63,6 +63,7 @@ func (service ServiceImpl) Find(reqBody *dto.FindCartDTO) []*dto.Cart {
 		result = append(result, &dto.Cart{
 			ID:          data.ID,
 			Total:       data.Total,
+			ProductId:   data.Product.ID,
 			Name:        data.Product.Name,
 			Description: data.Product.Description,
 			ImageUrl:    data.Product.ImageUrl,
