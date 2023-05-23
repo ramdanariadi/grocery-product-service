@@ -2,6 +2,7 @@ package user
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/ramdanariadi/grocery-product-service/main/exception"
 	"github.com/ramdanariadi/grocery-product-service/main/user/dto"
 	"gorm.io/gorm"
 )
@@ -19,6 +20,30 @@ func (controller *ControllerImpl) Register(ctx *gin.Context) {
 	ctx.ShouldBind(&registerDTO)
 	tokenDTO := controller.UserService.Register(&registerDTO)
 	ctx.JSON(200, gin.H{"data": tokenDTO})
+}
+
+func (controller *ControllerImpl) Get(ctx *gin.Context) {
+	value, exists := ctx.Get("userId")
+	if !exists {
+		panic(exception.AuthenticationException{Message: "FORBIDDEN"})
+	}
+	profileDTO := controller.UserService.Get(value.(string))
+	ctx.JSON(200, gin.H{"data": profileDTO})
+}
+
+func (controller *ControllerImpl) Update(ctx *gin.Context) {
+	updateProfileDTO := dto.ProfileDTO{}
+	err := ctx.ShouldBind(&updateProfileDTO)
+	if err != nil {
+		panic(exception.ValidationException{Message: "BAD_REQUEST"})
+	}
+
+	value, exists := ctx.Get("userId")
+	if !exists {
+		panic(exception.AuthenticationException{Message: "FORBIDDEN"})
+	}
+	controller.UserService.Update(value.(string), &updateProfileDTO)
+	ctx.JSON(200, gin.H{})
 }
 
 func (controller *ControllerImpl) Login(ctx *gin.Context) {
