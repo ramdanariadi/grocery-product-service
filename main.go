@@ -33,6 +33,8 @@ func main() {
 		userGroup.POST("/register", userController.Register)
 		userGroup.POST("/login", userController.Login)
 		userGroup.POST("/token", userController.Token)
+		userGroup.PUT("/", user.Middleware, userController.Update)
+		userGroup.GET("/", user.Middleware, userController.Get)
 	}
 
 	categoryRoute := router.Group("api/v1/category")

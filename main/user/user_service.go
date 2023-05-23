@@ -33,7 +33,7 @@ func (service UserServiceImpl) Login(requestBody *dto.LoginDTO) *dto.TokenDTO {
 	log.Printf("user hased pass %s", user.Password)
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
-		panic(exception.ValidationException{Message: "UNAUTHORIZEDcc"})
+		panic(exception.ValidationException{Message: "UNAUTHORIZED"})
 	}
 
 	return &dto.TokenDTO{
@@ -69,6 +69,40 @@ func (service UserServiceImpl) Register(reqBody *dto.RegisterDTO) *dto.TokenDTO 
 		AccessToken:  generateToken(&user, false),
 		RefreshToken: generateToken(&user, true),
 	}
+}
+
+func (service UserServiceImpl) Get(userId string) *dto.ProfileDTO {
+	user := User{Id: userId}
+	tx := service.DB.Find(&user)
+	if tx.RowsAffected < 1 {
+		panic(exception.ValidationException{Message: "UNAUTHORIZED"})
+	}
+
+	profileDTO := dto.ProfileDTO{
+		Name:              user.Name,
+		Username:          user.Username,
+		Email:             user.Email,
+		MobilePhoneNumber: user.MobilePhoneNumber,
+	}
+	return &profileDTO
+}
+
+func (service UserServiceImpl) Update(userId string, dto *dto.ProfileDTO) {
+	user := User{Id: userId}
+	tx := service.DB.Find(&user)
+	if tx.RowsAffected < 1 {
+		panic(exception.ValidationException{Message: "UNAUTHORIZED"})
+	}
+	log.Printf("user id %s", userId)
+	log.Printf("name %s", dto.Name)
+	log.Printf("mobile phone number %s", dto.MobilePhoneNumber)
+	log.Printf("username %s", dto.Username)
+	user.Name = dto.Name
+	user.MobilePhoneNumber = dto.MobilePhoneNumber
+	user.Email = dto.Email
+	user.Username = dto.Username
+	save := service.DB.Save(&user)
+	utils.PanicIfError(save.Error)
 }
 
 func (service UserServiceImpl) Token(reqBody dto.TokenDTO) *dto.TokenDTO {

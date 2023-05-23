@@ -17,11 +17,11 @@ func Handler(ctx *gin.Context, err any) {
 	}
 
 	if err != nil {
-		if errors, ok := err.(error); ok {
-			ctx.AbortWithStatusJSON(500, gin.H{"message": errors.Error()})
-			return
-		}
-		ctx.AbortWithStatusJSON(500, gin.H{"message": err})
+		//if errors, ok := err.(error); ok {
+		//	ctx.AbortWithStatusJSON(500, gin.H{"message": errors.Error()})
+		//	return
+		//}
+		ctx.AbortWithStatusJSON(500, gin.H{"message": "INTERNAL_SERVER_ERROR"})
 		return
 	}
 }
