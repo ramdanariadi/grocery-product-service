@@ -43,3 +43,13 @@ func (controller ControllerImpl) Find(ctx *gin.Context) {
 	wishlists := controller.Service.Find(&reqBody)
 	ctx.JSON(200, gin.H{"data": wishlists})
 }
+
+func (controller ControllerImpl) FindByProductId(ctx *gin.Context) {
+	userId, exists := ctx.Get("userId")
+	if !exists {
+		panic(exception.AuthenticationException{Message: "UNAUTHORIZED"})
+	}
+	productId := ctx.Param("productId")
+	wishlist := controller.Service.FindByProductId(productId, userId.(string))
+	ctx.JSON(200, gin.H{"data": wishlist})
+}
