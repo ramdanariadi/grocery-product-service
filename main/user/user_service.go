@@ -39,6 +39,7 @@ func (service UserServiceImpl) Login(requestBody *dto.LoginDTO) *dto.TokenDTO {
 	return &dto.TokenDTO{
 		AccessToken:  generateToken(&user, false),
 		RefreshToken: generateToken(&user, true),
+		User:         &dto.ProfileDTO{Name: user.Username, Username: user.Username, Email: user.Email, MobilePhoneNumber: user.MobilePhoneNumber},
 	}
 }
 
@@ -57,17 +58,21 @@ func (service UserServiceImpl) Register(reqBody *dto.RegisterDTO) *dto.TokenDTO 
 	id, err := uuid.NewUUID()
 	utils.PanicIfError(err)
 	user := User{
-		Id:       id.String(),
-		Email:    email,
-		Password: string(hashedPassword),
+		Id:                id.String(),
+		Email:             email,
+		Password:          string(hashedPassword),
+		Username:          reqBody.Username,
+		MobilePhoneNumber: reqBody.MobilePhoneNumber,
 	}
 	tx := service.DB.Create(&user)
 	if tx.Error != nil {
 		panic(exception.ValidationException{Message: "REGISTRATION_FAILED"})
 	}
+
 	return &dto.TokenDTO{
 		AccessToken:  generateToken(&user, false),
 		RefreshToken: generateToken(&user, true),
+		User:         &dto.ProfileDTO{Name: reqBody.Username, Username: reqBody.Username, Email: email, MobilePhoneNumber: reqBody.MobilePhoneNumber},
 	}
 }
 
@@ -111,9 +116,14 @@ func (service UserServiceImpl) Token(reqBody dto.TokenDTO) *dto.TokenDTO {
 	claims := token.Claims.(jwt.MapClaims)
 	i := claims["userId"]
 	user := User{Id: i.(string)}
+	tx := service.DB.Find(&user)
+	if tx.RowsAffected < 1 {
+		panic(exception.ValidationException{Message: "UNAUTHORIZED"})
+	}
 	return &dto.TokenDTO{
 		AccessToken:  generateToken(&user, false),
 		RefreshToken: generateToken(&user, true),
+		User:         &dto.ProfileDTO{Name: user.Username, Username: user.Username, Email: user.Email, MobilePhoneNumber: user.MobilePhoneNumber},
 	}
 }
 
