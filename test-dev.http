@@ -3,7 +3,7 @@ POST http://103.181.142.42/api/v1/user/register
 Content-Type: application/json
 
 {
-  "email": "admin&tunas.id",
+  "email": "admin@tunas.id",
   "password": "rahasia"
 }
 
@@ -12,9 +12,28 @@ POST http://103.181.142.42/api/v1/user/login
 Content-Type: application/json
 
 {
-  "email": "admin&tunas.id",
+  "email": "admin@tunas.id",
   "password": "rahasia"
 }
+
+
+### UPDATE PROFILE
+PUT http://103.181.142.42/api/v1/user/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
+
+{
+  "email": "admin@tunas.id",
+  "username": "rahasia",
+  "name": "john doe",
+  "mobilePhoneNumber": "081000000000"
+}
+
+### GET PROFILE
+GET http://103.181.142.42/api/v1/user
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
+
 
 ### TOKEN
 POST http://103.181.142.42/api/v1/user/token
@@ -28,7 +47,7 @@ Content-Type: application/json
 ###
 GET http://103.181.142.42/api/v1/user/token
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 ################
 ### CATEGORY ###
@@ -37,60 +56,60 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwM
 ### STORE CATEGORY
 POST http://103.181.142.42/api/v1/category
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 {
-  "category": "Bread",
-  "imageUrl": "notfound.png"
+  "category": "Fast Food",
+  "imageUrl": "https://tunas-grocery.s3.ap-southeast-1.amazonaws.com/images/FastFood.png"
 }
 
 ### GET CATEGORY BY ID
 GET http://103.181.142.42/api/v1/category/c30a85c5-c66e-11ed-aaec-0242ac120003
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 
 ### GET ALL CATEGORY
 GET http://103.181.142.42/api/v1/category?pageIndex=0&pageSize=10
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 
 ### UPDATE CATEGORY
-PUT http://103.181.142.42/api/v1/category/cbf969a8-b5a1-11ed-b28a-f45c89b11b13
+PUT http://103.181.142.42/api/v1/category/41ae1b35-f580-11ed-9dc2-0242ac130003
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 {
-  "category": "Vegetable",
-  "imageUrl": "notfound.png"
+  "category": "Fruit",
+  "imageUrl": "https://tunas-grocery.s3.ap-southeast-1.amazonaws.com/images/FastFood.png"
 }
 
 ### DESTROY CATEGORY
 DELETE http://103.181.142.42/api/v1/category/595841d0-b5dd-11ed-8e95-f45c89b11b13
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 
 ### ADD PRODUCT
 POST http://103.181.142.42/api/v1/product
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 
 {
-  "name": "Garlic Brad",
-  "price": 10,
+  "name": "Banana",
+  "price": 12,
   "weight": 1000,
   "perUnit": 100,
-  "description": "Serve with coffe for better experience",
-  "imageUrl" : "notfound.png",
-  "categoryId": "5ad651e6-c63b-11ed-8d33-f45c89b11b13"
+  "description": "Good for health",
+  "imageUrl" : "https://tunas-grocery.s3.ap-southeast-1.amazonaws.com/images/products/banana.png",
+  "categoryId": "41ae1b35-f580-11ed-9dc2-0242ac130003"
 }
 
 ### UPDATE PRODUCT
 PUT http://103.181.142.42/api/v1/product/7d0e2b56-b95e-11ed-abfe-f45c89b11b13
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 {
   "name": "Banana",
@@ -103,32 +122,32 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwM
 }
 
 ### GET ALL PRODUCT
-GET http://103.181.142.42/api/v1/product?pageIndex=0&pageSize=10&isTop=false
+GET http://103.181.142.42/api/v1/product?pageIndex=0&pageSize=10&isRecommendation=true&categoryId=41ae1b35-f580-11ed-9dc2-0242ac130003
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 ### DELETE PRODUCT
 DELETE http://103.181.142.42/api/v1/product/03d5d220-7d54-11ed-b6e2-f45c89b11b13
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 ### PRODUCT BY ID
 GET http://103.181.142.42/api/v1/product/a2e50426-b95e-11ed-abfe-f45c89b11b13
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 ### PRODUCT BY CATEGORY
 GET http://103.181.142.42/api/v1/product/category/8c2c184e-11d2-11ec-82a8-0242ac130003
 
 ### TOP PRODUCT
-POST http://103.181.142.42/api/v1/product/top/a3c02e8c-11d2-11ec-82a8-0242ac130003
+PUT http://103.181.142.42/api/v1/product/top/7b90517e-f6f6-11ed-9dc2-0242ac130003
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 ### TOP RECOMMENDATION
-POST http://103.181.142.42/api/v1/product/recommendation/a3c02e8c-11d2-11ec-82a8-0242ac130003
+PUT http://103.181.142.42/api/v1/product/recommendation/8b050d2f-f6f6-11ed-9dc2-0242ac130003
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 
 ###################
@@ -138,7 +157,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwM
 ### MAKE TRANSACTION
 POST http://103.181.142.42/api/v1/transaction
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 {
   "userId": "bf80843e-0dba-4b0c-bcb4-faeaec5e53fa",
@@ -153,17 +172,17 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwM
 ### GET TRANSACTION BY ID
 GET http://103.181.142.42/api/v1/transaction/de0f77d0-7dcb-11ed-b6b4-f45c89b11b13
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 ### GET TRANSACTION BY USER ID
 GET http://103.181.142.42/api/v1/transaction/user/bf80843e-0dba-4b0c-bcb4-faeaec5e53fa
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 ### DESTROY TRANSACTION BY ID
 DELETE http://103.181.142.42/api/v1/transaction/de0f77d0-7dcb-11ed-b6b4-f45c89b11b13
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 #######################
 ### CART & WISHLIST ###
@@ -172,32 +191,32 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwM
 ### STORE CART
 POST http://103.181.142.42/api/v1/cart/7d3d04f0-c63b-11ed-8d33-f45c89b11b13/2
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 ### DESTROY CART
 DELETE http://103.181.142.42/api/v1/cart/c85d97b0-c63b-11ed-96de-f45c89b11b13
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 ### GET USER CART
 GET http://103.181.142.42/api/v1/cart?pageIndex=0&pageSize=10&search=garlic
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 ### ADD WISHLIST
 POST http://103.181.142.42/api/v1/wishlist/bf80843e-0dba-4b0c-bcb4-faeaec5e53fa/a3c02e8c-11d2-11ec-82a8-0242ac130003
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 ### GET USER WISHLIST
 GET http://103.181.142.42/api/v1/wishlist/bf80843e-0dba-4b0c-bcb4-faeaec5e53fa
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 ### DESTROY USER WISHLIST
 DELETE http://103.181.142.42/api/v1/wishlist/bf80843e-0dba-4b0c-bcb4-faeaec5e53fa/8c934506-7d64-11ed-8570-f45c89b11b13
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 ###################
 ### USER & ROLE ###
@@ -206,27 +225,27 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwM
 ### GET ALL USER
 GET http://103.181.142.42/api/v1/user/all
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 ### GRANT ROLE TO USER
 POST http://103.181.142.42/api/v1/user/role/fc81ccd7-98aa-11ec-ba07-b78370c9a109/5d3337d8-98ab-11ec-ba07-c940688411f4
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 ### REVOTE ROLE FROM USER
 DELETE http://103.181.142.42/api/v1/user/role/1/4
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 ### GET ALL ROLES
 GET http://103.181.142.42/api/v1/role/all
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 ### SAVE ROLE
 POST http://103.181.142.42/api/v1/role
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 {
   "name" : "USER"
@@ -235,15 +254,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwM
 ### GET ROLE BY ID
 GET http://103.181.142.42/api/v1/role/4
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 ###
 GET http://103.181.142.42/api/v1/user/all
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
 
 
 ### USER
 GET http://103.181.142.42/api/v1/user
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNDIwMzMwMDU0MjEwNTcsInVzZXJJZCI6ImJhODAxOWFmLWM2NjUtMTFlZC1hM2EyLTAyNDJhYzEyMDAwMyJ9.VVLtPmSwHTELrzDY9SH8t85sf4FRGrZQp05d7fvIFHk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ4MDEwOTgwMjc5MzE4MDIsInVzZXJJZCI6IjkzODhjYjM3LWY1N2YtMTFlZC05ZGMyLTAyNDJhYzEzMDAwMyJ9.JSejxRW_MdzWBe4vgxSKS3c2NacGAXDnCpwiafw7R3M
