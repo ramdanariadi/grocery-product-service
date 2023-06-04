@@ -40,9 +40,9 @@ func main() {
 	categoryRoute := router.Group("api/v1/category")
 	{
 		categoryController := category.NewCategoryController(db)
-		categoryRoute.POST("/", user.Middleware, categoryController.Save)
+		categoryRoute.POST("", user.Middleware, categoryController.Save)
 		categoryRoute.GET("/:id", categoryController.FindById)
-		categoryRoute.GET("/", categoryController.FindAll)
+		categoryRoute.GET("", categoryController.FindAll)
 		categoryRoute.PUT("/:id", user.Middleware, categoryController.Update)
 		categoryRoute.DELETE("/:id", user.Middleware, categoryController.Delete)
 	}
@@ -50,9 +50,9 @@ func main() {
 	productRoute := router.Group("api/v1/product")
 	{
 		productController := product.NewProductController(db)
-		productRoute.POST("/", user.Middleware, productController.Save)
+		productRoute.POST("", user.Middleware, productController.Save)
 		productRoute.GET("/:id", productController.FindById)
-		productRoute.GET("/", productController.FindAll)
+		productRoute.GET("", productController.FindAll)
 		productRoute.PUT("/:id", user.Middleware, productController.Update)
 		productRoute.DELETE("/:id", user.Middleware, productController.Delete)
 		productRoute.PUT("/top/:id", user.Middleware, productController.SetTopProduct)
@@ -64,7 +64,7 @@ func main() {
 		cartController := cart.NewController(db)
 		cartRoute.POST("/:productId/:total", user.Middleware, cartController.Store)
 		cartRoute.DELETE("/:id", user.Middleware, cartController.Destroy)
-		cartRoute.GET("/", user.Middleware, cartController.Find)
+		cartRoute.GET("", user.Middleware, cartController.Find)
 	}
 
 	wishlistRoute := router.Group("api/v1/wishlist")
@@ -72,14 +72,15 @@ func main() {
 		wishlistController := wishlist.NewWishlistController(db)
 		wishlistRoute.POST("/:productId", user.Middleware, wishlistController.Store)
 		wishlistRoute.DELETE("/:productId", user.Middleware, wishlistController.Destroy)
-		wishlistRoute.GET("/", user.Middleware, wishlistController.Find)
+		wishlistRoute.GET("", user.Middleware, wishlistController.Find)
+		wishlistRoute.GET("/:productId", user.Middleware, wishlistController.FindByProductId)
 	}
 
 	transactionGroup := router.Group("api/v1/transaction")
 	{
 		transactionController := transaction.NewTransactionController(db)
-		transactionGroup.POST("/", user.Middleware, transactionController.Save)
-		transactionGroup.GET("/", user.Middleware, transactionController.Find)
+		transactionGroup.POST("", user.Middleware, transactionController.Save)
+		transactionGroup.GET("", user.Middleware, transactionController.Find)
 	}
 
 	err = router.Run()

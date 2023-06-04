@@ -54,6 +54,7 @@ func (service ServiceImpl) Find(reqBody *dto.FindWishlistDTO) []*dto.WishlistDTO
 	for _, wishlist := range wishlists {
 		wishlistsResult = append(wishlistsResult, &dto.WishlistDTO{
 			ID:          wishlist.ID,
+			ProductId:   wishlist.ProductId,
 			Name:        wishlist.Product.Name,
 			Category:    wishlist.Product.Category.Category,
 			ImageUrl:    wishlist.Product.ImageUrl,
@@ -64,4 +65,26 @@ func (service ServiceImpl) Find(reqBody *dto.FindWishlistDTO) []*dto.WishlistDTO
 		})
 	}
 	return wishlistsResult
+}
+
+func (service ServiceImpl) FindByProductId(productId string, userId string) *dto.WishlistDTO {
+	wishlist := Wishlist{ProductId: productId, UserId: userId}
+	find := service.DB.Preload("Product.Category").Find(&wishlist)
+	if find.RowsAffected < 1 {
+		panic(exception.ValidationException{"INVALID_WISHLIST"})
+	}
+
+	wishlistDTO := &dto.WishlistDTO{
+		ID:          wishlist.ID,
+		ProductId:   wishlist.ProductId,
+		Name:        wishlist.Product.Name,
+		Category:    wishlist.Product.Category.Category,
+		ImageUrl:    wishlist.Product.ImageUrl,
+		Price:       wishlist.Product.Price,
+		PerUnit:     wishlist.Product.PerUnit,
+		Weight:      wishlist.Product.Weight,
+		Description: wishlist.Product.Description,
+	}
+
+	return wishlistDTO
 }
