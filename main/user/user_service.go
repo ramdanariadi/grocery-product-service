@@ -88,6 +88,7 @@ func (service UserServiceImpl) Get(userId string) *dto.ProfileDTO {
 		Username:          user.Username,
 		Email:             user.Email,
 		MobilePhoneNumber: user.MobilePhoneNumber,
+		ProfileImageUrl:   &user.ProfileImageUrl,
 	}
 	return &profileDTO
 }
@@ -106,6 +107,9 @@ func (service UserServiceImpl) Update(userId string, dto *dto.ProfileDTO) {
 	user.MobilePhoneNumber = dto.MobilePhoneNumber
 	user.Email = dto.Email
 	user.Username = dto.Username
+	if dto.ProfileImageUrl != nil {
+		user.ProfileImageUrl = *dto.ProfileImageUrl
+	}
 	save := service.DB.Save(&user)
 	utils.PanicIfError(save.Error)
 }
