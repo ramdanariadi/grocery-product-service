@@ -12,6 +12,7 @@ type User struct {
 	Name              string         `gorm:"type:varchar(100);"`
 	Email             string         `gorm:"type:varchar(255);not null;uniqueIndex"`
 	MobilePhoneNumber string         `gorm:"type:varchar(15);uniqueIndex"`
+	ProfileImageUrl   string         `gorm:"type:varchar(255);"`
 	CreatedAt         time.Time      `json:"_" gorm:"type:timestamp"`
 	UpdatedAt         time.Time      `json:"_" gorm:"type:timestamp"`
 	DeletedAt         gorm.DeletedAt `json:"_" gorm:"type:timestamp;index"`
