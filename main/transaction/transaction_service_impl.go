@@ -2,7 +2,6 @@ package transaction
 
 import (
 	"github.com/google/uuid"
-	"github.com/ramdanariadi/grocery-product-service/main/exception"
 	"github.com/ramdanariadi/grocery-product-service/main/product"
 	"github.com/ramdanariadi/grocery-product-service/main/transaction/dto"
 	"github.com/ramdanariadi/grocery-product-service/main/transaction/model"
@@ -25,9 +24,9 @@ func (service TransactionServiceImpl) save(request *dto.AddTransactionDTO, userI
 		var products []*product.Product
 		tx.Model(&product.Product{}).Where("id IN ?", productIds).Preload("Category").Find(&products)
 
-		if len(products) != len(request.Data) {
-			panic(exception.ValidationException{Message: "INVALID_PRODUCT"})
-		}
+		//if len(products) != len(request.Data) {
+		//	panic(exception.ValidationException{Message: "INVALID_PRODUCT"})
+		//}
 
 		productMap := map[string]*product.Product{}
 		var totalPrice uint64
