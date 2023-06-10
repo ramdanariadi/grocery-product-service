@@ -78,11 +78,12 @@ func (service TransactionServiceImpl) find(param *dto.FindTransactionDTO) []*dto
 
 	result := make([]*dto.TransactionDTO, 0)
 	for _, t := range transactions {
-		transactionDTO := dto.TransactionDTO{Id: t.ID}
+		transactionDTO := dto.TransactionDTO{Id: t.ID, PriceTotal: 0}
 		for _, td := range t.TransactionDetails {
 			p := td.Product
-			item := dto.TransactionItemDTO{ID: td.ID, Name: p.Name, Price: p.Price, PerUnit: p.PerUnit, Weight: p.Weight, ImageUrl: p.ImageUrl, Description: p.Description}
+			item := dto.TransactionItemDTO{ID: td.ID, Name: td.Name, Price: td.Price, PerUnit: td.PerUnit, Weight: td.Weight, ImageUrl: p.ImageUrl, Description: p.Description, Total: td.Total}
 			transactionDTO.Items = append(transactionDTO.Items, &item)
+			transactionDTO.PriceTotal += td.Price
 		}
 		result = append(result, &transactionDTO)
 	}
