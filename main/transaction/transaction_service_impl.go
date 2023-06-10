@@ -1,6 +1,7 @@
 package transaction
 
 import (
+	"encoding/json"
 	"github.com/google/uuid"
 	"github.com/ramdanariadi/grocery-product-service/main/product"
 	"github.com/ramdanariadi/grocery-product-service/main/transaction/dto"
@@ -15,6 +16,8 @@ type TransactionServiceImpl struct {
 }
 
 func (service TransactionServiceImpl) save(request *dto.AddTransactionDTO, userId string) {
+	marshal, _ := json.Marshal(request)
+	log.Println("request body " + string(marshal))
 	err := service.DB.Transaction(func(tx *gorm.DB) error {
 		var productIds []string
 		for _, item := range request.Data {
@@ -52,6 +55,7 @@ func (service TransactionServiceImpl) save(request *dto.AddTransactionDTO, userI
 			detail := model.TransactionDetail{ID: dtId.String(), Transaction: transaction, Product: *p, Total: d.Total, Name: p.Name, Price: p.Price, ImageUrl: p.ImageUrl, Description: p.Description, PerUnit: p.PerUnit, Weight: p.Weight, CategoryId: p.CategoryId, Category: p.Category.Category}
 			transactionDetails = append(transactionDetails, &detail)
 		}
+		log.Printf("request body data length %d", len(transactionDetails))
 		if err := tx.Create(&transactionDetails).Error; err != nil {
 			return err
 		}
