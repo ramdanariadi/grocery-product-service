@@ -1,9 +1,10 @@
 package dto
 
 type TransactionDTO struct {
-	Id    string                `json:"id"`
-	Date  string                `json:"date"`
-	Items []*TransactionItemDTO `json:"items"`
+	Id         string                `json:"id"`
+	Date       string                `json:"date"`
+	PriceTotal uint64                `json:"priceTotal"`
+	Items      []*TransactionItemDTO `json:"items"`
 }
 
 type TransactionItemDTO struct {
