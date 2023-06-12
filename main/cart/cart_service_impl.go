@@ -18,7 +18,7 @@ func NewService(DB *gorm.DB) Service {
 	return &ServiceImpl{DB: DB}
 }
 
-func (service ServiceImpl) Store(productId string, total uint, userId string) {
+func (service ServiceImpl) Store(productId string, total uint, userId string) *dto.CartTotalItemDTO {
 	var productRef product.Product
 	tx := service.DB.Where("id = ?", productId).Find(&productRef)
 	if tx.Error != nil {
@@ -34,6 +34,12 @@ func (service ServiceImpl) Store(productId string, total uint, userId string) {
 	}
 	save := service.DB.Create(&saveCart)
 	utils.PanicIfError(save.Error)
+
+	var count int64
+	tx = service.DB.Model(Cart{}).Where("user_id = ?", userId).Count(&count)
+	utils.PanicIfError(tx.Error)
+
+	return &dto.CartTotalItemDTO{TotalItem: int64(uint(count))}
 }
 
 func (service ServiceImpl) Destroy(id string, userId string) {
