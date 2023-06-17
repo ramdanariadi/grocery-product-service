@@ -57,10 +57,14 @@ func (service ProductServiceImpl) FindAll(param *dto.FindProductRequest) *dto.Fi
 		tx.Where("category_id = ?", param.CategoryId)
 	}
 
-	tx.Limit(param.PageSize).Offset(param.PageIndex * param.PageSize).Preload("Category").Find(&products)
-
 	var result dto.FindProductResponse
 	result.Data = make([]*dto.ProductDTO, 0)
+
+	var count int64
+	tx.Count(&count)
+	result.RecordsTotal = count
+	tx.Limit(param.PageSize).Offset(param.PageIndex * param.PageSize).Preload("Category").Find(&products)
+
 	for _, p := range products {
 		result.Data = append(result.Data, &dto.ProductDTO{
 			ID:          p.ID,
@@ -74,9 +78,6 @@ func (service ProductServiceImpl) FindAll(param *dto.FindProductRequest) *dto.Fi
 		})
 	}
 	result.RecordsFiltered = len(result.Data)
-	var count int64
-	tx.Count(&count)
-	result.RecordsTotal = count
 	return &result
 }
 
