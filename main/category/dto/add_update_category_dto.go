@@ -1,6 +1,6 @@
 package dto
 
 type AddCategoryDTO struct {
-	Category string
-	ImageUrl string
+	Category string `json:"category"`
+	ImageUrl string `bson:"imageUrl"`
 }
