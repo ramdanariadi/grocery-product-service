@@ -26,8 +26,8 @@ func (controller ControllerImpl) Store(ctx *gin.Context) {
 	}
 	totalParse, err := strconv.ParseUint(total, 0, 0)
 	utils.PanicIfError(err)
-	controller.Service.Store(productId, uint(totalParse), userId.(string))
-	ctx.JSON(200, gin.H{})
+	totalItemDTO := controller.Service.Store(productId, uint(totalParse), userId.(string))
+	ctx.JSON(200, gin.H{"data": totalItemDTO})
 }
 
 func (controller ControllerImpl) Destroy(ctx *gin.Context) {

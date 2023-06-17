@@ -18,7 +18,7 @@ func NewService(DB *gorm.DB) Service {
 	return &ServiceImpl{DB: DB}
 }
 
-func (service ServiceImpl) Store(productId string, total uint, userId string) {
+func (service ServiceImpl) Store(productId string, total uint, userId string) *dto.CartTotalItemDTO {
 	var productRef product.Product
 	tx := service.DB.Where("id = ?", productId).Find(&productRef)
 	if tx.Error != nil {
@@ -32,8 +32,14 @@ func (service ServiceImpl) Store(productId string, total uint, userId string) {
 		ProductId: productRef.ID,
 		Total:     total,
 	}
-	save := service.DB.Save(&saveCart)
+	save := service.DB.Create(&saveCart)
 	utils.PanicIfError(save.Error)
+
+	var count int64
+	tx = service.DB.Model(Cart{}).Where("user_id = ?", userId).Count(&count)
+	utils.PanicIfError(tx.Error)
+
+	return &dto.CartTotalItemDTO{TotalItem: int64(uint(count))}
 }
 
 func (service ServiceImpl) Destroy(id string, userId string) {
@@ -53,7 +59,7 @@ func (service ServiceImpl) Find(reqBody *dto.FindCartDTO) []*dto.Cart {
 	tx.Joins("LEFT JOIN categories c ON p.category_id = c.id")
 	tx.Preload("Product.Category")
 	if reqBody.Search != nil {
-		tx.Where("LOWER(p.name) LIKE ?", strings.ToLower("%garlic%"))
+		tx.Where("LOWER(p.name) LIKE ?", strings.ToLower("%"+*reqBody.Search+"%"))
 	}
 	tx.Limit(reqBody.PageSize).Offset(reqBody.PageIndex * reqBody.PageSize).Find(&carts)
 	utils.PanicIfError(tx.Error)
@@ -63,6 +69,7 @@ func (service ServiceImpl) Find(reqBody *dto.FindCartDTO) []*dto.Cart {
 		result = append(result, &dto.Cart{
 			ID:          data.ID,
 			Total:       data.Total,
+			ProductId:   data.Product.ID,
 			Name:        data.Product.Name,
 			Description: data.Product.Description,
 			ImageUrl:    data.Product.ImageUrl,
