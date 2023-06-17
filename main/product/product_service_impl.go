@@ -33,7 +33,7 @@ func (service ProductServiceImpl) Save(requestBody *dto.AddProductDTO) {
 	product.IsRecommended = requestBody.IsRecommended
 	product.IsTop = requestBody.IsTop
 	product.Description = requestBody.Description
-	save := service.DB.Save(&product)
+	save := service.DB.Create(&product)
 	utils.LogIfError(save.Error)
 }
 
@@ -53,10 +53,18 @@ func (service ProductServiceImpl) FindAll(param *dto.FindProductRequest) *dto.Fi
 		tx.Where("is_recommended = ?", param.IsRecommendation)
 	}
 
-	tx.Limit(param.PageSize).Offset(param.PageIndex * param.PageSize).Preload("Category").Find(&products)
+	if param.CategoryId != nil {
+		tx.Where("category_id = ?", param.CategoryId)
+	}
 
 	var result dto.FindProductResponse
 	result.Data = make([]*dto.ProductDTO, 0)
+
+	var count int64
+	tx.Count(&count)
+	result.RecordsTotal = count
+	tx.Limit(param.PageSize).Offset(param.PageIndex * param.PageSize).Preload("Category").Find(&products)
+
 	for _, p := range products {
 		result.Data = append(result.Data, &dto.ProductDTO{
 			ID:          p.ID,
@@ -70,9 +78,6 @@ func (service ProductServiceImpl) FindAll(param *dto.FindProductRequest) *dto.Fi
 		})
 	}
 	result.RecordsFiltered = len(result.Data)
-	var count int64
-	tx.Count(&count)
-	result.RecordsTotal = count
 	return &result
 }
 
