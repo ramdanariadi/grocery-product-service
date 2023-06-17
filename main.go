@@ -1,115 +1,88 @@
 package main
 
 import (
-	"database/sql"
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
-	"go-tunas/ErrorHandlers"
-	"go-tunas/controllers/category"
-	"go-tunas/controllers/product"
-	"go-tunas/controllers/product/wishlist"
-	"go-tunas/controllers/transaction"
-	"go-tunas/controllers/transaction/cart"
-	"go-tunas/customresponses"
-	"go-tunas/helpers"
-	"go-tunas/security"
-	"go-tunas/utils"
-	"log"
-	"net/http"
+	"github.com/ramdanariadi/grocery-product-service/main/cart"
+	"github.com/ramdanariadi/grocery-product-service/main/category"
+	"github.com/ramdanariadi/grocery-product-service/main/exception"
+	"github.com/ramdanariadi/grocery-product-service/main/product"
+	"github.com/ramdanariadi/grocery-product-service/main/setup"
+	"github.com/ramdanariadi/grocery-product-service/main/transaction"
+	"github.com/ramdanariadi/grocery-product-service/main/transaction/model"
+	"github.com/ramdanariadi/grocery-product-service/main/user"
+	"github.com/ramdanariadi/grocery-product-service/main/utils"
+	"github.com/ramdanariadi/grocery-product-service/main/wishlist"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 func main() {
-	connStr := "postgres://postgres:secret@localhost/DBTunasGrocery?sslmode=disable"
-	db, err := sql.Open("postgres", connStr)
-	helpers.PanicIfError(err)
+	connection, err := setup.NewDbConnection()
+	db, err := gorm.Open(postgres.New(postgres.Config{Conn: connection}))
+	utils.PanicIfError(err)
+	err = db.AutoMigrate(&category.Category{}, &product.Product{}, &wishlist.Wishlist{}, &cart.Cart{}, &model.Transaction{}, &model.TransactionDetail{}, &user.User{})
+	utils.LogIfError(err)
 
-	categoryHandler := category.NewCategoryController(db)
-	productHandler := product.NewProductControllerImpl(db)
-	topProductHandler := product.NewTopProductControllerImpl(db)
-	recommendationProductHandler := product.NewRcmdProductControllerImpl(db)
-	wishlistHandler := wishlist.NewWishlistController(db)
-	cartHandler := cart.NewCartController(db)
-	transactionHandler := transaction.NewTransactionController(db)
-	securityHandler := security.NewSecurityController(db)
+	router := gin.Default()
+	router.Use(gin.CustomRecovery(exception.Handler))
 
-	router := mux.NewRouter()
-
-	router.HandleFunc("/login", securityHandler.Login).Methods("POST")
-	router.HandleFunc("/register", securityHandler.SignUp).Methods("POST")
-
-	router.HandleFunc("/readcsv/:filename", func(writer http.ResponseWriter, request *http.Request) {
-		vars := mux.Vars(request)
-		filename := vars["filename"]
-		customresponses.SendResponse(writer, utils.ProductsFromCSV("others/"+filename), 200)
-	}).Methods("GET")
-
-	router.HandleFunc("/ws", utils.WS).Methods("GET")
-
-	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-
-	router.Handle("/category", security.SecureHandler(categoryHandler.FindAll)).Methods("GET")
-	router.Handle("/category/{id}", security.SecureHandler(categoryHandler.FindById)).Methods("GET")
-	router.Handle("/category", security.SecureHandler(categoryHandler.Save)).Methods("POST")
-	router.Handle("/category/{id}", security.SecureHandler(categoryHandler.Update)).Methods("PUT")
-	router.Handle("/category/{id}", security.SecureHandler(categoryHandler.Delete)).Methods("DELETE")
-
-	subrouterProduct := router.PathPrefix("/product").MatcherFunc(func(request *http.Request, match *mux.RouteMatch) bool {
-		log.Default().Println("mather top product")
-		log.Default().Println(match.Vars["id"])
-		return true
-	}).Subrouter()
-
-	subrouterProduct.Handle("/", security.SecureHandler(productHandler.FindAll)).Methods("GET")
-	subrouterProduct.Handle("/category/{id}", security.SecureHandler(productHandler.FindById)).Methods("GET")
-	subrouterProduct.Handle("/{id}", security.SecureHandler(productHandler.FindById)).Methods("GET")
-	subrouterProduct.Handle("/", security.SecureHandler(productHandler.Save)).Methods("POST")
-	subrouterProduct.Handle("/{id}", security.SecureHandler(productHandler.Update)).Methods("PUT")
-	subrouterProduct.Handle("/{id}", security.SecureHandler(productHandler.Delete)).Methods("DELETE")
-
-	subrouterTopProduct := router.PathPrefix("/product/top").MatcherFunc(func(request *http.Request, match *mux.RouteMatch) bool {
-		log.Default().Println("mather top product")
-		return true
-	}).Subrouter()
-
-	subrouterTopProduct.HandleFunc("/", topProductHandler.FindAll).Methods("GET")
-	subrouterTopProduct.HandleFunc("/{id}", topProductHandler.FindById).Methods("GET")
-	subrouterTopProduct.HandleFunc("/{id}", topProductHandler.Save).Methods("POST")
-	subrouterTopProduct.HandleFunc("/{id}", topProductHandler.Delete).Methods("DELETE")
-
-	subrouterRecommendatinProduct := router.PathPrefix("/product/recommendation").MatcherFunc(func(request *http.Request, match *mux.RouteMatch) bool {
-		log.Default().Println("mather top product")
-		return true
-	}).Subrouter()
-
-	subrouterRecommendatinProduct.HandleFunc("/", recommendationProductHandler.FindAll).Methods("GET")
-	subrouterRecommendatinProduct.HandleFunc("/{id}", recommendationProductHandler.FindById).Methods("GET")
-	subrouterRecommendatinProduct.HandleFunc("/{id}", recommendationProductHandler.Save).Methods("POST")
-	subrouterRecommendatinProduct.HandleFunc("/{id}", recommendationProductHandler.Delete).Methods("DELETE")
-
-	subrouterWishlist := router.PathPrefix("/wishlist").Subrouter()
-	subrouterWishlist.Handle("/{id}", security.SecureHandler(wishlistHandler.FindByUserId)).Methods("GET")
-	subrouterWishlist.Handle("/{userId}/{productId}", security.SecureHandler(wishlistHandler.FindByUserAndProductId)).Methods("GET")
-	subrouterWishlist.Handle("/{userId}/{productId}", security.SecureHandler(wishlistHandler.Save)).Methods("POST")
-	subrouterWishlist.Handle("/{userId}/{productId}", security.SecureHandler(wishlistHandler.Delete)).Methods("DELETE")
-
-	subrouterCart := router.PathPrefix("/cart").Subrouter()
-	subrouterCart.Handle("/{id}", security.SecureHandler(cartHandler.FindById)).Methods("GET")
-	subrouterCart.Handle("/{userId}/{productId}/{total:[0-9]+}", security.SecureHandler(cartHandler.Save)).Methods("POST")
-	subrouterCart.Handle("/{userId}/{productId}", security.SecureHandler(cartHandler.Delete)).Methods("DELETE")
-
-	subrouterTransaction := router.PathPrefix("/transaction").Subrouter()
-	subrouterTransaction.Handle("/", security.SecureHandler(transactionHandler.Save)).Methods("POST")
-	subrouterTransaction.Handle("/{id}", security.SecureHandler(transactionHandler.FindById)).Methods("GET")
-	subrouterTransaction.Handle("/{id}", security.SecureHandler(transactionHandler.Delete)).Methods("DELETE")
-	subrouterTransaction.Handle("/user/{id}", security.SecureHandler(transactionHandler.FindByUserId)).Methods("GET")
-
-	router.Use(ErrorHandlers.PanicHandler)
-
-	server := http.Server{
-		Addr:    "localhost:8080",
-		Handler: router,
+	userGroup := router.Group("api/v1/user")
+	{
+		userController := user.NewUserController(db)
+		userGroup.POST("/register", userController.Register)
+		userGroup.POST("/login", userController.Login)
+		userGroup.POST("/token", userController.Token)
+		userGroup.PUT("", user.Middleware, userController.Update)
+		userGroup.GET("", user.Middleware, userController.Get)
 	}
 
-	errlisten := server.ListenAndServe()
-	helpers.PanicIfError(errlisten)
+	categoryRoute := router.Group("api/v1/category")
+	{
+		categoryController := category.NewCategoryController(db)
+		categoryRoute.POST("", user.Middleware, categoryController.Save)
+		categoryRoute.GET("/:id", categoryController.FindById)
+		categoryRoute.GET("", categoryController.FindAll)
+		categoryRoute.PUT("/:id", user.Middleware, categoryController.Update)
+		categoryRoute.DELETE("/:id", user.Middleware, categoryController.Delete)
+	}
+
+	productRoute := router.Group("api/v1/product")
+	{
+		productController := product.NewProductController(db)
+		productRoute.POST("", user.Middleware, productController.Save)
+		productRoute.GET("/:id", productController.FindById)
+		productRoute.GET("", productController.FindAll)
+		productRoute.PUT("/:id", user.Middleware, productController.Update)
+		productRoute.DELETE("/:id", user.Middleware, productController.Delete)
+		productRoute.PUT("/top/:id", user.Middleware, productController.SetTopProduct)
+		productRoute.PUT("/recommendation/:id", user.Middleware, productController.SetRecommendationProduct)
+	}
+
+	cartRoute := router.Group("api/v1/cart")
+	{
+		cartController := cart.NewController(db)
+		cartRoute.POST("/:productId/:total", user.Middleware, cartController.Store)
+		cartRoute.DELETE("/:id", user.Middleware, cartController.Destroy)
+		cartRoute.GET("", user.Middleware, cartController.Find)
+	}
+
+	wishlistRoute := router.Group("api/v1/wishlist")
+	{
+		wishlistController := wishlist.NewWishlistController(db)
+		wishlistRoute.POST("/:productId", user.Middleware, wishlistController.Store)
+		wishlistRoute.DELETE("/:productId", user.Middleware, wishlistController.Destroy)
+		wishlistRoute.GET("", user.Middleware, wishlistController.Find)
+		wishlistRoute.GET("/:productId", user.Middleware, wishlistController.FindByProductId)
+	}
+
+	transactionGroup := router.Group("api/v1/transaction")
+	{
+		transactionController := transaction.NewTransactionController(db)
+		transactionGroup.POST("", user.Middleware, transactionController.Save)
+		transactionGroup.GET("", user.Middleware, transactionController.Find)
+	}
+
+	err = router.Run()
+	utils.LogIfError(err)
 }

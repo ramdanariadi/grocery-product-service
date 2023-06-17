@@ -1,0 +1,40 @@
+stages:
+  - test
+  - build-and-push
+  - deploy
+
+test:
+  stage: test
+  image: golang:1.18.9-alpine
+  before_script:
+    - go version
+  script:
+    - echo "=========== run test ==========="
+
+build-and-push:
+  stage: build-and-push
+  image: docker:19.03.12
+  services:
+    - docker:19.03.12-dind
+  before_script:
+    - echo $DOCKER_LOGIN_PASSWORD | docker login -u $DOCKER_LOGIN_USER --password-stdin
+  script:
+    - docker build -t ramdanariadi/grocery:$CI_COMMIT_SHORT_SHA .
+    - docker tag ramdanariadi/grocery:$CI_COMMIT_SHORT_SHA ramdanariadi/grocery:latest
+    - docker push ramdanariadi/grocery:$CI_COMMIT_SHORT_SHA
+    - docker push ramdanariadi/grocery:latest
+    - echo "========== build and pushed ==============="
+deploy:
+  stage: deploy
+  before_script:
+    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - chmod 400 "$SSH_PRIVATE_KEY"
+    - ssh-add "$SSH_PRIVATE_KEY"
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan $SERVER_IP_ADDRESS >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - ssh $SSH_USER_NAME@$SERVER_IP_ADDRESS "cd ~/app && docker-compose pull core-service && docker-compose up -d && docker image prune -f && exit"
+    - echo "========= deployed ==========="

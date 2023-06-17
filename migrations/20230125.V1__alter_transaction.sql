@@ -1,0 +1,1 @@
+alter table public.transactions add foreign key (user_id) references users(id)
