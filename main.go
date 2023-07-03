@@ -24,6 +24,8 @@ func main() {
 	err = db.AutoMigrate(&category.Category{}, &product.Product{}, &wishlist.Wishlist{}, &cart.Cart{}, &model.Transaction{}, &model.TransactionDetail{}, &user.User{})
 	utils.LogIfError(err)
 
+	client := setup.NewRedisClient()
+
 	router := gin.Default()
 	router.Use(gin.CustomRecovery(exception.Handler))
 
@@ -49,7 +51,7 @@ func main() {
 
 	productRoute := router.Group("api/v1/product")
 	{
-		productController := product.NewProductController(db)
+		productController := product.NewProductController(db, client)
 		productRoute.POST("", user.Middleware, productController.Save)
 		productRoute.GET("/:id", productController.FindById)
 		productRoute.GET("", productController.FindAll)
