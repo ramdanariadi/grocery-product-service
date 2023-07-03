@@ -2,6 +2,7 @@ package product
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis/v8"
 	"github.com/ramdanariadi/grocery-product-service/main/product/dto"
 	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"gorm.io/gorm"
@@ -11,8 +12,8 @@ type ProductControllerImpl struct {
 	Service ProductService
 }
 
-func NewProductController(db *gorm.DB) *ProductControllerImpl {
-	return &ProductControllerImpl{Service: ProductServiceImpl{DB: db}}
+func NewProductController(db *gorm.DB, redisClient *redis.Client) *ProductControllerImpl {
+	return &ProductControllerImpl{Service: ProductServiceImpl{DB: db, Redish: redisClient}}
 }
 
 func (controller ProductControllerImpl) Save(ctx *gin.Context) {

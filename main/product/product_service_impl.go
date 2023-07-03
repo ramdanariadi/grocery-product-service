@@ -1,17 +1,23 @@
 package product
 
 import (
+	"encoding/json"
+	"github.com/go-redis/redis/v8"
 	"github.com/google/uuid"
 	"github.com/ramdanariadi/grocery-product-service/main/category"
 	"github.com/ramdanariadi/grocery-product-service/main/exception"
 	"github.com/ramdanariadi/grocery-product-service/main/product/dto"
 	"github.com/ramdanariadi/grocery-product-service/main/utils"
+	"golang.org/x/net/context"
 	"gorm.io/gorm"
+	"log"
 	"strings"
+	"time"
 )
 
 type ProductServiceImpl struct {
-	DB *gorm.DB
+	DB     *gorm.DB
+	Redish *redis.Client
 }
 
 func (service ProductServiceImpl) Save(requestBody *dto.AddProductDTO) {
@@ -84,9 +90,24 @@ func (service ProductServiceImpl) FindAll(param *dto.FindProductRequest) *dto.Fi
 func (service ProductServiceImpl) FindById(id string) *dto.ProductDTO {
 	var result dto.ProductDTO
 	var product Product
-	tx := service.DB.Model(&Product{}).Where("id = ?", id).Preload("Category").Find(&product)
-	if tx.RowsAffected < 1 {
-		panic(exception.ValidationException{Message: exception.BadRequest})
+	ctx := context.Background()
+	cache, err := service.Redish.Get(ctx, id).Result()
+	utils.LogIfError(err)
+
+	if cache != "" {
+		err = json.Unmarshal([]byte(cache), &product)
+		utils.LogIfError(err)
+		log.Print("product with id " + id + " found in cache")
+	} else {
+		tx := service.DB.Model(&Product{}).Where("id = ?", id).Preload("Category").Find(&product)
+		if tx.RowsAffected < 1 {
+			panic(exception.ValidationException{Message: exception.BadRequest})
+		}
+
+		productByte, err := json.Marshal(product)
+		utils.LogIfError(err)
+		err = service.Redish.Set(ctx, product.ID, productByte, 1*time.Hour).Err()
+		utils.LogIfError(err)
 	}
 	result.ID = product.ID
 	result.Name = product.Name
