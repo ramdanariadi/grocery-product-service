@@ -1,5 +1,5 @@
 ### REGISTER
-POST http://localhost:3000/api/v1/user/register
+POST http://localhost:8081/api/v1/user/register
 Content-Type: application/json
 
 {
@@ -8,7 +8,7 @@ Content-Type: application/json
 }
 
 ### LOGIN
-POST http://localhost:3000/api/v1/user/login
+POST http://localhost:8081/api/v1/user/login
 Content-Type: application/json
 
 {
@@ -16,45 +16,76 @@ Content-Type: application/json
   "password": "rahasia"
 }
 
-### UPDATE PROFILE
-PUT http://localhost:3000/api/v1/user/
+### SHOP
+POST http://localhost:8081/api/v1/shop
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
+
+{
+  "name": "Tunas Shop",
+  "address": "Jakarta"
+}
+
+### GET USER SHOP
+GET http://localhost:8081/api/v1/shop
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
+
+### EDIT SHOP
+PUT http://localhost:8081/api/v1/shop
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
+
+{
+  "name": "Tunas Shop",
+  "address": "Lombok"
+}
+
+### DELETE SHOP
+DELETE http://localhost:8081/api/v1/shop
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
+
+### UPDATE PROFILE
+PUT http://localhost:8081/api/v1/user
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 {
   "email": "admin@tunas.id",
   "username": "rahasia",
   "name": "john doe",
-  "mobilePhoneNumber": "081000000000"
+  "mobilePhoneNumber": "081000000000",
+  "profileImageUrl": ""
 }
 
 ### GET PROFILE
-GET http://localhost:3000/api/v1/user/
+GET http://localhost:8081/api/v1/user/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 
 ### TOKEN
-POST http://localhost:3000/api/v1/user/token
+POST http://localhost:8081/api/v1/user/token
 Content-Type: application/json
 
 {
-  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODYwNTY5MTg5MTYxMzYwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.-6RSlFVsYZrpWagqpF-WIGs0KiLm9XT6FsYkwGD57-c"
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o"
 }
 
 ###
-GET http://localhost:3000/api/v1/user/token
+GET http://localhost:8081/api/v1/user/token
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 ################
 ### CATEGORY ###
 ################
 
 ### STORE CATEGORY
-POST http://localhost:3000/api/v1/category
+POST http://localhost:8081/api/v1/category
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 {
   "category": "Candy",
@@ -62,21 +93,21 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyO
 }
 
 ### GET CATEGORY BY ID
-GET http://localhost:3000/api/v1/category/21e452e2-d10e-11ed-859c-8c859078c9ec
+GET http://localhost:8081/api/v1/category/21e452e2-d10e-11ed-859c-8c859078c9ec
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 
 ### GET ALL CATEGORY
-GET http://localhost:3000/api/v1/category?pageIndex=0&pageSize=10
+GET http://localhost:8081/api/v1/category?pageIndex=0&pageSize=10
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 
 ### UPDATE CATEGORY
-PUT http://localhost:3000/api/v1/category/21e452e2-d10e-11ed-859c-8c859078c9ec
+PUT http://localhost:8081/api/v1/category/21e452e2-d10e-11ed-859c-8c859078c9ec
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 {
   "category": "Vegetable",
@@ -84,14 +115,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyO
 }
 
 ### DESTROY CATEGORY
-DELETE http://localhost:3000/api/v1/category/5b1cb6d6-d0b3-11ed-ba83-8c859078c9ec
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+DELETE http://localhost:8081/api/v1/category/5b1cb6d6-d0b3-11ed-ba83-8c859078c9ec
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 
 ### ADD PRODUCT
-POST http://localhost:3000/api/v1/product
+POST http://localhost:8081/api/v1/product
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 
 {
@@ -101,13 +132,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyO
   "perUnit": 100,
   "description": "Serve with coffe for better experience",
   "imageUrl" : "notfound.png",
-  "categoryId": "d3aedfde-f7c8-11ed-a95f-acde48001122"
+  "categoryId": "df8a7344-25d2-11ee-8b12-8c859078c9ec"
 }
 
 ### UPDATE PRODUCT
-PUT http://localhost:3000/api/v1/product/7d0e2b56-b95e-11ed-abfe-f45c89b11b13
+PUT http://localhost:8081/api/v1/product/7d0e2b56-b95e-11ed-abfe-f45c89b11b13
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 {
   "name": "Banana",
@@ -120,32 +151,32 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyO
 }
 
 ### GET ALL PRODUCT
-GET http://localhost:3000/api/v1/product?pageIndex=0&pageSize=10&categoryId=d3aedfde-f7c8-11ed-a95f-acde48001122
+GET http://localhost:8081/api/v1/product?pageIndex=0&pageSize=2
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 ### DELETE PRODUCT
-DELETE http://localhost:3000/api/v1/product/03d5d220-7d54-11ed-b6e2-f45c89b11b13
+DELETE http://localhost:8081/api/v1/product/03d5d220-7d54-11ed-b6e2-f45c89b11b13
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 ### PRODUCT BY ID
-GET http://localhost:3000/api/v1/product/a2e50426-b95e-11ed-abfe-f45c89b11b13
+GET http://localhost:8081/api/v1/product/15bc3656-19b1-11ee-82df-8c859078c9ec
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 ### PRODUCT BY CATEGORY
-GET http://localhost:3000/api/v1/product/category/8c2c184e-11d2-11ec-82a8-0242ac130003
+GET http://localhost:8081/api/v1/product/category/8c2c184e-11d2-11ec-82a8-0242ac180813
 
 ### TOP PRODUCT
-GET http://localhost:3000/api/v1/product?isTop=true&pageIndex=0&pageSize=10
+GET http://localhost:8081/api/v1/product?isTop=true&pageIndex=0&pageSize=10
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 ### TOP RECOMMENDATION
-PUT http://localhost:3000/api/v1/product/top/64dddb64-d0b3-11ed-ba83-8c859078c9ec
+PUT http://localhost:8081/api/v1/product/top/64dddb64-d0b3-11ed-ba83-8c859078c9ec
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 
 ###################
@@ -153,120 +184,127 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyO
 ###################
 
 ### MAKE TRANSACTION
-POST http://localhost:3000/api/v1/transaction
+POST http://localhost:8081/api/v1/transaction
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 {
-  "userId": "bf80843e-0dba-4b0c-bcb4-faeaec5e53fa",
-  "products": [
+  "data": [
     {
-      "id": "a3c02e8c-11d2-11ec-82a8-0242ac130003",
-      "total": 2
+      "productId": "f91a6eaa-f7c8-11ed-a95f-acde48001122",
+      "total": 1
+    },
+    {
+      "productId": "f91a6eaa-f7c8-11ed-a95f-acde48001122",
+      "total": 1
+    },
+    {
+      "productId": "f91a6eaa-f7c8-11ed-a95f-acde48001122",
+      "total": 1
     }
   ]
 }
 
 ### GET TRANSACTION BY ID
-GET http://localhost:3000/api/v1/transaction/de0f77d0-7dcb-11ed-b6b4-f45c89b11b13
+GET http://localhost:8081/api/v1/transaction/de0f77d0-7dcb-11ed-b6b4-f45c89b11b13
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 ### GET TRANSACTION BY USER ID
-GET http://localhost:3000/api/v1/transaction/user/bf80843e-0dba-4b0c-bcb4-faeaec5e53fa
+GET http://localhost:8081/api/v1/transaction
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 ### DESTROY TRANSACTION BY ID
-DELETE http://localhost:3000/api/v1/transaction/de0f77d0-7dcb-11ed-b6b4-f45c89b11b13
+DELETE http://localhost:8081/api/v1/transaction/de0f77d0-7dcb-11ed-b6b4-f45c89b11b13
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 #######################
 ### CART & WISHLIST ###
 #######################
 
 ### STORE CART
-POST http://localhost:3000/api/v1/cart/7d3d04f0-c63b-11ed-8d33-f45c89b11b13/2
+POST http://localhost:8081/api/v1/cart/f91a6eaa-f7c8-11ed-a95f-acde48001122/2
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 ### DESTROY CART
-DELETE http://localhost:3000/api/v1/cart/c85d97b0-c63b-11ed-96de-f45c89b11b13
+DELETE http://localhost:8081/api/v1/cart/c85d97b0-c63b-11ed-96de-f45c89b11b13
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 ### GET USER CART
-GET http://localhost:3000/api/v1/cart?pageIndex=0&pageSize=10&search=garlic
+GET http://localhost:8081/api/v1/cart?pageIndex=0&pageSize=10
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 ### ADD WISHLIST
-POST http://localhost:3000/api/v1/wishlist/f91a6eaa-f7c8-11ed-a95f-acde48001122
+POST http://localhost:8081/api/v1/wishlist/f91a6eaa-f7c8-11ed-a95f-acde48001122
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 ### GET USER WISHLIST
-GET http://localhost:3000/api/v1/wishlist
+GET http://localhost:8081/api/v1/wishlist
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 
 ### GET USER WISHLIST
-GET http://localhost:3000/api/v1/wishlist/f91a6eaa-f7c8-11ed-a95f-acde48001122
+GET http://localhost:8081/api/v1/wishlist/f91a6eaa-f7c8-11ed-a95f-acde48001122
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 ### DESTROY USER WISHLIST
-DELETE http://localhost:3000/api/v1/wishlist/bf80843e-0dba-4b0c-bcb4-faeaec5e53fa/8c934506-7d64-11ed-8570-f45c89b11b13
+DELETE http://localhost:8081/api/v1/wishlist/bf80843e-0dba-4b0c-bcb4-faeaec5e53fa/8c934506-7d64-11ed-8570-f45c89b11b13
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 ###################
 ### USER & ROLE ###
 ###################
 
 ### GET ALL USER
-GET http://localhost:3000/api/v1/user/all
+GET http://localhost:8081/api/v1/user/all
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 ### GRANT ROLE TO USER
-POST http://localhost:3000/api/v1/user/role/fc81ccd7-98aa-11ec-ba07-b78370c9a109/5d3337d8-98ab-11ec-ba07-c940688411f4
+POST http://localhost:8081/api/v1/user/role/fc81ccd7-98aa-11ec-ba07-b78370c9a109/5d3337d8-98ab-11ec-ba07-c940688411f4
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 ### REVOTE ROLE FROM USER
-DELETE http://localhost:3000/api/v1/user/role/1/4
+DELETE http://localhost:8081/api/v1/user/role/1/4
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 ### GET ALL ROLES
-GET http://localhost:3000/api/v1/role/all
+GET http://localhost:8081/api/v1/role/all
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 ### SAVE ROLE
-POST http://localhost:3000/api/v1/role
+POST http://localhost:8081/api/v1/role
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 {
   "name" : "USER"
 }
 
 ### GET ROLE BY ID
-GET http://localhost:3000/api/v1/role/4
+GET http://localhost:8081/api/v1/role/4
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 ###
-GET http://localhost:3000/api/v1/user/all
+GET http://localhost:8081/api/v1/user/all
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
 
 ### USER
-GET http://localhost:3000/api/v1/user
+GET http://localhost:8081/api/v1/user
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1NzgyOTE0MzYzMzcwMDAsInVzZXJJZCI6ImRmNGVhMDRjLWY1NzgtMTFlZC04MTY5LThjODU5MDc4YzllYyJ9.ZeYy45T-iy8HvajDR8UpGxH3EsxzYraNxCYYEagDbdw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o

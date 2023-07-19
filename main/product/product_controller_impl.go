@@ -3,6 +3,7 @@ package product
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
+	"github.com/ramdanariadi/grocery-product-service/main/exception"
 	"github.com/ramdanariadi/grocery-product-service/main/product/dto"
 	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"gorm.io/gorm"
@@ -17,10 +18,14 @@ func NewProductController(db *gorm.DB, redisClient *redis.Client) *ProductContro
 }
 
 func (controller ProductControllerImpl) Save(ctx *gin.Context) {
+	userId, exists := ctx.Get("userId")
+	if !exists {
+		panic(exception.AuthenticationException{Message: exception.Unauthorized})
+	}
 	var request dto.AddProductDTO
 	err := ctx.Bind(&request)
 	utils.LogIfError(err)
-	controller.Service.Save(&request)
+	controller.Service.Save(userId.(string), &request)
 	ctx.JSON(200, gin.H{})
 }
 

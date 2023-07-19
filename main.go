@@ -8,6 +8,7 @@ import (
 	"github.com/ramdanariadi/grocery-product-service/main/exception"
 	"github.com/ramdanariadi/grocery-product-service/main/product"
 	"github.com/ramdanariadi/grocery-product-service/main/setup"
+	"github.com/ramdanariadi/grocery-product-service/main/shop"
 	"github.com/ramdanariadi/grocery-product-service/main/transaction"
 	"github.com/ramdanariadi/grocery-product-service/main/transaction/model"
 	"github.com/ramdanariadi/grocery-product-service/main/user"
@@ -21,7 +22,7 @@ func main() {
 	connection, err := setup.NewDbConnection()
 	db, err := gorm.Open(postgres.New(postgres.Config{Conn: connection}))
 	utils.PanicIfError(err)
-	err = db.AutoMigrate(&category.Category{}, &product.Product{}, &wishlist.Wishlist{}, &cart.Cart{}, &model.Transaction{}, &model.TransactionDetail{}, &user.User{})
+	err = db.AutoMigrate(&category.Category{}, &product.Product{}, &wishlist.Wishlist{}, &cart.Cart{}, &model.Transaction{}, &model.TransactionDetail{}, &user.User{}, &shop.Shop{})
 	utils.LogIfError(err)
 
 	client := setup.NewRedisClient()
@@ -37,6 +38,15 @@ func main() {
 		userGroup.POST("/token", userController.Token)
 		userGroup.PUT("", user.Middleware, userController.Update)
 		userGroup.GET("", user.Middleware, userController.Get)
+	}
+
+	shopGroup := router.Group("api/v1/shop")
+	{
+		shopController := shop.NewShopController(db)
+		shopGroup.POST("", user.Middleware, shopController.AddShop)
+		shopGroup.PUT("", user.Middleware, shopController.EditShop)
+		shopGroup.GET("", user.Middleware, shopController.GetShop)
+		shopGroup.DELETE("", user.Middleware, shopController.DeleteShop)
 	}
 
 	categoryRoute := router.Group("api/v1/category")
