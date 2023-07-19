@@ -7,6 +7,7 @@ import (
 	"github.com/ramdanariadi/grocery-product-service/main/category"
 	"github.com/ramdanariadi/grocery-product-service/main/exception"
 	"github.com/ramdanariadi/grocery-product-service/main/product/dto"
+	"github.com/ramdanariadi/grocery-product-service/main/shop"
 	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"golang.org/x/net/context"
 	"gorm.io/gorm"
@@ -20,15 +21,23 @@ type ProductServiceImpl struct {
 	Redish *redis.Client
 }
 
-func (service ProductServiceImpl) Save(requestBody *dto.AddProductDTO) {
+func (service ProductServiceImpl) Save(userId string, requestBody *dto.AddProductDTO) {
 	var category category.Category
 	tx := service.DB.Find(&category, "id = ?", requestBody.CategoryId)
 	if tx.RowsAffected < 1 {
 		panic(exception.ValidationException{Message: exception.BadRequest})
 	}
+
+	userShop := shop.Shop{UserId: userId}
+	find := service.DB.Find(&userShop)
+	if find.RowsAffected < 1 {
+		panic(exception.ValidationException{Message: exception.BadRequest})
+	}
+
 	product := Product{}
 	id, err := uuid.NewUUID()
 	utils.LogIfError(err)
+	product.Shop = userShop
 	product.ID = id.String()
 	product.Name = requestBody.Name
 	product.ImageUrl = requestBody.ImageUrl

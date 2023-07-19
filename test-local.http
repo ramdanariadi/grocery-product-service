@@ -132,7 +132,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3N
   "perUnit": 100,
   "description": "Serve with coffe for better experience",
   "imageUrl" : "notfound.png",
-  "categoryId": "062d745c-19b1-11ee-82df-8c859078c9ec"
+  "categoryId": "df8a7344-25d2-11ee-8b12-8c859078c9ec"
 }
 
 ### UPDATE PRODUCT
