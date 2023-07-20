@@ -17,8 +17,8 @@ import (
 )
 
 type ProductServiceImpl struct {
-	DB     *gorm.DB
-	Redish *redis.Client
+	DB    *gorm.DB
+	Redis *redis.Client
 }
 
 func (service ProductServiceImpl) Save(userId string, requestBody *dto.AddProductDTO) {
@@ -100,7 +100,7 @@ func (service ProductServiceImpl) FindById(id string) *dto.ProductDTO {
 	var result dto.ProductDTO
 	var product Product
 	ctx := context.Background()
-	cache, err := service.Redish.Get(ctx, id).Result()
+	cache, err := service.Redis.Get(ctx, id).Result()
 	utils.LogIfError(err)
 
 	if cache != "" {
@@ -108,17 +108,19 @@ func (service ProductServiceImpl) FindById(id string) *dto.ProductDTO {
 		utils.LogIfError(err)
 		log.Print("product with id " + id + " found in cache")
 	} else {
-		tx := service.DB.Model(&Product{}).Where("id = ?", id).Preload("Category").Find(&product)
+		tx := service.DB.Model(&Product{}).Where("id = ?", id).Preload("Category").Preload("Shop").Find(&product)
 		if tx.RowsAffected < 1 {
 			panic(exception.ValidationException{Message: exception.BadRequest})
 		}
 
 		productByte, err := json.Marshal(product)
 		utils.LogIfError(err)
-		err = service.Redish.Set(ctx, product.ID, productByte, 1*time.Hour).Err()
+		err = service.Redis.Set(ctx, product.ID, productByte, 1*time.Hour).Err()
 		utils.LogIfError(err)
 	}
 	result.ID = product.ID
+	result.ShopId = product.Shop.ID
+	result.ShopName = product.Shop.Name
 	result.Name = product.Name
 	result.ImageUrl = product.ImageUrl
 	result.Weight = product.Weight

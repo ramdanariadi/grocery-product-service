@@ -14,7 +14,7 @@ type ProductControllerImpl struct {
 }
 
 func NewProductController(db *gorm.DB, redisClient *redis.Client) *ProductControllerImpl {
-	return &ProductControllerImpl{Service: ProductServiceImpl{DB: db, Redish: redisClient}}
+	return &ProductControllerImpl{Service: ProductServiceImpl{DB: db, Redis: redisClient}}
 }
 
 func (controller ProductControllerImpl) Save(ctx *gin.Context) {
