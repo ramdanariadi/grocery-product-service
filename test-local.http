@@ -64,7 +64,6 @@ GET http://localhost:8081/api/v1/user/
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
-
 ### TOKEN
 POST http://localhost:8081/api/v1/user/token
 Content-Type: application/json
@@ -97,7 +96,6 @@ GET http://localhost:8081/api/v1/category/21e452e2-d10e-11ed-859c-8c859078c9ec
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
-
 ### GET ALL CATEGORY
 GET http://localhost:8081/api/v1/category?pageIndex=0&pageSize=10
 Content-Type: application/json
@@ -118,12 +116,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3N
 DELETE http://localhost:8081/api/v1/category/5b1cb6d6-d0b3-11ed-ba83-8c859078c9ec
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
 
-
 ### ADD PRODUCT
 POST http://localhost:8081/api/v1/product
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
-
 
 {
   "name": "Kinder Joy",
@@ -268,6 +264,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3N
 GET http://localhost:8081/api/v1/user/all
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o
+
 
 ### GRANT ROLE TO USER
 POST http://localhost:8081/api/v1/user/role/fc81ccd7-98aa-11ec-ba07-b78370c9a109/5d3337d8-98ab-11ec-ba07-c940688411f4
