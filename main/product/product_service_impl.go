@@ -17,8 +17,8 @@ import (
 )
 
 type ProductServiceImpl struct {
-	DB     *gorm.DB
-	Redish *redis.Client
+	DB    *gorm.DB
+	Redis *redis.Client
 }
 
 func (service ProductServiceImpl) Save(userId string, requestBody *dto.AddProductDTO) {
@@ -100,7 +100,7 @@ func (service ProductServiceImpl) FindById(id string) *dto.ProductDTO {
 	var result dto.ProductDTO
 	var product Product
 	ctx := context.Background()
-	cache, err := service.Redish.Get(ctx, id).Result()
+	cache, err := service.Redis.Get(ctx, id).Result()
 	utils.LogIfError(err)
 
 	if cache != "" {
@@ -115,7 +115,7 @@ func (service ProductServiceImpl) FindById(id string) *dto.ProductDTO {
 
 		productByte, err := json.Marshal(product)
 		utils.LogIfError(err)
-		err = service.Redish.Set(ctx, product.ID, productByte, 1*time.Hour).Err()
+		err = service.Redis.Set(ctx, product.ID, productByte, 1*time.Hour).Err()
 		utils.LogIfError(err)
 	}
 	result.ID = product.ID
