@@ -108,7 +108,7 @@ func (service ProductServiceImpl) FindById(id string) *dto.ProductDTO {
 		utils.LogIfError(err)
 		log.Print("product with id " + id + " found in cache")
 	} else {
-		tx := service.DB.Model(&Product{}).Where("id = ?", id).Preload("Category").Find(&product)
+		tx := service.DB.Model(&Product{}).Where("id = ?", id).Preload("Category").Preload("Shop").Find(&product)
 		if tx.RowsAffected < 1 {
 			panic(exception.ValidationException{Message: exception.BadRequest})
 		}
@@ -119,6 +119,8 @@ func (service ProductServiceImpl) FindById(id string) *dto.ProductDTO {
 		utils.LogIfError(err)
 	}
 	result.ID = product.ID
+	result.ShopId = product.Shop.ID
+	result.ShopName = product.Shop.Name
 	result.Name = product.Name
 	result.ImageUrl = product.ImageUrl
 	result.Weight = product.Weight

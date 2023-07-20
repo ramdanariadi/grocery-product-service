@@ -2,6 +2,8 @@ package dto
 
 type ProductDTO struct {
 	ID          string `json:"id"`
+	ShopId      string `json:"shopId"`
+	ShopName    string `json:"shopName"`
 	Price       uint64 `json:"price"`
 	Weight      uint   `json:"weight"`
 	Category    string `json:"category"`
