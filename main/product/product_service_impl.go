@@ -78,7 +78,7 @@ func (service ProductServiceImpl) FindAll(param *dto.FindProductRequest) *dto.Fi
 	var count int64
 	tx.Count(&count)
 	result.RecordsTotal = count
-	tx.Limit(param.PageSize).Offset(param.PageIndex * param.PageSize).Preload("Category").Find(&products)
+	tx.Limit(param.PageSize).Offset(param.PageIndex * param.PageSize).Preload("Category").Preload("Shop").Find(&products)
 
 	for _, p := range products {
 		result.Data = append(result.Data, &dto.ProductDTO{
@@ -86,6 +86,8 @@ func (service ProductServiceImpl) FindAll(param *dto.FindProductRequest) *dto.Fi
 			Name:        p.Name,
 			ImageUrl:    p.ImageUrl,
 			Category:    p.Category.Category,
+			ShopId:      p.Shop.ID,
+			ShopName:    p.Shop.Name,
 			Weight:      p.Weight,
 			Price:       p.Price,
 			PerUnit:     p.PerUnit,
