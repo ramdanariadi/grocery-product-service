@@ -1,0 +1,1 @@
+ALTER TABLE shops ADD image_url VARCHAR(255);
