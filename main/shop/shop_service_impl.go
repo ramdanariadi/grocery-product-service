@@ -26,10 +26,11 @@ func (service *ShopServiceImpl) AddShop(userId string, shop AddShopDTO) {
 
 	newUUID, _ := uuid.NewUUID()
 	s := Shop{
-		ID:      newUUID.String(),
-		Name:    *shop.Name,
-		Address: *shop.Address,
-		User:    user,
+		ID:       newUUID.String(),
+		Name:     *shop.Name,
+		Address:  *shop.Address,
+		User:     user,
+		ImageUrl: *shop.ImageUrl,
 	}
 	tx := service.DB.Create(&s)
 	utils.PanicIfError(tx.Error)
@@ -44,6 +45,7 @@ func (service *ShopServiceImpl) UpdateShop(userId string, reqBody EditShopDTO) {
 
 	shop.Name = *reqBody.Name
 	shop.Address = *reqBody.Address
+	shop.ImageUrl = *reqBody.ImageUrl
 
 	save := service.DB.Save(&shop)
 	utils.PanicIfError(save.Error)
@@ -57,7 +59,7 @@ func (service *ShopServiceImpl) GetShop(userId string) ShopDTO {
 		panic(exception.ValidationException{Message: exception.BadRequest})
 	}
 
-	return ShopDTO{Id: shop.ID, Name: shop.Name, Address: shop.Address}
+	return ShopDTO{Id: shop.ID, Name: shop.Name, Address: shop.Address, ImageUrl: shop.ImageUrl}
 }
 
 func (service *ShopServiceImpl) DeleteShop(userID string) {

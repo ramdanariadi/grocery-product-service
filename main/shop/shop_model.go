@@ -9,6 +9,7 @@ import (
 type Shop struct {
 	ID        string `gorm:"type:varchar(36);primaryKey"`
 	Name      string `gorm:"type:varchar(100);not null"`
+	ImageUrl  string `gorm:"type:varchar(255);not null"`
 	Address   string `gorm:"type:varchar(300)"`
 	UserId    string `gorm:"index"`
 	User      user.User
