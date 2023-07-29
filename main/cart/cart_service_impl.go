@@ -56,8 +56,9 @@ func (service ServiceImpl) Find(reqBody *dto.FindCartDTO) []*dto.Cart {
 	var carts []*Cart
 	tx := service.DB.Model(&carts)
 	tx.Joins("LEFT JOIN products p ON p.id = carts.product_id AND p.deleted_at IS NULL")
+	tx.Joins("LEFT JOIN shops s ON p.shop_id = s.id")
 	tx.Joins("LEFT JOIN categories c ON p.category_id = c.id")
-	tx.Preload("Product.Category")
+	tx.Preload("Product.Category").Preload("Product.Shop")
 	if reqBody.Search != nil {
 		tx.Where("LOWER(p.name) LIKE ?", strings.ToLower("%"+*reqBody.Search+"%"))
 	}
@@ -70,6 +71,8 @@ func (service ServiceImpl) Find(reqBody *dto.FindCartDTO) []*dto.Cart {
 			ID:          data.ID,
 			Total:       data.Total,
 			ProductId:   data.Product.ID,
+			ShopId:      data.Product.Shop.ID,
+			ShopName:    data.Product.Shop.Name,
 			Name:        data.Product.Name,
 			Description: data.Product.Description,
 			ImageUrl:    data.Product.ImageUrl,
