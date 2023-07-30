@@ -3,6 +3,8 @@ package transaction
 import (
 	"encoding/json"
 	"github.com/google/uuid"
+	"github.com/ramdanariadi/grocery-product-service/main/cart"
+	"github.com/ramdanariadi/grocery-product-service/main/exception"
 	"github.com/ramdanariadi/grocery-product-service/main/product"
 	"github.com/ramdanariadi/grocery-product-service/main/transaction/dto"
 	"github.com/ramdanariadi/grocery-product-service/main/transaction/model"
@@ -15,21 +17,34 @@ type TransactionServiceImpl struct {
 	DB *gorm.DB
 }
 
+type Collection []string
+
+func (collection Collection) isExist(item string) bool {
+	for _, s := range collection {
+		if s == item {
+			return true
+		}
+	}
+	return false
+}
+
 func (service TransactionServiceImpl) save(request *dto.AddTransactionDTO, userId string) {
 	marshal, _ := json.Marshal(request)
 	log.Println("request body " + string(marshal))
 	err := service.DB.Transaction(func(tx *gorm.DB) error {
-		var productIds []string
+		var productIds Collection
 		for _, item := range request.Data {
-			productIds = append(productIds, item.ProductId)
+			if !productIds.isExist(item.ProductId) {
+				productIds = append(productIds, item.ProductId)
+			}
 		}
 
 		var products []*product.Product
 		tx.Model(&product.Product{}).Where("id IN ?", productIds).Preload("Category").Find(&products)
 
-		//if len(products) != len(request.Data) {
-		//	panic(exception.ValidationException{Message: "INVALID_PRODUCT"})
-		//}
+		if len(products) != len(productIds) {
+			panic(exception.ValidationException{Message: "INVALID_PRODUCT"})
+		}
 
 		productMap := map[string]*product.Product{}
 		var totalPrice uint64
@@ -59,6 +74,11 @@ func (service TransactionServiceImpl) save(request *dto.AddTransactionDTO, userI
 		if err := tx.Create(&transactionDetails).Error; err != nil {
 			return err
 		}
+
+		if db := tx.Where("user_id = ?", userId).Delete(&cart.Cart{}); nil != db.Error {
+			return db.Error
+		}
+
 		log.Println("success save detail transaction")
 		return nil
 	})
