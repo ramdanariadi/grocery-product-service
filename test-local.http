@@ -19,7 +19,7 @@ Content-Type: application/json
 ### UPDATE PROFILE
 PUT http://localhost:8081/api/v1/user
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 {
   "email": "admin@tunas.id",
@@ -32,7 +32,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1O
 ### GET PROFILE
 GET http://localhost:8081/api/v1/user/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 ### TOKEN
 POST http://localhost:8081/api/v1/user/token
@@ -45,7 +45,7 @@ Content-Type: application/json
 ###
 GET http://localhost:8081/api/v1/user/token
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 
 ##################
@@ -55,7 +55,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1O
 ### SHOP
 POST http://localhost:8081/api/v1/shop
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 {
   "name": "Tunas Shop",
@@ -65,12 +65,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1O
 ### GET USER SHOP
 GET http://localhost:8081/api/v1/shop
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 ### EDIT SHOP
 PUT http://localhost:8081/api/v1/shop
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 {
   "name": "Tunas Shop",
@@ -81,7 +81,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1O
 ### DELETE SHOP
 DELETE http://localhost:8081/api/v1/shop
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 
 ################
@@ -91,7 +91,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1O
 ### STORE CATEGORY
 POST http://localhost:8081/api/v1/category
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 {
   "category": "Candy",
@@ -101,18 +101,18 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1O
 ### GET CATEGORY BY ID
 GET http://localhost:8081/api/v1/category/21e452e2-d10e-11ed-859c-8c859078c9ec
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 ### GET ALL CATEGORY
 GET http://localhost:8081/api/v1/category?pageIndex=0&pageSize=10
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 
 ### UPDATE CATEGORY
 PUT http://localhost:8081/api/v1/category/21e452e2-d10e-11ed-859c-8c859078c9ec
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 {
   "category": "Vegetable",
@@ -121,12 +121,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1O
 
 ### DESTROY CATEGORY
 DELETE http://localhost:8081/api/v1/category/5b1cb6d6-d0b3-11ed-ba83-8c859078c9ec
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 ### ADD PRODUCT
 POST http://localhost:8081/api/v1/product
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 {
   "name": "Kinder Joy",
@@ -141,7 +141,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1O
 ### UPDATE PRODUCT
 PUT http://localhost:8081/api/v1/product/7d0e2b56-b95e-11ed-abfe-f45c89b11b13
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 {
   "name": "Banana",
@@ -156,17 +156,17 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1O
 ### GET ALL PRODUCT
 GET http://localhost:8081/api/v1/product?pageIndex=0&pageSize=2
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 ### DELETE PRODUCT
 DELETE http://localhost:8081/api/v1/product/03d5d220-7d54-11ed-b6e2-f45c89b11b13
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 ### PRODUCT BY ID
 GET http://localhost:8081/api/v1/product/d
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 ### PRODUCT BY CATEGORY
 GET http://localhost:8081/api/v1/product/category/8c2c184e-11d2-11ec-82a8-0242ac180813
@@ -174,12 +174,12 @@ GET http://localhost:8081/api/v1/product/category/8c2c184e-11d2-11ec-82a8-0242ac
 ### TOP PRODUCT
 GET http://localhost:8081/api/v1/product?isTop=true&pageIndex=0&pageSize=10
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 ### TOP RECOMMENDATION
 PUT http://localhost:8081/api/v1/product/top/64dddb64-d0b3-11ed-ba83-8c859078c9ec
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 
 ###################
@@ -189,20 +189,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1O
 ### MAKE TRANSACTION
 POST http://localhost:8081/api/v1/transaction
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 {
   "data": [
     {
-      "productId": "f91a6eaa-f7c8-11ed-a95f-acde48001122",
-      "total": 1
-    },
-    {
-      "productId": "f91a6eaa-f7c8-11ed-a95f-acde48001122",
-      "total": 1
-    },
-    {
-      "productId": "f91a6eaa-f7c8-11ed-a95f-acde48001122",
+      "productId": "f9fa841c-25d2-11ee-8b12-8c859078c9ec",
       "total": 1
     }
   ]
@@ -211,57 +203,57 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1O
 ### GET TRANSACTION BY ID
 GET http://localhost:8081/api/v1/transaction/de0f77d0-7dcb-11ed-b6b4-f45c89b11b13
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 ### GET TRANSACTION BY USER ID
 GET http://localhost:8081/api/v1/transaction
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 ### DESTROY TRANSACTION BY ID
 DELETE http://localhost:8081/api/v1/transaction/de0f77d0-7dcb-11ed-b6b4-f45c89b11b13
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 #######################
 ### CART & WISHLIST ###
 #######################
 
 ### STORE CART
-POST http://localhost:8081/api/v1/cart/f91a6eaa-f7c8-11ed-a95f-acde48001122/2
+POST http://localhost:8081/api/v1/cart/f9fa841c-25d2-11ee-8b12-8c859078c9ec/2
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 ### DESTROY CART
 DELETE http://localhost:8081/api/v1/cart/c85d97b0-c63b-11ed-96de-f45c89b11b13
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 ### GET USER CART
 GET http://localhost:8081/api/v1/cart?pageIndex=0&pageSize=10
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 ### ADD WISHLIST
 POST http://localhost:8081/api/v1/wishlist/f91a6eaa-f7c8-11ed-a95f-acde48001122
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 ### GET USER WISHLIST
 GET http://localhost:8081/api/v1/wishlist
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 
 ### GET USER WISHLIST
 GET http://localhost:8081/api/v1/wishlist/f91a6eaa-f7c8-11ed-a95f-acde48001122
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 ### DESTROY USER WISHLIST
 DELETE http://localhost:8081/api/v1/wishlist/bf80843e-0dba-4b0c-bcb4-faeaec5e53fa/8c934506-7d64-11ed-8570-f45c89b11b13
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 ###################
 ### USER & ROLE ###
@@ -270,28 +262,28 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1O
 ### GET ALL USER
 GET http://localhost:8081/api/v1/user/all
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 
 ### GRANT ROLE TO USER
 POST http://localhost:8081/api/v1/user/role/fc81ccd7-98aa-11ec-ba07-b78370c9a109/5d3337d8-98ab-11ec-ba07-c940688411f4
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 ### REVOTE ROLE FROM USER
 DELETE http://localhost:8081/api/v1/user/role/1/4
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 ### GET ALL ROLES
 GET http://localhost:8081/api/v1/role/all
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 ### SAVE ROLE
 POST http://localhost:8081/api/v1/role
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 {
   "name" : "USER"
@@ -300,15 +292,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1O
 ### GET ROLE BY ID
 GET http://localhost:8081/api/v1/role/4
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 ###
 GET http://localhost:8081/api/v1/user/all
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
 
 
 ### USER
 GET http://localhost:8081/api/v1/user
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyODM1OTkwNjMzNDEwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6kjgprHSoAXnQceijLLO3ipNVsAmUdc2nrzGXnFDFl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
