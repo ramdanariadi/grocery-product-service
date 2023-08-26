@@ -7,32 +7,32 @@ import (
 	"gorm.io/gorm"
 )
 
-type CategoryControllerImpl struct {
+type ControllerImpl struct {
 	Service CategoryService
 }
 
-func NewCategoryController(db *gorm.DB) *CategoryControllerImpl {
-	return &CategoryControllerImpl{
+func NewCategoryController(db *gorm.DB) *ControllerImpl {
+	return &ControllerImpl{
 		Service: CategoryServiceImpl{
 			DB: db,
 		},
 	}
 }
 
-func (controller CategoryControllerImpl) FindAll(ctx *gin.Context) {
+func (controller ControllerImpl) FindAll(ctx *gin.Context) {
 	var param dto.PaginationDTO
 	err := ctx.ShouldBindQuery(&param)
 	utils.PanicIfError(err)
 	ctx.JSON(200, controller.Service.FindAll(param.PageIndex, param.PageSize))
 }
 
-func (controller CategoryControllerImpl) FindById(ctx *gin.Context) {
+func (controller ControllerImpl) FindById(ctx *gin.Context) {
 	id := ctx.Param("id")
 	category := controller.Service.FindById(id)
 	ctx.JSON(200, gin.H{"data": category})
 }
 
-func (controller CategoryControllerImpl) Save(ctx *gin.Context) {
+func (controller ControllerImpl) Save(ctx *gin.Context) {
 	request := dto.AddCategoryDTO{}
 	err := ctx.Bind(&request)
 	utils.PanicIfError(err)
@@ -40,7 +40,7 @@ func (controller CategoryControllerImpl) Save(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{})
 }
 
-func (controller CategoryControllerImpl) Update(ctx *gin.Context) {
+func (controller ControllerImpl) Update(ctx *gin.Context) {
 	id := ctx.Param("id")
 	var request dto.AddCategoryDTO
 	ctx.Bind(&request)
@@ -48,7 +48,7 @@ func (controller CategoryControllerImpl) Update(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{})
 }
 
-func (controller CategoryControllerImpl) Delete(ctx *gin.Context) {
+func (controller ControllerImpl) Delete(ctx *gin.Context) {
 	id := ctx.Param("id")
 	controller.Service.Delete(id)
 	ctx.JSON(200, gin.H{})

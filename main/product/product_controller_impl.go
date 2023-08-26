@@ -9,15 +9,15 @@ import (
 	"gorm.io/gorm"
 )
 
-type ProductControllerImpl struct {
+type ControllerImpl struct {
 	Service ProductService
 }
 
-func NewProductController(db *gorm.DB, redisClient *redis.Client) *ProductControllerImpl {
-	return &ProductControllerImpl{Service: ProductServiceImpl{DB: db, Redis: redisClient}}
+func NewProductController(db *gorm.DB, redisClient *redis.Client) *ControllerImpl {
+	return &ControllerImpl{Service: ProductServiceImpl{DB: db, Redis: redisClient}}
 }
 
-func (controller ProductControllerImpl) Save(ctx *gin.Context) {
+func (controller ControllerImpl) Save(ctx *gin.Context) {
 	userId, exists := ctx.Get("userId")
 	if !exists {
 		panic(exception.AuthenticationException{Message: exception.Unauthorized})
@@ -29,13 +29,13 @@ func (controller ProductControllerImpl) Save(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{})
 }
 
-func (controller ProductControllerImpl) FindById(ctx *gin.Context) {
+func (controller ControllerImpl) FindById(ctx *gin.Context) {
 	id := ctx.Param("id")
 	productDTO := controller.Service.FindById(id)
 	ctx.JSON(200, gin.H{"data": productDTO})
 }
 
-func (controller ProductControllerImpl) FindAll(ctx *gin.Context) {
+func (controller ControllerImpl) FindAll(ctx *gin.Context) {
 	var request dto.FindProductRequest
 	err := ctx.ShouldBindQuery(&request)
 	utils.PanicIfError(err)
@@ -43,7 +43,7 @@ func (controller ProductControllerImpl) FindAll(ctx *gin.Context) {
 	ctx.JSON(200, response)
 }
 
-func (controller ProductControllerImpl) Update(ctx *gin.Context) {
+func (controller ControllerImpl) Update(ctx *gin.Context) {
 	id := ctx.Param("id")
 	var request dto.AddProductDTO
 	ctx.Bind(&request)
@@ -51,19 +51,19 @@ func (controller ProductControllerImpl) Update(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{})
 }
 
-func (controller ProductControllerImpl) Delete(ctx *gin.Context) {
+func (controller ControllerImpl) Delete(ctx *gin.Context) {
 	id := ctx.Param("id")
 	controller.Service.Delete(id)
 	ctx.JSON(200, gin.H{})
 }
 
-func (controller ProductControllerImpl) SetTopProduct(ctx *gin.Context) {
+func (controller ControllerImpl) SetTopProduct(ctx *gin.Context) {
 	id := ctx.Param("id")
 	controller.Service.SetTop(id)
 	ctx.JSON(200, gin.H{})
 }
 
-func (controller ProductControllerImpl) SetRecommendationProduct(ctx *gin.Context) {
+func (controller ControllerImpl) SetRecommendationProduct(ctx *gin.Context) {
 	id := ctx.Param("id")
 	controller.Service.SetRecommendation(id)
 	ctx.JSON(200, gin.H{})

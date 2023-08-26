@@ -7,15 +7,15 @@ import (
 	"gorm.io/gorm"
 )
 
-type ShopControllerImpl struct {
+type ControllerImpl struct {
 	shopService ShopService
 }
 
-func NewShopController(db *gorm.DB) ShopController {
-	return &ShopControllerImpl{shopService: &ShopServiceImpl{db}}
+func NewShopController(db *gorm.DB) Controller {
+	return &ControllerImpl{shopService: &ShopServiceImpl{db}}
 }
 
-func (controller *ShopControllerImpl) AddShop(ctx *gin.Context) {
+func (controller *ControllerImpl) AddShop(ctx *gin.Context) {
 	var requestBody AddShopDTO
 	err := ctx.ShouldBind(&requestBody)
 	utils.PanicIfError(err)
@@ -28,7 +28,7 @@ func (controller *ShopControllerImpl) AddShop(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{})
 }
 
-func (controller *ShopControllerImpl) EditShop(ctx *gin.Context) {
+func (controller *ControllerImpl) EditShop(ctx *gin.Context) {
 	var requestBody EditShopDTO
 	err := ctx.ShouldBind(&requestBody)
 	utils.PanicIfError(err)
@@ -41,7 +41,7 @@ func (controller *ShopControllerImpl) EditShop(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{})
 }
 
-func (controller *ShopControllerImpl) DeleteShop(ctx *gin.Context) {
+func (controller *ControllerImpl) DeleteShop(ctx *gin.Context) {
 	value, exists := ctx.Get("userId")
 	if !exists {
 		panic(exception.AuthenticationException{Message: exception.Unauthorized})
@@ -50,7 +50,7 @@ func (controller *ShopControllerImpl) DeleteShop(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{})
 }
 
-func (controller *ShopControllerImpl) GetShop(ctx *gin.Context) {
+func (controller *ControllerImpl) GetShop(ctx *gin.Context) {
 	value, exists := ctx.Get("userId")
 	if !exists {
 		panic(exception.AuthenticationException{Message: exception.Unauthorized})

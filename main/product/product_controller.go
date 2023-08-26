@@ -2,7 +2,7 @@ package product
 
 import "github.com/gin-gonic/gin"
 
-type ProductController interface {
+type Controller interface {
 	Save(ctx *gin.Context)
 	FindById(ctx *gin.Context)
 	FindAll(ctx *gin.Context)

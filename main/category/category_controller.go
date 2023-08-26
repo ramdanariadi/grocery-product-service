@@ -2,7 +2,7 @@ package category
 
 import "github.com/gin-gonic/gin"
 
-type CategoryController interface {
+type Controller interface {
 	FindAll(ctx *gin.Context)
 	FindById(ctx *gin.Context)
 	Save(ctx *gin.Context)

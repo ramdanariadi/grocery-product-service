@@ -8,15 +8,15 @@ import (
 	"gorm.io/gorm"
 )
 
-type TransactionControllerImpl struct {
+type ControllerImpl struct {
 	Service Service
 }
 
 func NewTransactionController(DB *gorm.DB) Controller {
-	return TransactionControllerImpl{Service: TransactionServiceImpl{DB: DB}}
+	return ControllerImpl{Service: TransactionServiceImpl{DB: DB}}
 }
 
-func (controller TransactionControllerImpl) Save(ctx *gin.Context) {
+func (controller ControllerImpl) Save(ctx *gin.Context) {
 	var request dto.AddTransactionDTO
 	ctx.ShouldBind(&request)
 	userId, exists := ctx.Get("userId")
@@ -27,7 +27,7 @@ func (controller TransactionControllerImpl) Save(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{})
 }
 
-func (controller TransactionControllerImpl) Find(ctx *gin.Context) {
+func (controller ControllerImpl) Find(ctx *gin.Context) {
 	var request dto.FindTransactionDTO
 	err := ctx.ShouldBind(&request)
 	utils.PanicIfError(err)
