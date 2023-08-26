@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/ramdanariadi/grocery-product-service/main/cart"
 	"github.com/ramdanariadi/grocery-product-service/main/category"
@@ -16,9 +17,18 @@ import (
 	"github.com/ramdanariadi/grocery-product-service/main/wishlist"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"os"
 )
 
 func main() {
+	env := os.Getenv("ENVIRONMENT")
+	if "" == env {
+		env = "development"
+	}
+	err := godotenv.Load(".env." + env)
+	utils.LogIfError(err)
+	err = godotenv.Load()
+	utils.LogIfError(err)
 	connection, err := setup.NewDbConnection()
 	db, err := gorm.Open(postgres.New(postgres.Config{Conn: connection}))
 	utils.PanicIfError(err)

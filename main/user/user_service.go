@@ -11,6 +11,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"log"
+	"os"
 	"time"
 )
 
@@ -28,6 +29,7 @@ func (service UserServiceImpl) Login(requestBody *dto.LoginDTO) *dto.TokenDTO {
 	if tx.RowsAffected < 1 {
 		panic(exception.ValidationException{Message: "UNAUTHORIZED"})
 	}
+	salt := os.Getenv("SALT")
 	password := salt + requestBody.Password + salt
 	log.Printf("password %s", password)
 	log.Printf("user hased pass %s", user.Password)
@@ -43,13 +45,11 @@ func (service UserServiceImpl) Login(requestBody *dto.LoginDTO) *dto.TokenDTO {
 	}
 }
 
-//go:embed salt
-var salt string
-
 func (service UserServiceImpl) Register(reqBody *dto.RegisterDTO) *dto.TokenDTO {
 	email := reqBody.Email
 	password := reqBody.Password
 	log.Printf("Email %s, Password %s", email, password)
+	salt := os.Getenv("SALT")
 	password = salt + password + salt
 	log.Printf("Salted password %s", password)
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 10)
@@ -133,6 +133,7 @@ func (service UserServiceImpl) Token(reqBody dto.TokenDTO) *dto.TokenDTO {
 }
 
 func VerifyToken(tokenStr string) *jwt.Token {
+	secret := os.Getenv("JWT_SECRET")
 	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
 		if token.Method != jwt.SigningMethodHS256 {
 			return nil, fmt.Errorf("INVALID_ALGORITHM")
@@ -146,10 +147,8 @@ func VerifyToken(tokenStr string) *jwt.Token {
 	return token
 }
 
-//go:embed jwtsecret
-var secret string
-
 func generateToken(user *User, isRefreshToken bool) string {
+	secret := os.Getenv("JWT_SECRET")
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 	if isRefreshToken {
