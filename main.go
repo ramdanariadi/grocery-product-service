@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -17,7 +19,6 @@ import (
 	"github.com/ramdanariadi/grocery-product-service/main/wishlist"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"os"
 )
 
 func main() {
@@ -103,6 +104,7 @@ func main() {
 		transactionController := transaction.NewTransactionController(db)
 		transactionGroup.POST("", user.Middleware, transactionController.Save)
 		transactionGroup.GET("", user.Middleware, transactionController.Find)
+		transactionGroup.POST("/update", user.Middleware, transactionController.UpdateStatus)
 	}
 
 	err = router.Run()

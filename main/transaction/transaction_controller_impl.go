@@ -34,3 +34,7 @@ func (controller ControllerImpl) Find(ctx *gin.Context) {
 	transactionDTO := controller.Service.find(&request)
 	ctx.JSON(200, gin.H{"data": transactionDTO})
 }
+
+func (controller ControllerImpl) UpdateStatus(ctx *gin.Context) {
+	ctx.JSON(200, gin.H{"data": ""})
+}

@@ -1,6 +1,6 @@
 module github.com/ramdanariadi/grocery-product-service
 
-go 1.18
+go 1.25.1
 
 require (
 	github.com/gin-gonic/gin v1.9.0
