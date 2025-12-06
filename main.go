@@ -104,7 +104,7 @@ func main() {
 		transactionController := transaction.NewTransactionController(db)
 		transactionGroup.POST("", user.Middleware, transactionController.Save)
 		transactionGroup.GET("", user.Middleware, transactionController.Find)
-		transactionGroup.POST("/update", user.Middleware, transactionController.UpdateStatus)
+		transactionGroup.POST("/update", transactionController.UpdateStatus)
 	}
 
 	err = router.Run()

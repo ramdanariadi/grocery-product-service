@@ -1,4 +1,4 @@
-FROM golang:1.18.9-alpine as BUILD
+FROM golang:1.25.1-alpine as BUILD
 
 WORKDIR $GOPATH/src/github.com/ramdanariadi/grocery-product-service
 
