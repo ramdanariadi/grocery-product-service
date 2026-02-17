@@ -11,7 +11,7 @@ Content-Type: application/json
 }
 
 ### LOGIN
-POST http://localhost:8080/api/v1/user/login
+POST {{baseUrl}}/api/v1/user/login
 Content-Type: application/json
 
 {
@@ -42,7 +42,7 @@ POST {{baseUrl}}/api/v1/user/token
 Content-Type: application/json
 
 {
-  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2Nzg3NDA2MzI1NTMwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.6etV7QshsT26MZvZChlnORJbr32XLB2a9N0mZodaP1o"
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Njc0NTU5MDEsInVzZXJJZCI6IjExZGU4NGE4LWQyMmYtMTFmMC1hZTdlLTAwMTU1ZDY3NjcxYiJ9.graQLwpxeH_HgKfVSN72T8o874ehiUq-q93btrjjZg0"
 }
 
 ###
