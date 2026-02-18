@@ -3,6 +3,10 @@ package user
 import (
 	_ "embed"
 	"fmt"
+	"log"
+	"os"
+	"time"
+
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 	"github.com/ramdanariadi/grocery-product-service/main/exception"
@@ -10,9 +14,6 @@ import (
 	"github.com/ramdanariadi/grocery-product-service/main/utils"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
-	"log"
-	"os"
-	"time"
 )
 
 type UserServiceImpl struct {
@@ -152,9 +153,9 @@ func generateToken(user *User, isRefreshToken bool) string {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 	if isRefreshToken {
-		claims["exp"] = time.Now().Add(48 * time.Hour).UnixNano()
+		claims["exp"] = time.Now().Add(1 * time.Minute).Unix()
 	} else {
-		claims["exp"] = time.Now().Add(10 * time.Minute).UnixNano()
+		claims["exp"] = time.Now().Add(1 * time.Minute).Unix()
 	}
 	//claims["authorized"] = true
 	claims["userId"] = user.Id
