@@ -41,6 +41,13 @@ func main() {
 	router := gin.Default()
 	router.Use(gin.CustomRecovery(exception.Handler))
 
+	checkGroup := router.Group("api/v1")
+	{
+		checkGroup.GET("/ping", func(ctx *gin.Context) {
+			ctx.JSON(200, gin.H{"message": "pong"})
+		})
+	}
+
 	userGroup := router.Group("api/v1/user")
 	{
 		userController := user.NewUserController(db)
