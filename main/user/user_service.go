@@ -153,9 +153,9 @@ func generateToken(user *User, isRefreshToken bool) string {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 	if isRefreshToken {
-		claims["exp"] = time.Now().Add(1 * time.Minute).Unix()
+		claims["exp"] = time.Now().Add(15 * time.Minute).Unix()
 	} else {
-		claims["exp"] = time.Now().Add(1 * time.Minute).Unix()
+		claims["exp"] = time.Now().Add(15 * time.Minute).Unix()
 	}
 	//claims["authorized"] = true
 	claims["userId"] = user.Id
