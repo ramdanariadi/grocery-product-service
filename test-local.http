@@ -1,13 +1,15 @@
 @baseUrl = http://localhost:8080
-@accessToken = default
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NzIyNDc1MDUsInVzZXJJZCI6IjExZGU4NGE4LWQyMmYtMTFmMC1hZTdlLTAwMTU1ZDY3NjcxYiJ9.vtxYyeXbo6CIUdHzM3shDt-zFmES34mM8fkfK2xHeBM
 
 ### REGISTER
 POST {{baseUrl}}/api/v1/user/register
 Content-Type: application/json
 
 {
-  "email": "admin@tunas.id",
-  "password": "rahasia"
+  "email": "dev1@tunas.id",
+  "username": "dev1.tunas",
+  "password": "rahasia",
+  "mobilePhoneNumber": "081000000001"
 }
 
 ### LOGIN
@@ -35,20 +37,20 @@ Authorization: Bearer {{accessToken}}
 ### GET PROFILE
 GET {{baseUrl}}/api/v1/user/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 ### TOKEN
 POST {{baseUrl}}/api/v1/user/token
 Content-Type: application/json
 
 {
-  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Njc0NTU5MDEsInVzZXJJZCI6IjExZGU4NGE4LWQyMmYtMTFmMC1hZTdlLTAwMTU1ZDY3NjcxYiJ9.graQLwpxeH_HgKfVSN72T8o874ehiUq-q93btrjjZg0"
+  "refreshToken": "{{accessToken}}"
 }
 
 ###
 GET {{baseUrl}}/api/v1/user/token
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 
 ##################
@@ -58,25 +60,26 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzN
 ### SHOP
 POST {{baseUrl}}/api/v1/shop
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 {
-  "name": "Tunas Shop",
-  "address": "Jakarta"
+  "name": "Tunas Coffee",
+  "address": "Jakarta",
+  "imageUrl": "https://tunas-grocery.s3.ap-southeast-1.amazonaws.com/images/coffee.png"
 }
 
 ### GET USER SHOP
 GET {{baseUrl}}/api/v1/shop
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 ### EDIT SHOP
 PUT {{baseUrl}}/api/v1/shop
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 {
-  "name": "Tunas Shop",
+  "name": "Tunas Coffee",
   "address": "Lombok",
   "imageUrl": "notfound.png"
 }
@@ -84,7 +87,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzN
 ### DELETE SHOP
 DELETE {{baseUrl}}/api/v1/shop
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 
 ################
@@ -94,28 +97,28 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzN
 ### STORE CATEGORY
 POST {{baseUrl}}/api/v1/category
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 {
-  "category": "Candy",
-  "imageUrl": "notfound.png"
+  "category": "Cooffee",
+  "imageUrl": null
 }
 
 ### GET CATEGORY BY ID
 GET {{baseUrl}}/api/v1/category/21e452e2-d10e-11ed-859c-8c859078c9ec
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 ### GET ALL CATEGORY
 GET {{baseUrl}}/api/v1/category?pageIndex=0&pageSize=10
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 
 ### UPDATE CATEGORY
 PUT {{baseUrl}}/api/v1/category/21e452e2-d10e-11ed-859c-8c859078c9ec
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 {
   "category": "Vegetable",
@@ -124,27 +127,102 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzN
 
 ### DESTROY CATEGORY
 DELETE {{baseUrl}}/api/v1/category/5b1cb6d6-d0b3-11ed-ba83-8c859078c9ec
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
-### ADD PRODUCT
+### ADD PRODUCT 1
 POST {{baseUrl}}/api/v1/product
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 {
-  "name": "Kinder Joy",
+  "name": "Americano",
   "price": 10,
   "weight": 1000,
   "perUnit": 100,
   "description": "Serve with coffe for better experience",
-  "imageUrl" : "notfound.png",
-  "categoryId": "df8a7344-25d2-11ee-8b12-8c859078c9ec"
+  "imageUrl" : "https://i.ibb.co.com/FqcVFBTk/mug-coffee-PNG16825-1.png",
+  "categoryId": "ebbf7a61-144d-11f1-b13e-7a2d5ecf9602"
+}
+
+### ADD PRODUCT 2
+POST {{baseUrl}}/api/v1/product
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "Cappuccino",
+  "price": 10,
+  "weight": 1000,
+  "perUnit": 100,
+  "description": "Serve with coffe for better experience",
+  "imageUrl" : "https://i.ibb.co.com/qMt8MvRn/mug-coffee-PNG16828-1.png",
+  "categoryId": "ebbf7a61-144d-11f1-b13e-7a2d5ecf9602"
+}
+
+### ADD PRODUCT 3
+POST {{baseUrl}}/api/v1/product
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "Flat White",
+  "price": 10,
+  "weight": 1000,
+  "perUnit": 100,
+  "description": "Serve with coffe for better experience",
+  "imageUrl" : "https://i.ibb.co.com/YBR9y17K/mug-coffee-PNG16824-1.png",
+  "categoryId": "ebbf7a61-144d-11f1-b13e-7a2d5ecf9602"
+}
+
+### ADD PRODUCT 4
+POST {{baseUrl}}/api/v1/product
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "Raf",
+  "price": 10,
+  "weight": 1000,
+  "perUnit": 100,
+  "description": "Serve with coffe for better experience",
+  "imageUrl" : "https://i.ibb.co.com/FLxWHD1z/01-h-B4-380-380-removebg-preview-1.png",
+  "categoryId": "ebbf7a61-144d-11f1-b13e-7a2d5ecf9602"
+}
+
+### ADD PRODUCT 5
+POST {{baseUrl}}/api/v1/product
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "Espresso",
+  "price": 10,
+  "weight": 1000,
+  "perUnit": 100,
+  "description": "Serve with coffe for better experience",
+  "imageUrl" : "https://i.ibb.co.com/Q36hh4Dt/espresso-900x900-1600x1056-1-removebg-preview-1.png",
+  "categoryId": "ebbf7a61-144d-11f1-b13e-7a2d5ecf9602"
+}
+
+### ADD PRODUCT 6
+POST {{baseUrl}}/api/v1/product
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "Latte",
+  "price": 10,
+  "weight": 1000,
+  "perUnit": 100,
+  "description": "Serve with coffe for better experience",
+  "imageUrl" : "https://i.ibb.co.com/Dfwz27M3/mug-coffee-PNG16863-1.png",
+  "categoryId": "ebbf7a61-144d-11f1-b13e-7a2d5ecf9602"
 }
 
 ### UPDATE PRODUCT
 PUT {{baseUrl}}/api/v1/product/7d0e2b56-b95e-11ed-abfe-f45c89b11b13
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 {
   "name": "Banana",
@@ -157,19 +235,19 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzN
 }
 
 ### GET ALL PRODUCT
-GET {{baseUrl}}/api/v1/product?pageIndex=0&pageSize=2
+GET {{baseUrl}}/api/v1/product?pageIndex=0&pageSize=6
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 ### DELETE PRODUCT
 DELETE {{baseUrl}}/api/v1/product/03d5d220-7d54-11ed-b6e2-f45c89b11b13
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 ### PRODUCT BY ID
 GET {{baseUrl}}/api/v1/product/d
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 ### PRODUCT BY CATEGORY
 GET {{baseUrl}}/api/v1/product/category/8c2c184e-11d2-11ec-82a8-0242ac180803
@@ -177,12 +255,12 @@ GET {{baseUrl}}/api/v1/product/category/8c2c184e-11d2-11ec-82a8-0242ac180803
 ### TOP PRODUCT
 GET {{baseUrl}}/api/v1/product?isTop=true&pageIndex=0&pageSize=10
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 ### TOP RECOMMENDATION
 PUT {{baseUrl}}/api/v1/product/top/64dddb64-d0b3-11ed-ba83-8c859078c9ec
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 
 ###################
@@ -192,7 +270,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzN
 ### MAKE TRANSACTION
 POST {{baseUrl}}/api/v1/transaction
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 {
   "data": [
@@ -206,17 +284,17 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzN
 ### GET TRANSACTION BY ID
 GET {{baseUrl}}/api/v1/transaction/de0f77d0-7dcb-11ed-b6b4-f45c89b11b13
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 ### GET TRANSACTION BY USER ID
 GET {{baseUrl}}/api/v1/transaction
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 ### DESTROY TRANSACTION BY ID
 DELETE {{baseUrl}}/api/v1/transaction/de0f77d0-7dcb-11ed-b6b4-f45c89b11b13
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 #######################
 ### CART & WISHLIST ###
@@ -225,38 +303,38 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzN
 ### STORE CART
 POST {{baseUrl}}/api/v1/cart/f9fa841c-25d2-11ee-8b12-8c859078c9ec/2
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 ### DESTROY CART
 DELETE {{baseUrl}}/api/v1/cart/c85d97b0-c63b-11ed-96de-f45c89b11b13
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 ### GET USER CART
 GET {{baseUrl}}/api/v1/cart?pageIndex=0&pageSize=10
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 ### ADD WISHLIST
 POST {{baseUrl}}/api/v1/wishlist/f91a6eaa-f7c8-11ed-a95f-acde48001122
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 ### GET USER WISHLIST
 GET {{baseUrl}}/api/v1/wishlist
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 
 ### GET USER WISHLIST
 GET {{baseUrl}}/api/v1/wishlist/f91a6eaa-f7c8-11ed-a95f-acde48001122
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 ### DESTROY USER WISHLIST
 DELETE {{baseUrl}}/api/v1/wishlist/bf80843e-0dba-4b0c-bcb4-faeaec5e53fa/8c934506-7d64-11ed-8570-f45c89b11b13
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 ###################
 ### USER & ROLE ###
@@ -265,28 +343,28 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzN
 ### GET ALL USER
 GET {{baseUrl}}/api/v1/user/all
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 
 ### GRANT ROLE TO USER
 POST {{baseUrl}}/api/v1/user/role/fc81ccd7-98aa-11ec-ba07-b78370c9a109/5d3337d8-98ab-11ec-ba07-c940688411f4
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 ### REVOTE ROLE FROM USER
 DELETE {{baseUrl}}/api/v1/user/role/1/4
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 ### GET ALL ROLES
 GET {{baseUrl}}/api/v1/role/all
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 ### SAVE ROLE
 POST {{baseUrl}}/api/v1/role
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 {
   "name" : "USER"
@@ -295,15 +373,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzN
 ### GET ROLE BY ID
 GET {{baseUrl}}/api/v1/role/4
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 ###
 GET {{baseUrl}}/api/v1/user/all
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
 
 
 ### USER
 GET {{baseUrl}}/api/v1/user
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA2MjgzNDY5OTAzNTIwMDAsInVzZXJJZCI6IjkxMTA4MmQwLTI1NWEtMTFlZS1iZjU3LThjODU5MDc4YzllYyJ9.e3G-XqV5FhyzFn2X4sAg370W80f6tis7OFngcRdF2yI
+Authorization: Bearer {{accessToken}}
